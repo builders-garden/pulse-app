@@ -1,12 +1,12 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 
-function LoginScreen() {
+function NotificationsScreen() {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Login Screen</Text>
+      <Text>Notifications Screen</Text>
     </View>
   );
 }
 
-export default LoginScreen;
+export default NotificationsScreen;
