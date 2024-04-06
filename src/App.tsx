@@ -1,6 +1,7 @@
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import React from 'react';
-import TabsContainer from './routing/TabsContainer';
+import AuthProvider from './contexts/auth/AuthProvider';
+import StackContainer from './routing/StackContainer';
 
 function App(): React.JSX.Element {
   // const isDarkMode = useColorScheme() === 'dark';
@@ -18,9 +19,11 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <NavigationContainer theme={MyTheme}>
-      <TabsContainer />
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer theme={MyTheme}>
+        <StackContainer />
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
 
