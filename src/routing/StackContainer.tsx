@@ -23,7 +23,13 @@ function StackContainer() {
         />
       ) : (
         <>
-          <Stack.Screen name="SignIn" component={SignInScreen} />
+          <Stack.Screen
+            name="SignIn"
+            options={{
+              headerShown: false,
+            }}
+            component={SignInScreen}
+          />
           <Stack.Screen name="SignUp" component={SignInScreen} />
         </>
       )}
