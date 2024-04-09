@@ -2,6 +2,7 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
 import {Image, Text} from 'react-native';
+import MyIconButton from '../components/MyIconButton';
 import DiscoverScreen from '../screens/discover/DiscoverScreen';
 import FeedScreen from '../screens/feed/FeedScreen';
 import NotificationsScreen from '../screens/notifications/NotificationsScreen';
@@ -56,6 +57,14 @@ function TabsContainer() {
         component={FeedScreen}
         options={{
           title: 'Personal feed',
+          headerLeft: () => (
+            <MyIconButton
+              style="secondary"
+              customStyle={{width: '100%'}}
+              onPress={() => {}}
+              icon={require('../assets/images/icons/channels.png')}
+            />
+          ),
         }}
       />
       <Tab.Screen name="Discover" component={DiscoverScreen} />

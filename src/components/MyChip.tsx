@@ -3,12 +3,14 @@ import {
   ActivityIndicator,
   Image,
   ImageSourcePropType,
+  StyleProp,
   StyleSheet,
   Text,
   TouchableOpacity,
+  ViewStyle,
 } from 'react-native';
 
-interface MyButtonProps {
+interface MyChipProps {
   onPress: () => void;
   title: string;
   style?: 'primary' | 'secondary';
@@ -16,42 +18,49 @@ interface MyButtonProps {
   loading?: boolean;
   iconLeft?: ImageSourcePropType;
   iconRight?: ImageSourcePropType;
+  customStyle?: StyleProp<ViewStyle>;
 }
 
-const MyButton = ({
+const MyChip = ({
   title,
   style = 'primary',
   disabled,
   loading,
   iconLeft,
   iconRight,
+  customStyle,
   onPress,
-}: MyButtonProps) => {
+}: MyChipProps) => {
   const btnStyle =
-    style === 'primary' ? styles.buttonPrimary : styles.buttonSecondary;
+    style === 'primary' ? styles.chipPrimary : styles.chipSecondary;
   const textStyle =
-    style === 'primary' ? styles.buttonTextPrimary : styles.buttonTextSecondary;
+    style === 'primary' ? styles.chipTextPrimary : styles.chipTextSecondary;
 
   return (
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
       activeOpacity={0.7}
-      style={[styles.button, btnStyle, disabled && styles.disabledButton]}>
+      style={[
+        styles.chip,
+        btnStyle,
+        disabled && styles.disabledchip,
+        customStyle,
+      ]}>
       {iconLeft && (
         <Image
-          style={{width: 25, height: 25, marginRight: 10}}
+          style={{width: 18, height: 18, marginRight: 3}}
           source={iconLeft}
         />
       )}
       {loading ? (
         <ActivityIndicator color="white" />
       ) : (
-        <Text style={[styles.buttonText, textStyle]}>{title}</Text>
+        <Text style={[styles.chipText, textStyle]}>{title}</Text>
       )}
       {iconRight && (
         <Image
-          style={{width: 25, height: 25, marginLeft: 10}}
+          style={{width: 18, height: 18, marginLeft: 3}}
           source={iconRight}
         />
       )}
@@ -60,34 +69,33 @@ const MyButton = ({
 };
 
 const styles = StyleSheet.create({
-  button: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+  chip: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 100,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
   },
-  buttonPrimary: {
+  chipPrimary: {
     backgroundColor: 'black',
   },
-  buttonSecondary: {
+  chipSecondary: {
     backgroundColor: 'white',
   },
-  disabledButton: {
+  disabledchip: {
     backgroundColor: 'grey',
   },
-  buttonText: {
-    fontSize: 16,
+  chipText: {
+    fontSize: 12,
     fontWeight: 'bold',
   },
-  buttonTextPrimary: {
+  chipTextPrimary: {
     color: 'white',
   },
-  buttonTextSecondary: {
+  chipTextSecondary: {
     color: 'black',
   },
 });
 
-export default MyButton;
+export default MyChip;
