@@ -30,13 +30,24 @@ const MyPost = ({
     <View style={styles.root}>
       <View style={styles.header}>
         <Image style={styles.headerImg} source={headerImg} />
-        <View>
+        <View style={styles.headerTextCtn}>
           <View style={{flexDirection: 'row'}}>
-            <Text>{headerTitle}</Text>
-            <Text> • {postTime}</Text>
+            <Text style={styles.headerTitle}>{headerTitle}</Text>
+            <Text style={styles.headerTime}> • {postTime}</Text>
           </View>
-          <Text>{headerSubtitle}</Text>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={styles.headerSubtitle}>
+            {headerSubtitle}
+          </Text>
         </View>
+        <MyIconButton
+          iconSize={25}
+          onPress={() => {}}
+          style="secondary"
+          icon={require('../assets/images/icons/vertical_dots.png')}
+        />
         {/* <Entypo
             name="dots-three-horizontal"
             size={16}
@@ -46,7 +57,7 @@ const MyPost = ({
       </View>
       <View style={styles.contentCtn}>
         <Text>{content}</Text>
-        {image && <Image source={image} />}
+        {image && <Image style={styles.contentImage} source={image} />}
       </View>
       <View style={styles.footer}>
         <MyChip
@@ -101,8 +112,28 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     marginRight: 14,
   },
+  headerTextCtn: {
+    width: '80%',
+    marginRight: 4,
+  },
+  headerTitle: {
+    fontWeight: 'bold',
+  },
+  headerTime: {
+    color: 'gray',
+  },
+  headerSubtitle: {
+    color: 'gray',
+    maxWidth: '100%',
+  },
   contentCtn: {
     flex: 1,
+  },
+  contentImage: {
+    // aspectRatio: 16 / 9,
+    maxHeight: 400,
+    width: '100%',
+    resizeMode: 'contain',
   },
   footer: {
     flexDirection: 'row',

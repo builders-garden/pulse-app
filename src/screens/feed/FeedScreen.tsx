@@ -9,6 +9,7 @@ const placeholderPosts = [
     headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
     content:
       'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
+    image: require('../../assets/images/placeholders/picture.png'),
     upvotesCount: 10,
     commentsCount: 3,
     quotesCount: 2,
@@ -20,6 +21,7 @@ const placeholderPosts = [
     headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
     content:
       'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
+    image: require('../../assets/images/placeholders/picture.png'),
     upvotesCount: 10,
     commentsCount: 3,
     quotesCount: 2,
@@ -31,6 +33,7 @@ const placeholderPosts = [
     headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
     content:
       'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
+    image: require('../../assets/images/placeholders/picture.png'),
     upvotesCount: 10,
     commentsCount: 3,
     quotesCount: 2,
@@ -42,6 +45,7 @@ const placeholderPosts = [
     headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
     content:
       'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
+    image: require('../../assets/images/placeholders/picture.png'),
     upvotesCount: 10,
     commentsCount: 3,
     quotesCount: 2,
@@ -53,6 +57,7 @@ const placeholderPosts = [
     headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
     content:
       'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
+    image: require('../../assets/images/placeholders/picture.png'),
     upvotesCount: 10,
     commentsCount: 3,
     quotesCount: 2,
@@ -64,6 +69,7 @@ const placeholderPosts = [
     headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
     content:
       'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
+    image: require('../../assets/images/placeholders/picture.png'),
     upvotesCount: 10,
     commentsCount: 3,
     quotesCount: 2,
@@ -75,6 +81,7 @@ const placeholderPosts = [
     headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
     content:
       'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
+    image: require('../../assets/images/placeholders/picture.png'),
     upvotesCount: 10,
     commentsCount: 3,
     quotesCount: 2,
@@ -94,6 +101,7 @@ function FeedScreen() {
             headerTitle={item.headerTitle}
             headerSubtitle={item.headerSubtitle}
             content={item.content}
+            // image={item.image}
             upvotesCount={item.upvotesCount}
             commentsCount={item.commentsCount}
             quotesCount={item.quotesCount}
