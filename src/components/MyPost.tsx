@@ -56,7 +56,7 @@ const MyPost = ({
           /> */}
       </View>
       <View style={styles.contentCtn}>
-        <Text>{content}</Text>
+        <Text style={styles.contentBody}>{content}</Text>
         {image && <Image style={styles.contentImage} source={image} />}
       </View>
       <View style={styles.footer}>
@@ -129,17 +129,23 @@ const styles = StyleSheet.create({
   contentCtn: {
     flex: 1,
   },
+  contentBody: {
+    marginBottom: 20,
+  },
   contentImage: {
     // aspectRatio: 16 / 9,
-    maxHeight: 400,
+    height: 200,
     width: '100%',
-    resizeMode: 'contain',
+    resizeMode: 'cover',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'black',
   },
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    marginTop: 20,
+    marginTop: 10,
     justifyContent: 'flex-start',
   },
   bottomBorder: {
