@@ -7,8 +7,9 @@ import DiscoverScreen from '../screens/discover/DiscoverScreen';
 import FeedScreen from '../screens/feed/FeedScreen';
 import NotificationsScreen from '../screens/notifications/NotificationsScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
+import {TabParamList} from './types';
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<TabParamList>();
 
 function TabsContainer() {
   return (

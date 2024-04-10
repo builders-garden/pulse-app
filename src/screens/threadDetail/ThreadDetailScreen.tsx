@@ -1,8 +1,20 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {FlatList, View} from 'react-native';
-import MyFloatingButton from '../../components/MyFloatingButton';
 import MyPost from '../../components/MyPost';
-import {HomeTabScreenProps} from '../../routing/types';
+import {RootStackScreenProps} from '../../routing/types';
+
+const placeholderPost = {
+  headerImg: require('../../assets/images/placeholders/profile_pic.png'),
+  headerTitle: '/degen',
+  headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
+  content:
+    'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
+  image: require('../../assets/images/placeholders/picture.png'),
+  upvotesCount: 10,
+  commentsCount: 3,
+  quotesCount: 2,
+  postTime: '2h',
+};
 
 const placeholderPosts = [
   {
@@ -90,12 +102,23 @@ const placeholderPosts = [
   },
 ];
 
-function FeedScreen({navigation}: HomeTabScreenProps<'Feed'>) {
+function ThreadDetailScreen({route}: RootStackScreenProps<'ThreadDetail'>) {
+  useEffect(() => {
+    console.log(route.params.threadId);
+  }, [route.params.threadId]);
+
   return (
     <View>
-      <MyFloatingButton
-        icon={require('../../assets/images/icons/feather.png')}
-        onPress={() => console.log('floating button pressed')}
+      <MyPost
+        headerImg={placeholderPost.headerImg}
+        postTime={placeholderPost.postTime}
+        headerTitle={placeholderPost.headerTitle}
+        headerSubtitle={placeholderPost.headerSubtitle}
+        content={placeholderPost.content}
+        image={placeholderPost.image ?? null}
+        upvotesCount={placeholderPost.upvotesCount}
+        commentsCount={placeholderPost.commentsCount}
+        quotesCount={placeholderPost.quotesCount}
       />
       <FlatList
         data={placeholderPosts}
@@ -110,11 +133,7 @@ function FeedScreen({navigation}: HomeTabScreenProps<'Feed'>) {
             upvotesCount={item.upvotesCount}
             commentsCount={item.commentsCount}
             quotesCount={item.quotesCount}
-            onContentBodyPress={() => {
-              navigation.navigate('ThreadDetail', {
-                threadId: 1,
-              });
-            }}
+            onContentBodyPress={() => {}}
           />
         )}
       />
@@ -122,4 +141,4 @@ function FeedScreen({navigation}: HomeTabScreenProps<'Feed'>) {
   );
 }
 
-export default FeedScreen;
+export default ThreadDetailScreen;

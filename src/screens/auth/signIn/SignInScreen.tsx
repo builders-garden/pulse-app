@@ -71,7 +71,6 @@ function SignInScreen() {
             data={carouselData}
             scrollAnimationDuration={500}
             onProgressChange={(_, slideProgress) => {
-              console.log(slideProgress);
               const current = Math.floor(slideProgress);
               // const current = Math.max(
               //   0,

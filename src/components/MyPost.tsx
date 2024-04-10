@@ -13,6 +13,7 @@ type MyPostProps = {
   commentsCount: number;
   quotesCount: number;
   upvotesCount: number;
+  onContentBodyPress?: () => void;
 };
 
 const MyPost = ({
@@ -25,6 +26,7 @@ const MyPost = ({
   commentsCount,
   quotesCount,
   upvotesCount,
+  onContentBodyPress,
 }: MyPostProps) => {
   return (
     <View style={styles.root}>
@@ -56,7 +58,15 @@ const MyPost = ({
           /> */}
       </View>
       <View style={styles.contentCtn}>
-        <Text style={styles.contentBody}>{content}</Text>
+        <Text
+          onPress={() => {
+            if (onContentBodyPress) {
+              onContentBodyPress();
+            }
+          }}
+          style={styles.contentBody}>
+          {content}
+        </Text>
         {image && <Image style={styles.contentImage} source={image} />}
       </View>
       <View style={styles.footer}>
@@ -99,7 +109,6 @@ const styles = StyleSheet.create({
   root: {
     // height: 300,
     padding: 20,
-    flex: 1,
   },
   header: {
     flexDirection: 'row',
@@ -127,7 +136,7 @@ const styles = StyleSheet.create({
     maxWidth: '100%',
   },
   contentCtn: {
-    flex: 1,
+    flexDirection: 'column',
   },
   contentBody: {
     marginBottom: 20,
