@@ -3,9 +3,9 @@ import {
   ActivityIndicator,
   Image,
   ImageSourcePropType,
+  Pressable,
   StyleSheet,
   Text,
-  TouchableOpacity,
 } from 'react-native';
 
 interface MyButtonProps {
@@ -33,11 +33,15 @@ const MyButton = ({
     style === 'primary' ? styles.buttonTextPrimary : styles.buttonTextSecondary;
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={onPress}
       disabled={disabled}
-      activeOpacity={0.7}
-      style={[styles.button, btnStyle, disabled && styles.disabledButton]}>
+      style={({pressed}) => [
+        styles.button,
+        btnStyle,
+        pressed && styles.pressedBtn,
+        disabled && styles.disabledBtn,
+      ]}>
       {iconLeft && (
         <Image
           style={{width: 25, height: 25, marginRight: 10}}
@@ -55,7 +59,7 @@ const MyButton = ({
           source={iconRight}
         />
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -75,7 +79,10 @@ const styles = StyleSheet.create({
   buttonSecondary: {
     backgroundColor: 'white',
   },
-  disabledButton: {
+  pressedBtn: {
+    opacity: 0.7,
+  },
+  disabledBtn: {
     backgroundColor: 'grey',
   },
   buttonText: {

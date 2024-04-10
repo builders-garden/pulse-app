@@ -1,5 +1,6 @@
 import React from 'react';
 import {FlatList, View} from 'react-native';
+import MyFloatingButton from '../../components/MyFloatingButton';
 import MyPost from '../../components/MyPost';
 
 const placeholderPosts = [
@@ -91,6 +92,10 @@ const placeholderPosts = [
 function FeedScreen() {
   return (
     <View>
+      <MyFloatingButton
+        icon={require('../../assets/images/icons/feather.png')}
+        onPress={() => console.log('floating button pressed')}
+      />
       <FlatList
         data={placeholderPosts}
         renderItem={({item}) => (
