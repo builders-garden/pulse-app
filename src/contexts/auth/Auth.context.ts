@@ -1,5 +1,5 @@
 import {createContext} from 'react';
-import {AuthContextModel, UserStatus} from './Auth.model';
+import {AuthContextModel, UserStatus} from './types';
 
 export const AuthContext = createContext<AuthContextModel>({
   state: {

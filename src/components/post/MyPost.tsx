@@ -1,7 +1,7 @@
 import React from 'react';
 import {Image, ImageSourcePropType, StyleSheet, Text, View} from 'react-native';
-import MyChip from './MyChip';
-import MyIconButton from './MyIconButton';
+import MyIconButton from '../MyIconButton';
+import PostActionBar from './PostActionBar';
 
 type MyPostProps = {
   headerImg: ImageSourcePropType;
@@ -48,7 +48,7 @@ const MyPost = ({
           iconSize={25}
           onPress={() => {}}
           style="secondary"
-          icon={require('../assets/images/icons/vertical_dots.png')}
+          icon={require('../../assets/images/icons/vertical_dots.png')}
         />
         {/* <Entypo
             name="dots-three-horizontal"
@@ -69,37 +69,11 @@ const MyPost = ({
         </Text>
         {image && <Image style={styles.contentImage} source={image} />}
       </View>
-      <View style={styles.footer}>
-        <MyChip
-          iconLeft={require('../assets/images/icons/upvote.png')}
-          title={`${upvotesCount}`}
-          onPress={() => {}}
-          customStyle={{marginRight: 5}}
-        />
-        <MyChip
-          iconLeft={require('../assets/images/icons/comment.png')}
-          title={`${commentsCount} comments`}
-          onPress={() => {}}
-          customStyle={{marginRight: 5}}
-        />
-        <MyChip
-          iconLeft={require('../assets/images/icons/quote.png')}
-          title={`${quotesCount} quotes`}
-          onPress={() => {}}
-          customStyle={{marginRight: 5}}
-        />
-        <MyChip
-          iconLeft={require('../assets/images/icons/quote.png')}
-          title="Tip"
-          onPress={() => {}}
-          customStyle={{marginRight: 5}}
-        />
-        <MyIconButton
-          iconSize={18}
-          onPress={() => {}}
-          icon={require('../assets/images/icons/share.png')}
-        />
-      </View>
+      <PostActionBar
+        commentsCount={commentsCount}
+        quotesCount={quotesCount}
+        upvotesCount={upvotesCount}
+      />
       <View style={styles.bottomBorder} />
     </View>
   );

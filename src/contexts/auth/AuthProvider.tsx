@@ -6,7 +6,7 @@ import {
   SignUpApiResponse,
   User,
   UserStatus,
-} from './Auth.model';
+} from './types';
 
 function authReducer(state: User, action: AuthAction): User {
   switch (action.type) {

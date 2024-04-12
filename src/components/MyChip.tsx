@@ -14,6 +14,7 @@ interface MyChipProps {
   onPress: () => void;
   title: string;
   style?: 'primary' | 'secondary';
+  size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
   loading?: boolean;
   iconLeft?: ImageSourcePropType;
@@ -24,6 +25,7 @@ interface MyChipProps {
 const MyChip = ({
   title,
   style = 'primary',
+  size = 'medium',
   disabled,
   loading,
   iconLeft,
@@ -33,8 +35,20 @@ const MyChip = ({
 }: MyChipProps) => {
   const btnStyle =
     style === 'primary' ? styles.chipPrimary : styles.chipSecondary;
+  const btnSize =
+    size === 'small'
+      ? styles.chipSmall
+      : size === 'medium'
+      ? styles.chipMedium
+      : styles.chipLarge;
   const textStyle =
     style === 'primary' ? styles.chipTextPrimary : styles.chipTextSecondary;
+  const textSize =
+    size === 'small'
+      ? styles.chipTextSmall
+      : size === 'medium'
+      ? styles.chipTextMedium
+      : styles.chipTextLarge;
 
   return (
     <TouchableOpacity
@@ -43,6 +57,7 @@ const MyChip = ({
       activeOpacity={0.7}
       style={[
         styles.chip,
+        btnSize,
         btnStyle,
         disabled && styles.disabledchip,
         customStyle,
@@ -56,7 +71,7 @@ const MyChip = ({
       {loading ? (
         <ActivityIndicator color="white" />
       ) : (
-        <Text style={[styles.chipText, textStyle]}>{title}</Text>
+        <Text style={[textSize, textStyle]}>{title}</Text>
       )}
       {iconRight && (
         <Image
@@ -70,12 +85,22 @@ const MyChip = ({
 
 const styles = StyleSheet.create({
   chip: {
-    paddingVertical: 4,
-    paddingHorizontal: 8,
     borderRadius: 100,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  chipSmall: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+  },
+  chipMedium: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  chipLarge: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
   },
   chipPrimary: {
     backgroundColor: 'black',
@@ -86,9 +111,15 @@ const styles = StyleSheet.create({
   disabledchip: {
     backgroundColor: 'grey',
   },
-  chipText: {
+  chipTextSmall: {
     fontSize: 12,
     fontWeight: 'bold',
+  },
+  chipTextMedium: {
+    fontSize: 16,
+  },
+  chipTextLarge: {
+    fontSize: 20,
   },
   chipTextPrimary: {
     color: 'white',

@@ -1,7 +1,7 @@
 import React from 'react';
 import {FlatList, View} from 'react-native';
 import MyFloatingButton from '../../components/MyFloatingButton';
-import MyPost from '../../components/MyPost';
+import MyPost from '../../components/post/MyPost';
 import {HomeTabScreenProps} from '../../routing/types';
 
 const placeholderPosts = [
@@ -95,7 +95,9 @@ function FeedScreen({navigation}: HomeTabScreenProps<'Feed'>) {
     <View>
       <MyFloatingButton
         icon={require('../../assets/images/icons/feather.png')}
-        onPress={() => console.log('floating button pressed')}
+        onPress={() => {
+          navigation.navigate('CreateThread');
+        }}
       />
       <FlatList
         data={placeholderPosts}
