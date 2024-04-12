@@ -7,8 +7,6 @@ type BottomBarProps = {
   onSendPress: () => void;
 };
 
-const inputLimit = 1000;
-
 function BottomBar({onAddMediaPress, onSendPress}: BottomBarProps) {
   return (
     <View style={styles.root}>

@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
+import {launchImageLibrary} from 'react-native-image-picker';
 import BottomBar from './components/BottomBar';
 import ThreadItem from './components/Thread';
 import {Thread} from './types';
@@ -21,10 +22,15 @@ function CreateThreadScreen() {
     />
   ));
 
+  async function onAddMediaPress() {
+    const res = await launchImageLibrary({mediaType: 'photo'});
+    console.log(res);
+  }
+
   return (
     <View style={styles.root}>
       <View style={styles.threadsCtn}>{threadsHtml}</View>
-      <BottomBar onAddMediaPress={() => {}} onSendPress={() => {}} />
+      <BottomBar onAddMediaPress={onAddMediaPress} onSendPress={() => {}} />
     </View>
   );
 }

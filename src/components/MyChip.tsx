@@ -3,10 +3,10 @@ import {
   ActivityIndicator,
   Image,
   ImageSourcePropType,
+  Pressable,
   StyleProp,
   StyleSheet,
   Text,
-  TouchableOpacity,
   ViewStyle,
 } from 'react-native';
 
@@ -51,14 +51,14 @@ const MyChip = ({
       : styles.chipTextLarge;
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={onPress}
       disabled={disabled}
-      activeOpacity={0.7}
-      style={[
+      style={({pressed}) => [
         styles.chip,
         btnSize,
         btnStyle,
+        pressed && styles.pressedChip,
         disabled && styles.disabledchip,
         customStyle,
       ]}>
@@ -79,7 +79,7 @@ const MyChip = ({
           source={iconRight}
         />
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -89,6 +89,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  pressedChip: {
+    opacity: 0.7,
   },
   chipSmall: {
     paddingVertical: 4,
