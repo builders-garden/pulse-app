@@ -1,31 +1,39 @@
 import React from 'react';
-import {
-  Image,
-  ImageSourcePropType,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
+import {Image, Pressable, StyleSheet, TextInput, View} from 'react-native';
+import {Thread} from '../types';
 
 type ThreadItemProps = {
-  body: string;
-  image?: ImageSourcePropType;
+  thread: Thread;
   onChangeText: (text: string) => void;
+  onImagePress?: (index: number) => void;
 };
 
 const inputLimit = 1000;
 
-function ThreadItem({body, image, onChangeText}: ThreadItemProps) {
+function ThreadItem({thread, onChangeText, onImagePress}: ThreadItemProps) {
+  const imagesHtml = thread.images
+    ?.filter(el => el !== undefined && el !== null)
+    .map((image, i) => (
+      <Pressable
+        key={i}
+        style={styles.imageBox}
+        onPress={() => {
+          onImagePress && onImagePress(i);
+        }}>
+        <Image style={styles.image} source={{uri: image}} />
+      </Pressable>
+    ));
+
   return (
     <View style={styles.root}>
       <TextInput
         multiline
         maxLength={inputLimit}
         placeholder="Type here!"
-        defaultValue={body}
+        defaultValue={thread.body}
         onChangeText={onChangeText}
       />
-      {image && <Image style={styles.image} source={image} />}
+      <View style={styles.imagesCtn}>{imagesHtml}</View>
     </View>
   );
 }
@@ -36,9 +44,22 @@ const styles = StyleSheet.create({
     borderLeftColor: 'lightgray',
     paddingLeft: 10,
   },
+  imagesCtn: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  imageBox: {
+    flex: 1,
+    height: 200,
+  },
   image: {
-    // height: 300,
-    padding: 20,
+    overflow: 'hidden',
+    resizeMode: 'cover',
+    borderWidth: 2,
+    borderColor: 'lightgray',
+    borderRadius: 8,
+    height: '100%',
+    width: '100%',
   },
 });
 
