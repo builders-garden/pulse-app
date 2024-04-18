@@ -11,9 +11,10 @@ import {
   View,
 } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
-import {CreateSignerResponse, Signer} from '../../../api/auth/types';
+import {Signer} from '../../../api/auth/types';
 import {RequestStatus} from '../../../api/types';
 import MyButton from '../../../components/MyButton';
+import MyModal from '../../../components/MyModal';
 import {AuthContext} from '../../../contexts/auth/Auth.context';
 import {ENDPOINT_SIGNER} from '../../../variables';
 const padding = 30;
@@ -46,12 +47,13 @@ function SignInScreen() {
   const [pollCounter, setPollCounter] = useState(0);
   const [signerPollStatus, setSignerPollStatus] =
     useState<RequestStatus>('idle');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (pollInterval) {
       if (signer?.result.status !== 'pending_approval' || pollCounter > 15) {
         clearInterval(pollInterval);
-
+        setIsModalOpen(false);
         if (signer?.result.status === 'approved' && signer?.result.token) {
           authContext.signIn({
             token: signer?.result.token,
@@ -88,7 +90,7 @@ function SignInScreen() {
     setSignerCreateStatus('loading');
     try {
       console.log(ENDPOINT_SIGNER);
-      const res = await axios.post<CreateSignerResponse>(ENDPOINT_SIGNER);
+      const res = await axios.post<Signer>(ENDPOINT_SIGNER);
       console.log(res.data);
       setSigner(res.data);
       setSignerCreateStatus('success');
@@ -99,6 +101,7 @@ function SignInScreen() {
     }
   }
 
+  // Poll the signer status every 6 seconds
   function SignerPollLoop(in_signer: Signer) {
     const intervalId = setInterval(async () => {
       await SignerPollStatus(in_signer);
@@ -114,7 +117,7 @@ function SignInScreen() {
       const pollUrl = `${ENDPOINT_SIGNER}${in_signer?.result.signer_uuid}`;
       // console.log(ENDPOINT_SIGNER);
       console.log(pollUrl);
-      const res = await axios.get<CreateSignerResponse>(pollUrl);
+      const res = await axios.get<Signer>(pollUrl);
 
       if (res.data.result.status === 'pending_approval') {
         return;
@@ -132,7 +135,9 @@ function SignInScreen() {
     }
   }
 
+  // Handle the sign in button click
   async function OnSignInButtonClick() {
+    setIsModalOpen(true);
     const signerRes = await CreateSigner();
     if (signerRes === undefined) {
       Alert.alert(
@@ -159,13 +164,17 @@ function SignInScreen() {
 
   return (
     <SafeAreaView style={styles.safeContainer}>
-      {/* <MyModal>
-        <Text>CIAO</Text>
-      </MyModal> */}
+      <MyModal open={isModalOpen}>
+        <Text>
+          {signerCreateStatus === 'loading'
+            ? 'Creating signer...'
+            : signerPollStatus === 'loading'
+            ? 'Waiting for signer approval...'
+            : 'Loading...'}
+        </Text>
+      </MyModal>
       <View style={styles.screenCtn}>
         <View style={{height}}>
-          <Text>{signerPollStatus}</Text>
-          <Text>{signerCreateStatus}</Text>
           <Carousel
             loop={false}
             width={width}

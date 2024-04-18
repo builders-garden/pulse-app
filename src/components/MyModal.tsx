@@ -1,5 +1,5 @@
 import React, {PropsWithChildren} from 'react';
-import {Modal, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 interface MyModalProps {
   // onPress: () => void;
@@ -9,23 +9,35 @@ interface MyModalProps {
   // loading?: boolean;
   // iconLeft?: ImageSourcePropType;
   // iconRight?: ImageSourcePropType;
+  open: boolean;
 }
 
-const MyModal = ({children}: PropsWithChildren<MyModalProps>) => {
+const MyModal = ({open, children}: PropsWithChildren<MyModalProps>) => {
   return (
-    <Modal animationType="slide" visible={true} transparent={true}>
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>{children}</View>
+    open && (
+      <View style={styles.root}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>{children}</View>
+        </View>
       </View>
-    </Modal>
+    )
   );
 };
 
 const styles = StyleSheet.create({
+  root: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 5,
+  },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalView: {
     backgroundColor: 'white',
@@ -34,7 +46,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: 'black',
     borderWidth: 1,
-    zIndex: 5,
+    zIndex: 1,
   },
 });
 
