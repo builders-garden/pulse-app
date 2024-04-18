@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, {useContext, useEffect, useState} from 'react';
 import {
   Alert,
+  AppState,
   Dimensions,
   Image,
   Linking,
@@ -14,6 +15,7 @@ import Carousel from 'react-native-reanimated-carousel';
 import {Signer} from '../../../api/auth/types';
 import {RequestStatus} from '../../../api/types';
 import MyButton from '../../../components/MyButton';
+import MyLoader from '../../../components/MyLoader';
 import MyModal from '../../../components/MyModal';
 import {AuthContext} from '../../../contexts/auth/Auth.context';
 import {ENDPOINT_SIGNER} from '../../../variables';
@@ -48,11 +50,23 @@ function SignInScreen() {
   const [signerPollStatus, setSignerPollStatus] =
     useState<RequestStatus>('idle');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [appStateVisible, setAppStateVisible] = useState(AppState.currentState);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      setAppStateVisible(nextAppState);
+    });
+
+    return () => {
+      subscription.remove();
+      console.log('AppState subscription removed');
+    };
+  }, []);
 
   useEffect(() => {
     if (pollInterval) {
-      if (signer?.result.status !== 'pending_approval' || pollCounter > 15) {
-        clearInterval(pollInterval);
+      if (signer?.result.status !== 'pending_approval' || pollCounter > 20) {
+        ClearSignerPollLoop();
         setIsModalOpen(false);
         if (signer?.result.status === 'approved' && signer?.result.token) {
           authContext.signIn({
@@ -68,6 +82,23 @@ function SignInScreen() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signer, pollCounter, pollInterval]);
+
+  useEffect(() => {
+    if (appStateVisible === 'active') {
+      if (
+        signer?.result.status === 'pending_approval' &&
+        pollInterval === null
+      ) {
+        SignerPollLoop(signer);
+      }
+    } else {
+      console.log(pollInterval);
+      if (pollInterval) {
+        ClearSignerPollLoop();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appStateVisible]);
 
   const width = Dimensions.get('window').width - padding * 2;
   const height = Dimensions.get('window').height * 0.6;
@@ -91,6 +122,7 @@ function SignInScreen() {
     try {
       console.log(ENDPOINT_SIGNER);
       const res = await axios.post<Signer>(ENDPOINT_SIGNER);
+      console.log('got response');
       console.log(res.data);
       setSigner(res.data);
       setSignerCreateStatus('success');
@@ -103,11 +135,21 @@ function SignInScreen() {
 
   // Poll the signer status every 6 seconds
   function SignerPollLoop(in_signer: Signer) {
+    console.log('Starting poll loop...');
     const intervalId = setInterval(async () => {
       await SignerPollStatus(in_signer);
       setPollCounter(pollCounter + 1);
-    }, 6000);
+    }, 3000);
     setPollInterval(intervalId);
+  }
+
+  function ClearSignerPollLoop() {
+    if (pollInterval) {
+      console.log('Clearing poll loop...');
+      clearInterval(pollInterval);
+      setPollInterval(null);
+      setSignerPollStatus('idle');
+    }
   }
 
   // Poll the signer status to check if the user has approved the signer
@@ -158,14 +200,15 @@ function SignInScreen() {
       return;
     }
 
-    SignerPollLoop(signerRes);
+    // SignerPollLoop(signerRes);
     await Linking.openURL(signerRes?.result.signer_approval_url);
   }
 
   return (
     <SafeAreaView style={styles.safeContainer}>
       <MyModal open={isModalOpen}>
-        <Text>
+        <MyLoader />
+        <Text style={{marginTop: 10}}>
           {signerCreateStatus === 'loading'
             ? 'Creating signer...'
             : signerPollStatus === 'loading'
@@ -207,7 +250,7 @@ function SignInScreen() {
             )}
           />
         </View>
-        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           {paginationItems}
         </View>
         <MyButton
