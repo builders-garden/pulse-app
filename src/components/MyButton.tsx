@@ -42,7 +42,7 @@ const MyButton = ({
         pressed && styles.pressedBtn,
         disabled && styles.disabledBtn,
       ]}>
-      {iconLeft && (
+      {iconLeft && !loading && (
         <Image
           style={{width: 25, height: 25, marginRight: 10}}
           source={iconLeft}
@@ -53,7 +53,7 @@ const MyButton = ({
       ) : (
         <Text style={[styles.buttonText, textStyle]}>{title}</Text>
       )}
-      {iconRight && (
+      {iconRight && !loading && (
         <Image
           style={{width: 25, height: 25, marginLeft: 10}}
           source={iconRight}

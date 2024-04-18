@@ -1,16 +1,35 @@
-import React from 'react';
-import {Image, Pressable, StyleSheet, TextInput, View} from 'react-native';
+import React, {RefObject} from 'react';
+import {
+  Image,
+  NativeSyntheticEvent,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TextInputKeyPressEventData,
+  View,
+} from 'react-native';
 import {Thread} from '../types';
 
 type ThreadItemProps = {
   thread: Thread;
+  textInputRef?: RefObject<TextInput>;
+  maxLength: number;
   onChangeText: (text: string) => void;
   onImagePress?: (index: number) => void;
+  onKeyPress?: (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => void;
+  onFocus: () => void;
 };
 
-const inputLimit = 1000;
-
-function ThreadItem({thread, onChangeText, onImagePress}: ThreadItemProps) {
+function ThreadItem({
+  thread,
+  textInputRef = undefined,
+  maxLength,
+  onChangeText,
+  onKeyPress,
+  onFocus,
+  onImagePress,
+}: ThreadItemProps) {
   const imagesHtml = thread.images
     ?.filter(el => el !== undefined && el !== null)
     .map((image, i) => (
@@ -26,12 +45,23 @@ function ThreadItem({thread, onChangeText, onImagePress}: ThreadItemProps) {
 
   return (
     <View style={styles.root}>
+      <Text style={styles.counter}>
+        {thread.body.length}/{maxLength}
+      </Text>
       <TextInput
+        ref={textInputRef}
+        onFocus={onFocus}
+        placeholderTextColor={'lightgray'}
         multiline
-        maxLength={inputLimit}
         placeholder="Type here!"
         defaultValue={thread.body}
+        value={thread.body}
         onChangeText={onChangeText}
+        style={styles.inputField}
+        maxLength={maxLength}
+        onKeyPress={e => {
+          onKeyPress && onKeyPress(e);
+        }}
       />
       <View style={styles.imagesCtn}>{imagesHtml}</View>
     </View>
@@ -43,6 +73,18 @@ const styles = StyleSheet.create({
     borderLeftWidth: 3,
     borderLeftColor: 'lightgray',
     paddingLeft: 10,
+    marginTop: 15,
+  },
+  counter: {
+    fontSize: 12,
+    color: 'gray',
+    position: 'absolute',
+    right: 0,
+    top: -15,
+  },
+  inputField: {
+    fontSize: 16,
+    paddingVertical: 10,
   },
   imagesCtn: {
     flexDirection: 'row',

@@ -4,7 +4,6 @@ import Toast from 'react-native-toast-message';
 import MyInfoToast from './components/toasts/MyInfoToast';
 import AuthProvider from './contexts/auth/AuthProvider';
 import StackContainer from './routing/StackContainer';
-
 function App(): React.JSX.Element {
   // const isDarkMode = useColorScheme() === 'dark';
 

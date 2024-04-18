@@ -1,16 +1,21 @@
-import React, {useContext, useState} from 'react';
+import axios from 'axios';
+import React, {useContext, useEffect, useState} from 'react';
 import {
+  Alert,
   Dimensions,
   Image,
+  Linking,
   SafeAreaView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
+import {CreateSignerResponse, Signer} from '../../../api/auth/types';
+import {RequestStatus} from '../../../api/types';
 import MyButton from '../../../components/MyButton';
 import {AuthContext} from '../../../contexts/auth/Auth.context';
-
+import {ENDPOINT_SIGNER} from '../../../variables';
 const padding = 30;
 
 const carouselData = [
@@ -31,21 +36,39 @@ const carouselData = [
   },
 ];
 
-const colors = [
-  '#26292E',
-  '#899F9C',
-  '#B3C680',
-  '#5C6265',
-  '#F5D399',
-  '#F1F1F1',
-];
-
 function SignInScreen() {
   const authContext = useContext(AuthContext);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [signerCreateStatus, setSignerCreateStatus] =
+    useState<RequestStatus>('idle');
+  const [signer, setSigner] = useState<Signer>();
+  const [pollInterval, setPollInterval] = useState<NodeJS.Timeout | null>(null);
+  const [pollCounter, setPollCounter] = useState(0);
+  const [signerPollStatus, setSignerPollStatus] =
+    useState<RequestStatus>('idle');
+
+  useEffect(() => {
+    if (pollInterval) {
+      if (signer?.result.status !== 'pending_approval' || pollCounter > 15) {
+        clearInterval(pollInterval);
+
+        if (signer?.result.status === 'approved' && signer?.result.token) {
+          authContext.signIn({
+            token: signer?.result.token,
+          });
+        } else {
+          Alert.alert(
+            'Error',
+            'It was not possible to sign in. Please contact support.',
+          );
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [signer, pollCounter, pollInterval]);
 
   const width = Dimensions.get('window').width - padding * 2;
   const height = Dimensions.get('window').height * 0.6;
-  const [activeSlide, setActiveSlide] = useState(0);
 
   const paginationItems = carouselData.map((_, index) => (
     <View
@@ -60,10 +83,89 @@ function SignInScreen() {
     />
   ));
 
+  // Create a signer to authenticate the user
+  async function CreateSigner() {
+    setSignerCreateStatus('loading');
+    try {
+      console.log(ENDPOINT_SIGNER);
+      const res = await axios.post<CreateSignerResponse>(ENDPOINT_SIGNER);
+      console.log(res.data);
+      setSigner(res.data);
+      setSignerCreateStatus('success');
+      return res.data;
+    } catch (error) {
+      console.error(error);
+      setSignerCreateStatus('error');
+    }
+  }
+
+  function SignerPollLoop(in_signer: Signer) {
+    const intervalId = setInterval(async () => {
+      await SignerPollStatus(in_signer);
+      setPollCounter(pollCounter + 1);
+    }, 6000);
+    setPollInterval(intervalId);
+  }
+
+  // Poll the signer status to check if the user has approved the signer
+  async function SignerPollStatus(in_signer: Signer) {
+    setSignerPollStatus('loading');
+    try {
+      const pollUrl = `${ENDPOINT_SIGNER}${in_signer?.result.signer_uuid}`;
+      // console.log(ENDPOINT_SIGNER);
+      console.log(pollUrl);
+      const res = await axios.get<CreateSignerResponse>(pollUrl);
+
+      if (res.data.result.status === 'pending_approval') {
+        return;
+      }
+      setSigner(res.data);
+      setSignerPollStatus('success');
+      // clearInterval(pollInterval!);
+
+      // authContext.signIn({
+      //   token: 'example',
+      // });
+    } catch (error) {
+      console.error(error);
+      setSignerPollStatus('error');
+    }
+  }
+
+  async function OnSignInButtonClick() {
+    const signerRes = await CreateSigner();
+    if (signerRes === undefined) {
+      Alert.alert(
+        'Error',
+        'It was not possible to create a signer. Please contact support.',
+      );
+      return;
+    }
+
+    const isSupported = await Linking.canOpenURL(
+      signerRes?.result?.signer_approval_url ?? '',
+    );
+
+    if (!isSupported) {
+      Alert.alert(
+        `Don't know how to open this URL: ${signerRes?.result.signer_approval_url}.`,
+      );
+      return;
+    }
+
+    SignerPollLoop(signerRes);
+    await Linking.openURL(signerRes?.result.signer_approval_url);
+  }
+
   return (
     <SafeAreaView style={styles.safeContainer}>
+      {/* <MyModal>
+        <Text>CIAO</Text>
+      </MyModal> */}
       <View style={styles.screenCtn}>
         <View style={{height}}>
+          <Text>{signerPollStatus}</Text>
+          <Text>{signerCreateStatus}</Text>
           <Carousel
             loop={false}
             width={width}
@@ -102,11 +204,8 @@ function SignInScreen() {
         <MyButton
           title="Login with Warpcast"
           iconLeft={require('../../../assets/images/logos/warpcast.png')}
-          onPress={() =>
-            authContext.signIn({
-              token: 'example',
-            })
-          }
+          loading={signerCreateStatus === 'loading'}
+          onPress={OnSignInButtonClick}
         />
       </View>
     </SafeAreaView>
