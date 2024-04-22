@@ -4,7 +4,7 @@ import MyIconButton from '../MyIconButton';
 import PostActionBar from './PostActionBar';
 
 type MyPostProps = {
-  headerImg: ImageSourcePropType;
+  headerImg: ImageSourcePropType | string;
   headerTitle: string;
   postTime: string;
   headerSubtitle: string;
@@ -31,7 +31,10 @@ const MyPost = ({
   return (
     <View style={styles.root}>
       <View style={styles.header}>
-        <Image style={styles.headerImg} source={headerImg} />
+        <Image
+          style={styles.headerImg}
+          source={typeof headerImg === 'string' ? {uri: headerImg} : headerImg}
+        />
         <View style={styles.headerTextCtn}>
           <View style={{flexDirection: 'row'}}>
             <Text style={styles.headerTitle}>{headerTitle}</Text>

@@ -43,12 +43,12 @@ function AuthProvider({children}: PropsWithChildren) {
       state: authState,
       signIn: async (data: SignInApiResponse) => {
         console.log(data);
-        dispatch({type: 'SIGN_IN', payload: 'example'});
+        dispatch({type: 'SIGN_IN', payload: data.token});
       },
       signOut: () => dispatch({type: 'SIGN_OUT'}),
       signUp: async (data: SignUpApiResponse) => {
         console.log(data);
-        dispatch({type: 'SIGN_IN', payload: 'example'});
+        dispatch({type: 'SIGN_IN', payload: data.token});
       },
     }),
     [authState],

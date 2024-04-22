@@ -1,6 +1,7 @@
 import React from 'react';
 import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import MyCard from '../../components/MyCard';
+import MyFloatingButton from '../../components/MyFloatingButton';
 import {HomeTabScreenProps} from '../../routing/types';
 import TrendingPostItem from './components/TrendingPostItem';
 
@@ -142,121 +143,129 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
   );
 
   return (
-    <ScrollView style={styles.root}>
-      <View>
-        <Text style={styles.sectionLabel}>For you</Text>
-        <FlatList
-          horizontal
-          data={placeholderCards}
-          renderItem={({item, index}) => (
-            <MyCard
-              title={item.title}
-              subtitle={item.subtitle}
-              body={item.body}
-              buttonText={item.buttonText}
-              customStyle={{
-                marginLeft: index == 0 ? 20 : 10,
-                marginRight: index == placeholderCards.length - 1 ? 20 : 0,
-              }}
-              onPress={() => {}}
-              onButtonPress={() => {}}
-            />
-          )}
-        />
-      </View>
-      <View style={{marginTop: 30}}>
-        <Text style={styles.sectionLabel}>Trending threads</Text>
-        <FlatList
-          horizontal
-          data={placeholderPosts}
-          renderItem={({item, index}) => (
-            <TrendingPostItem
-              channel="/degen"
-              headerTitle={item.headerTitle}
-              headerSubtitle={item.headerSubtitle}
-              headerImg={item.headerImg}
-              content={item.content}
-              image={item.image}
-              buttonText="Follow"
-              upvotesCount={item.upvotesCount}
-              commentsCount={item.commentsCount}
-              quotesCount={item.quotesCount}
-              postTime={item.postTime}
-              customStyle={{
-                marginLeft: index == 0 ? 20 : 10,
-                marginRight: index == placeholderCards.length - 1 ? 20 : 0,
-              }}
-              onContentBodyPress={() => {}}
-              onButtonPress={() => {}}
-            />
-          )}
-        />
-      </View>
-      <View style={{marginTop: 30}}>
-        <Text style={styles.sectionLabel}>Trending channels</Text>
-        <FlatList
-          horizontal
-          data={placeholderCards}
-          renderItem={({item, index}) => (
-            <MyCard
-              title={item.title}
-              subtitle={item.subtitle}
-              body={item.body}
-              buttonText={item.buttonText}
-              horizontal
-              customStyle={{
-                marginLeft: index == 0 ? 20 : 10,
-                marginRight: index == placeholderCards.length - 1 ? 20 : 0,
-              }}
-              onPress={() => {}}
-              onButtonPress={() => {}}
-            />
-          )}
-        />
-      </View>
-      <View style={{marginTop: 30, marginBottom: 20}}>
-        <Text style={styles.sectionLabel}>Top channels</Text>
-        <FlatList
-          horizontal
-          data={transformedTopChannels}
-          renderItem={({item, index}) => (
-            <View
-              style={{
-                marginLeft: index == 0 ? 20 : 10,
-                marginRight: index == placeholderCards.length - 1 ? 20 : 0,
-              }}>
+    <View>
+      <MyFloatingButton
+        icon={require('../../assets/images/icons/feather.png')}
+        onPress={() => {
+          navigation.navigate('CreateThread');
+        }}
+      />
+      <ScrollView style={styles.root}>
+        <View>
+          <Text style={styles.sectionLabel}>For you</Text>
+          <FlatList
+            horizontal
+            data={placeholderCards}
+            renderItem={({item, index}) => (
               <MyCard
-                title={item.item1.title}
-                subtitle={item.item1.subtitle}
-                horizontal
-                body={item.item1.body}
-                buttonText={item.item1.buttonText}
-                onPress={() => {}}
+                title={item.title}
+                subtitle={item.subtitle}
+                body={item.body}
+                buttonText={item.buttonText}
                 customStyle={{
-                  height: 120,
+                  marginLeft: index == 0 ? 20 : 10,
+                  marginRight: index == placeholderCards.length - 1 ? 20 : 0,
                 }}
+                onPress={() => {}}
                 onButtonPress={() => {}}
               />
-              {item.item2 && (
+            )}
+          />
+        </View>
+        <View style={{marginTop: 30}}>
+          <Text style={styles.sectionLabel}>Trending threads</Text>
+          <FlatList
+            horizontal
+            data={placeholderPosts}
+            renderItem={({item, index}) => (
+              <TrendingPostItem
+                channel="/degen"
+                headerTitle={item.headerTitle}
+                headerSubtitle={item.headerSubtitle}
+                headerImg={item.headerImg}
+                content={item.content}
+                image={item.image}
+                buttonText="Follow"
+                upvotesCount={item.upvotesCount}
+                commentsCount={item.commentsCount}
+                quotesCount={item.quotesCount}
+                postTime={item.postTime}
+                customStyle={{
+                  marginLeft: index == 0 ? 20 : 10,
+                  marginRight: index == placeholderCards.length - 1 ? 20 : 0,
+                }}
+                onContentBodyPress={() => {}}
+                onButtonPress={() => {}}
+              />
+            )}
+          />
+        </View>
+        <View style={{marginTop: 30}}>
+          <Text style={styles.sectionLabel}>Trending channels</Text>
+          <FlatList
+            horizontal
+            data={placeholderCards}
+            renderItem={({item, index}) => (
+              <MyCard
+                title={item.title}
+                subtitle={item.subtitle}
+                body={item.body}
+                buttonText={item.buttonText}
+                horizontal
+                customStyle={{
+                  marginLeft: index == 0 ? 20 : 10,
+                  marginRight: index == placeholderCards.length - 1 ? 20 : 0,
+                }}
+                onPress={() => {}}
+                onButtonPress={() => {}}
+              />
+            )}
+          />
+        </View>
+        <View style={{marginTop: 30, marginBottom: 20}}>
+          <Text style={styles.sectionLabel}>Top channels</Text>
+          <FlatList
+            horizontal
+            data={transformedTopChannels}
+            renderItem={({item, index}) => (
+              <View
+                style={{
+                  marginLeft: index == 0 ? 20 : 10,
+                  marginRight: index == placeholderCards.length - 1 ? 20 : 0,
+                }}>
                 <MyCard
-                  title={item.item2.title}
-                  subtitle={item.item2.subtitle}
+                  title={item.item1.title}
+                  subtitle={item.item1.subtitle}
                   horizontal
-                  body={item.item2.body}
-                  buttonText={item.item2.buttonText}
+                  body={item.item1.body}
+                  buttonText={item.item1.buttonText}
+                  onPress={() => {}}
                   customStyle={{
-                    marginTop: 10,
                     height: 120,
                   }}
-                  onPress={() => {}}
                   onButtonPress={() => {}}
                 />
-              )}
-            </View>
-          )}
-        />
-      </View>
-    </ScrollView>
+                {item.item2 && (
+                  <MyCard
+                    title={item.item2.title}
+                    subtitle={item.item2.subtitle}
+                    horizontal
+                    body={item.item2.body}
+                    buttonText={item.item2.buttonText}
+                    customStyle={{
+                      marginTop: 10,
+                      height: 120,
+                    }}
+                    onPress={() => {}}
+                    onButtonPress={() => {}}
+                  />
+                )}
+              </View>
+            )}
+          />
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
