@@ -16,8 +16,17 @@ function TabsContainer() {
     <Tab.Navigator
       screenOptions={({route}) => ({
         tabBarLabel: ({focused, color}) => {
-          if (focused && route.name !== 'Profile') {
-            return <Text style={{color}}>aaaaa</Text>;
+          if (focused) {
+            switch (route.name) {
+              case 'Feed':
+                return <Text style={{color}}>Feed</Text>;
+              case 'Discover':
+                return <Text style={{color}}>Discover</Text>;
+              case 'Notifications':
+                return <Text style={{color}}>Notifications</Text>;
+              default:
+                return;
+            }
           } else {
             return;
           }

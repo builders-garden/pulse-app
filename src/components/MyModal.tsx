@@ -1,5 +1,5 @@
 import React, {PropsWithChildren} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 
 interface MyModalProps {
   // onPress: () => void;
@@ -9,13 +9,18 @@ interface MyModalProps {
   // loading?: boolean;
   // iconLeft?: ImageSourcePropType;
   // iconRight?: ImageSourcePropType;
+  customStyle?: StyleProp<ViewStyle>;
   open: boolean;
 }
 
-const MyModal = ({open, children}: PropsWithChildren<MyModalProps>) => {
+const MyModal = ({
+  open,
+  customStyle,
+  children,
+}: PropsWithChildren<MyModalProps>) => {
   return (
     open && (
-      <View style={styles.root}>
+      <View style={[styles.root, customStyle]}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>{children}</View>
         </View>
@@ -47,6 +52,7 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 1,
     zIndex: 1,
+    width: '80%',
   },
 });
 

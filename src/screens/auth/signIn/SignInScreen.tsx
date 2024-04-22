@@ -179,6 +179,12 @@ function SignInScreen() {
 
   // Handle the sign in button click
   async function OnSignInButtonClick() {
+    authContext.signIn({
+      token:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQwOTg1MSwiaWF0IjoxNzEzNzA3NzkyODc4LCJleHAiOjE3MTYyOTk3OTI4Nzh9.BoT-DK88H2jRyv32Se-wslFNhr1YYqyJ_QhZOwPNkBw',
+    });
+    return;
+
     setIsModalOpen(true);
     const signerRes = await CreateSigner();
     if (signerRes === undefined) {

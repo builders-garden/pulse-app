@@ -7,19 +7,21 @@ import {
   StyleProp,
   StyleSheet,
   Text,
+  TextStyle,
   ViewStyle,
 } from 'react-native';
 
 interface MyChipProps {
   onPress: () => void;
   title: string;
-  style?: 'primary' | 'secondary';
+  style?: 'primary' | 'secondary' | 'tertiary';
   size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
   loading?: boolean;
   iconLeft?: ImageSourcePropType;
   iconRight?: ImageSourcePropType;
   customStyle?: StyleProp<ViewStyle>;
+  textCustomStyle?: StyleProp<TextStyle>;
 }
 
 const MyChip = ({
@@ -31,10 +33,15 @@ const MyChip = ({
   iconLeft,
   iconRight,
   customStyle,
+  textCustomStyle,
   onPress,
 }: MyChipProps) => {
   const btnStyle =
-    style === 'primary' ? styles.chipPrimary : styles.chipSecondary;
+    style === 'primary'
+      ? styles.chipPrimary
+      : style === 'secondary'
+      ? styles.chipSecondary
+      : styles.chipTertiary;
   const btnSize =
     size === 'small'
       ? styles.chipSmall
@@ -42,7 +49,11 @@ const MyChip = ({
       ? styles.chipMedium
       : styles.chipLarge;
   const textStyle =
-    style === 'primary' ? styles.chipTextPrimary : styles.chipTextSecondary;
+    style === 'primary'
+      ? styles.chipTextPrimary
+      : style === 'secondary'
+      ? styles.chipTextSecondary
+      : styles.chipTextTertiary;
   const textSize =
     size === 'small'
       ? styles.chipTextSmall
@@ -71,7 +82,7 @@ const MyChip = ({
       {loading ? (
         <ActivityIndicator color="white" />
       ) : (
-        <Text style={[textSize, textStyle]}>{title}</Text>
+        <Text style={[textSize, textStyle, textCustomStyle]}>{title}</Text>
       )}
       {iconRight && (
         <Image
@@ -111,6 +122,9 @@ const styles = StyleSheet.create({
   chipSecondary: {
     backgroundColor: 'white',
   },
+  chipTertiary: {
+    backgroundColor: 'lightgray',
+  },
   disabledchip: {
     backgroundColor: 'grey',
   },
@@ -128,6 +142,9 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   chipTextSecondary: {
+    color: 'black',
+  },
+  chipTextTertiary: {
     color: 'black',
   },
 });
