@@ -1,6 +1,7 @@
 import React from 'react';
 import {Image, ImageSourcePropType, StyleSheet, Text, View} from 'react-native';
 import MyIconButton from '../MyIconButton';
+import UrlViewer from '../UrlViewer';
 import PostActionBar from './PostActionBar';
 
 type MyPostProps = {
@@ -9,7 +10,7 @@ type MyPostProps = {
   postTime: string;
   headerSubtitle: string;
   content: string;
-  image?: ImageSourcePropType;
+  image?: string;
   commentsCount: number;
   quotesCount: number;
   upvotesCount: number;
@@ -70,7 +71,13 @@ const MyPost = ({
           style={styles.contentBody}>
           {content}
         </Text>
-        {image && <Image style={styles.contentImage} source={image} />}
+        {image && (
+          <UrlViewer url={image} />
+          // <Image
+          //   style={styles.contentImage}
+          //   source={typeof image === 'string' ? {uri: image} : image}
+          // />
+        )}
       </View>
       <PostActionBar
         commentsCount={commentsCount}

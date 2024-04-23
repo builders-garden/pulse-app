@@ -10,91 +10,91 @@ import {AuthContext} from '../../contexts/auth/Auth.context';
 import {HomeTabScreenProps} from '../../routing/types';
 import {ENDPOINT_FEED} from '../../variables';
 
-const placeholderPosts = [
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: '/degen',
-    headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
-    content:
-      'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
-    image: require('../../assets/images/placeholders/picture.png'),
-    upvotesCount: 10,
-    commentsCount: 3,
-    quotesCount: 2,
-    postTime: '2h',
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: '/degen',
-    headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
-    content:
-      'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
-    upvotesCount: 10,
-    commentsCount: 3,
-    quotesCount: 2,
-    postTime: '2h',
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: '/degen',
-    headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
-    content:
-      'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
-    image: require('../../assets/images/placeholders/picture.png'),
-    upvotesCount: 10,
-    commentsCount: 3,
-    quotesCount: 2,
-    postTime: '2h',
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: '/degen',
-    headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
-    content:
-      'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
-    image: require('../../assets/images/placeholders/picture.png'),
-    upvotesCount: 10,
-    commentsCount: 3,
-    quotesCount: 2,
-    postTime: '2h',
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: '/degen',
-    headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
-    content:
-      'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
-    image: require('../../assets/images/placeholders/picture.png'),
-    upvotesCount: 10,
-    commentsCount: 3,
-    quotesCount: 2,
-    postTime: '2h',
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: '/degen',
-    headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
-    content:
-      'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
-    image: require('../../assets/images/placeholders/picture.png'),
-    upvotesCount: 10,
-    commentsCount: 3,
-    quotesCount: 2,
-    postTime: '2h',
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: '/degen',
-    headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
-    content:
-      'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
-    image: require('../../assets/images/placeholders/picture.png'),
-    upvotesCount: 10,
-    commentsCount: 3,
-    quotesCount: 2,
-    postTime: '2h',
-  },
-];
+// const placeholderPosts = [
+//   {
+//     headerImg: require('../../assets/images/placeholders/profile_pic.png'),
+//     headerTitle: '/degen',
+//     headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
+//     content:
+//       'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
+//     image: require('../../assets/images/placeholders/picture.png'),
+//     upvotesCount: 10,
+//     commentsCount: 3,
+//     quotesCount: 2,
+//     postTime: '2h',
+//   },
+//   {
+//     headerImg: require('../../assets/images/placeholders/profile_pic.png'),
+//     headerTitle: '/degen',
+//     headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
+//     content:
+//       'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
+//     upvotesCount: 10,
+//     commentsCount: 3,
+//     quotesCount: 2,
+//     postTime: '2h',
+//   },
+//   {
+//     headerImg: require('../../assets/images/placeholders/profile_pic.png'),
+//     headerTitle: '/degen',
+//     headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
+//     content:
+//       'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
+//     image: require('../../assets/images/placeholders/picture.png'),
+//     upvotesCount: 10,
+//     commentsCount: 3,
+//     quotesCount: 2,
+//     postTime: '2h',
+//   },
+//   {
+//     headerImg: require('../../assets/images/placeholders/profile_pic.png'),
+//     headerTitle: '/degen',
+//     headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
+//     content:
+//       'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
+//     image: require('../../assets/images/placeholders/picture.png'),
+//     upvotesCount: 10,
+//     commentsCount: 3,
+//     quotesCount: 2,
+//     postTime: '2h',
+//   },
+//   {
+//     headerImg: require('../../assets/images/placeholders/profile_pic.png'),
+//     headerTitle: '/degen',
+//     headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
+//     content:
+//       'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
+//     image: require('../../assets/images/placeholders/picture.png'),
+//     upvotesCount: 10,
+//     commentsCount: 3,
+//     quotesCount: 2,
+//     postTime: '2h',
+//   },
+//   {
+//     headerImg: require('../../assets/images/placeholders/profile_pic.png'),
+//     headerTitle: '/degen',
+//     headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
+//     content:
+//       'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
+//     image: require('../../assets/images/placeholders/picture.png'),
+//     upvotesCount: 10,
+//     commentsCount: 3,
+//     quotesCount: 2,
+//     postTime: '2h',
+//   },
+//   {
+//     headerImg: require('../../assets/images/placeholders/profile_pic.png'),
+//     headerTitle: '/degen',
+//     headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
+//     content:
+//       'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
+//     image: require('../../assets/images/placeholders/picture.png'),
+//     upvotesCount: 10,
+//     commentsCount: 3,
+//     quotesCount: 2,
+//     postTime: '2h',
+//   },
+// ];
 
 function FeedScreen({navigation}: HomeTabScreenProps<'Feed'>) {
   const authContext = useContext(AuthContext);
@@ -109,7 +109,7 @@ function FeedScreen({navigation}: HomeTabScreenProps<'Feed'>) {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
         // console.log('got response');
-        console.log(res.data);
+        console.log(JSON.stringify(res.data));
         setFeed(res.data.result);
         setFeedFetchStatus('success');
       } catch (error) {
@@ -133,24 +133,51 @@ function FeedScreen({navigation}: HomeTabScreenProps<'Feed'>) {
           />
           <FlatList
             data={feed}
-            renderItem={({item}) => (
-              <MyPost
-                headerImg={item.author.pfp_url}
-                postTime={item.timestamp}
-                headerTitle={placeholderPosts[0].headerTitle}
-                headerSubtitle={placeholderPosts[0].headerSubtitle}
-                content={placeholderPosts[0].content}
-                image={placeholderPosts[0].image ?? null}
-                upvotesCount={placeholderPosts[0].upvotesCount}
-                commentsCount={placeholderPosts[0].commentsCount}
-                quotesCount={placeholderPosts[0].quotesCount}
-                onContentBodyPress={() => {
-                  navigation.navigate('ThreadDetail', {
-                    threadId: 1,
-                  });
-                }}
-              />
-            )}
+            renderItem={({item}) => {
+              let headerTitle = '';
+              let headerSubtitle = '';
+              const content = item.text;
+              if (
+                item.root_parent_url &&
+                item.root_parent_url.startsWith(
+                  'https://warpcast.com/~/channel/',
+                )
+              ) {
+                headerTitle = item.root_parent_url.replace(
+                  'https://warpcast.com/~/channel',
+                  '',
+                );
+                headerSubtitle =
+                  item.author.display_name + ' • @' + item.author.username;
+              } else {
+                headerTitle = item.author.display_name;
+                headerSubtitle = '@' + item.author.username;
+              }
+
+              const postTime = new Date(item.timestamp).toUTCString();
+              let embed = item.embeds.find(
+                el => el.url !== '' && el.url !== null && el.url !== undefined,
+              );
+
+              return (
+                <MyPost
+                  headerImg={item.author.pfp_url}
+                  postTime={postTime}
+                  headerTitle={headerTitle}
+                  headerSubtitle={headerSubtitle}
+                  content={content}
+                  image={embed?.url ?? undefined}
+                  upvotesCount={item.reactions.likes.length}
+                  commentsCount={item.replies.count}
+                  quotesCount={item.reactions.recasts.length}
+                  onContentBodyPress={() => {
+                    navigation.navigate('ThreadDetail', {
+                      threadId: 1,
+                    });
+                  }}
+                />
+              );
+            }}
           />
         </>
       ) : (

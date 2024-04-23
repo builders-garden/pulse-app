@@ -10,7 +10,6 @@ type TrendingPostActionBarProps = {
   onCommentsPress?: () => void;
   onQuotesPress?: () => void;
   onUpvotesPress?: () => void;
-  onTipPress?: () => void;
   onSharePress?: () => void;
 };
 
@@ -21,7 +20,6 @@ const TrendingPostActionBar = ({
   onCommentsPress,
   onQuotesPress,
   onUpvotesPress,
-  onTipPress,
   onSharePress,
 }: TrendingPostActionBarProps) => {
   return (
