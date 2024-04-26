@@ -11,6 +11,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import Carousel from 'react-native-reanimated-carousel';
 import {Signer} from '../../../api/auth/types';
 import {RequestStatus} from '../../../api/types';
@@ -177,12 +178,44 @@ function SignInScreen() {
     }
   }
 
+  async function retrieveUserToken() {
+    try {
+      const token = await EncryptedStorage.getItem('user_token');
+
+      if (token !== undefined) {
+        return token;
+      }
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+
+  async function storeUserToken() {
+    try {
+      await EncryptedStorage.setItem(
+        'user_token',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQwOTg1MSwiaWF0IjoxNzEzNzA3NzkyODc4LCJleHAiOjE3MTYyOTk3OTI4Nzh9.BoT-DK88H2jRyv32Se-wslFNhr1YYqyJ_QhZOwPNkBw',
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   // Handle the sign in button click
   async function OnSignInButtonClick() {
-    authContext.signIn({
-      token:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQwOTg1MSwiaWF0IjoxNzEzNzA3NzkyODc4LCJleHAiOjE3MTYyOTk3OTI4Nzh9.BoT-DK88H2jRyv32Se-wslFNhr1YYqyJ_QhZOwPNkBw',
-    });
+    const token = await retrieveUserToken();
+    if (token) {
+      authContext.signIn({
+        token: token,
+      });
+    } else {
+      await storeUserToken();
+      authContext.signIn({
+        token:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQwOTg1MSwiaWF0IjoxNzEzNzA3NzkyODc4LCJleHAiOjE3MTYyOTk3OTI4Nzh9.BoT-DK88H2jRyv32Se-wslFNhr1YYqyJ_QhZOwPNkBw',
+      });
+    }
     return;
 
     setIsModalOpen(true);

@@ -3,6 +3,7 @@ import React from 'react';
 import Toast from 'react-native-toast-message';
 import MyInfoToast from './components/toasts/MyInfoToast';
 import AuthProvider from './contexts/auth/AuthProvider';
+import LightboxProvider from './contexts/lightbox/LightboxProvider';
 import StackContainer from './routing/StackContainer';
 function App(): React.JSX.Element {
   // const isDarkMode = useColorScheme() === 'dark';
@@ -25,9 +26,11 @@ function App(): React.JSX.Element {
 
   return (
     <AuthProvider>
-      <NavigationContainer theme={MyTheme}>
-        <StackContainer />
-      </NavigationContainer>
+      <LightboxProvider>
+        <NavigationContainer theme={MyTheme}>
+          <StackContainer />
+        </NavigationContainer>
+      </LightboxProvider>
       <Toast config={toastConfig} />
     </AuthProvider>
   );

@@ -1,4 +1,4 @@
-export type Feed = {
+export type FeedResponse = {
   result: FeedItem[];
   cursor: string;
 };

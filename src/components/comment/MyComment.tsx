@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Image,
-  ImageSourcePropType,
   StyleProp,
   StyleSheet,
   Text,
@@ -9,16 +8,17 @@ import {
   ViewStyle,
 } from 'react-native';
 import MyIconButton from '../MyIconButton';
+import UrlViewer from '../UrlViewer';
 import CommentActionBar from './CommentActionBar';
 
 type MyCommentProps = {
   indentLevel?: number;
-  headerImg: ImageSourcePropType;
+  headerImg: string;
   headerTitle: string;
   postTime: string;
   headerSubtitle: string;
   content: string;
-  image?: ImageSourcePropType;
+  image?: string;
   quotesCount: number;
   upvotesCount: number;
   commentCustomStyle?: StyleProp<ViewStyle>;
@@ -55,7 +55,7 @@ const MyComment = ({
           commentCustomStyle,
         ]}>
         <View style={styles.header}>
-          <Image style={styles.headerImg} source={headerImg} />
+          <Image style={styles.headerImg} source={{uri: headerImg}} />
           <View style={styles.headerTextCtn}>
             <Text
               numberOfLines={1}
@@ -93,7 +93,8 @@ const MyComment = ({
         </View>
         <View style={styles.contentCtn}>
           <Text style={{marginBottom: image ? 20 : 0}}>{content}</Text>
-          {image && <Image style={styles.contentImage} source={image} />}
+          {/* {image && <Image style={styles.contentImage} source={{uri: image}} />} */}
+          {image && <UrlViewer url={image} />}
         </View>
         <CommentActionBar
           quotesCount={quotesCount}
@@ -133,15 +134,14 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontWeight: 'bold',
-    width: '50%',
-  },
-  headerTime: {
-    color: 'gray',
-    width: '20%',
+    maxWidth: '50%',
   },
   headerSubtitle: {
     color: 'gray',
-    width: '30%',
+    maxWidth: '30%',
+  },
+  headerTime: {
+    color: 'gray',
   },
   contentCtn: {
     flexDirection: 'column',

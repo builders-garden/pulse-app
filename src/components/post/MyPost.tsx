@@ -71,13 +71,7 @@ const MyPost = ({
           style={styles.contentBody}>
           {content}
         </Text>
-        {image && (
-          <UrlViewer url={image} />
-          // <Image
-          //   style={styles.contentImage}
-          //   source={typeof image === 'string' ? {uri: image} : image}
-          // />
-        )}
+        {image && <UrlViewer url={image} />}
       </View>
       <PostActionBar
         commentsCount={commentsCount}

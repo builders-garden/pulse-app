@@ -28,7 +28,7 @@ const PostActionBar = ({
     <View style={styles.postActionBar}>
       <MyChip
         iconLeft={require('../../assets/images/icons/upvote.png')}
-        title={`${upvotesCount}`}
+        title={upvotesCount.toString()}
         size="small"
         onPress={() => {
           onUpvotesPress && onUpvotesPress();
@@ -38,7 +38,7 @@ const PostActionBar = ({
       <MyChip
         iconLeft={require('../../assets/images/icons/comment.png')}
         size="small"
-        title={`${commentsCount} comments`}
+        title={commentsCount.toString()}
         onPress={() => {
           onCommentsPress && onCommentsPress();
         }}
@@ -47,7 +47,7 @@ const PostActionBar = ({
       <MyChip
         iconLeft={require('../../assets/images/icons/quote.png')}
         size="small"
-        title={`${quotesCount} quotes`}
+        title={quotesCount.toString()}
         onPress={() => {
           onQuotesPress && onQuotesPress();
         }}
@@ -68,6 +68,7 @@ const PostActionBar = ({
           onSharePress && onSharePress();
         }}
         icon={require('../../assets/images/icons/share.png')}
+        customStyle={{marginLeft: 'auto'}}
       />
     </View>
   );

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import {getLinkPreview} from 'link-preview-js';
 import React, {useEffect, useState} from 'react';
 import {
   Alert,
@@ -17,34 +17,25 @@ interface WebPreviewProps {
 }
 
 const WebPreview = ({url, customStyle}: WebPreviewProps) => {
-  const [ogData, setOgData] = useState({
-    title: '',
-    description: '',
-    image: '',
-  });
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [image, setImage] = useState('');
 
   useEffect(() => {
-    axios
-      .get(url)
-      .then(response => {
-        const html = response.data;
-        const titleMatch = html.match(
-          /<meta property="og:title" content="(.*?)"/,
-        );
-        const descriptionMatch = html.match(
-          /<meta property="og:description" content="(.*?)"/,
-        );
-        const imageMatch = html.match(
-          /<meta property="og:image" content="(.*?)"/,
-        );
-        const title = titleMatch ? titleMatch[1] : '';
-        const description = descriptionMatch ? descriptionMatch[1] : '';
-        const image = imageMatch ? imageMatch[1] : '';
-        setOgData({title, description, image});
-      })
-      .catch(error => {
-        console.error('Failed to fetch Open Graph data:', error);
-      });
+    async function fetchOpenGraph() {
+      const ogRes = await getLinkPreview(url);
+      console.log('Open Graph daata:', ogRes);
+      if ('title' in ogRes) {
+        setTitle(ogRes.title);
+      }
+      if ('description' in ogRes) {
+        setDescription(ogRes.description ?? '');
+      }
+      if ('images' in ogRes) {
+        setImage(ogRes.images[0]);
+      }
+    }
+    fetchOpenGraph();
   }, [url]);
 
   async function OpenURL() {
@@ -61,13 +52,11 @@ const WebPreview = ({url, customStyle}: WebPreviewProps) => {
 
   return (
     <Pressable style={[styles.container, customStyle]} onPress={OpenURL}>
-      {ogData.image && (
-        <Image source={{uri: ogData.image}} style={styles.image} />
-      )}
-      {ogData.title && <Text style={styles.title}>{ogData.title}</Text>}
-      {ogData.description && (
+      {image && <Image source={{uri: image}} style={styles.image} />}
+      {title && <Text style={styles.title}>{title}</Text>}
+      {description && (
         <Text style={styles.description} ellipsizeMode="tail" numberOfLines={1}>
-          {ogData.description}
+          {description}
         </Text>
       )}
     </Pressable>

@@ -1,167 +1,103 @@
-import React from 'react';
+import axios from 'axios';
+import React, {useContext, useEffect, useState} from 'react';
 import {FlatList, View} from 'react-native';
+import {Cast, CastResponse} from '../../api/cast/types';
+import {RequestStatus} from '../../api/types';
 import MyComment from '../../components/comment/MyComment';
 import MyPost from '../../components/post/MyPost';
+import {AuthContext} from '../../contexts/auth/Auth.context';
+import {FlattenConversation, TransformCast} from '../../libs/post';
+import {RootStackScreenProps} from '../../routing/types';
+import {ENDPOINT_CAST} from '../../variables';
 
-const placeholderPost = {
-  headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-  headerTitle: '/degen',
-  headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
-  content:
-    'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
-  image: require('../../assets/images/placeholders/picture.png'),
-  upvotesCount: 10,
-  commentsCount: 3,
-  quotesCount: 2,
-  postTime: '2h',
-};
+function ThreadDetailScreen({route}: RootStackScreenProps<'ThreadDetail'>) {
+  const authContext = useContext(AuthContext);
+  const [threadFetchStatus, setThreadFetchStatus] =
+    useState<RequestStatus>('idle');
+  const [thread, setThread] = useState<Cast>();
+  useEffect(() => {
+    async function fetchCast() {
+      setThreadFetchStatus('loading');
+      try {
+        console.log(ENDPOINT_CAST);
+        const url =
+          ENDPOINT_CAST +
+          route.params.threadHash +
+          '/conversation?replyDepth=5';
+        const res = await axios.get<CastResponse>(url, {
+          headers: {Authorization: `Bearer ${authContext.state.token}`},
+        });
+        // console.log('got response');
+        console.log('--------CAST--------');
+        console.log(JSON.stringify(res.data));
+        setThread(res.data.result.conversation.cast);
+        setThreadFetchStatus('success');
+      } catch (error) {
+        console.error(error);
+        setThreadFetchStatus('error');
+      }
+    }
 
-const placeholderPosts = [
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: 'limone.eth - serial frame hacker',
-    headerSubtitle: '@limone.eth',
-    content:
-      'Fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- connect your @gnosispaycc @frankk @orbulo',
-    upvotesCount: 10,
-    quotesCount: 2,
-    postTime: '2h',
-    indentLevel: 0,
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: 'limone.eth - serial frame hacker',
-    headerSubtitle: '@limone.eth',
-    content:
-      'Fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- connect your @gnosispaycc @frankk @orbulo',
-    upvotesCount: 10,
-    quotesCount: 2,
-    postTime: '2h',
-    indentLevel: 1,
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: 'limone.eth - serial frame hacker',
-    headerSubtitle: '@limone.eth',
-    content:
-      'Fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- connect your @gnosispaycc @frankk @orbulo',
-    upvotesCount: 10,
-    quotesCount: 2,
-    postTime: '2h',
-    indentLevel: 2,
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: 'limone.eth - serial frame hacker',
-    headerSubtitle: '@limone.eth',
-    content:
-      'Fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- connect your @gnosispaycc @frankk @orbulo',
-    upvotesCount: 10,
-    quotesCount: 2,
-    postTime: '2h',
-    indentLevel: 2,
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: 'limone.eth - serial frame hacker',
-    headerSubtitle: '@limone.eth',
-    content:
-      'Fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- connect your @gnosispaycc @frankk @orbulo',
-    image: require('../../assets/images/placeholders/picture.png'),
-    upvotesCount: 10,
-    quotesCount: 2,
-    postTime: '2h',
-    indentLevel: 3,
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: 'limone.eth - serial frame hacker',
-    headerSubtitle: '@limone.eth',
-    content:
-      'Fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- connect your @gnosispaycc @frankk @orbulo',
-    upvotesCount: 10,
-    quotesCount: 2,
-    postTime: '2h',
-    indentLevel: 3,
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: 'limone.eth - serial frame hacker',
-    headerSubtitle: '@limone.eth',
-    content:
-      'Fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- connect your @gnosispaycc @frankk @orbulo',
-    upvotesCount: 10,
-    quotesCount: 2,
-    postTime: '2h',
-    indentLevel: 4,
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: 'limone.eth - serial frame hacker',
-    headerSubtitle: '@limone.eth',
-    content:
-      'Fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- connect your @gnosispaycc @frankk @orbulo',
-    upvotesCount: 10,
-    quotesCount: 2,
-    postTime: '2h',
-    indentLevel: 1,
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: 'limone.eth - serial frame hacker',
-    headerSubtitle: '@limone.eth',
-    content:
-      'Fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- connect your @gnosispaycc @frankk @orbulo',
-    upvotesCount: 10,
-    quotesCount: 2,
-    postTime: '2h',
-    indentLevel: 2,
-  },
-];
+    fetchCast();
+  }, [authContext, route.params.threadHash]);
 
-function ThreadDetailScreen() {
+  if (
+    thread == null ||
+    thread === undefined ||
+    threadFetchStatus !== 'success'
+  ) {
+    return <View></View>;
+  }
+
+  const flattenedConversation = FlattenConversation(thread);
+  const transformedCast = TransformCast(flattenedConversation[0]);
+  flattenedConversation.shift();
   return (
     <View>
       <FlatList
-        data={placeholderPosts}
+        data={flattenedConversation}
         ListHeaderComponent={
           <MyPost
-            headerImg={placeholderPost.headerImg}
-            postTime={placeholderPost.postTime}
-            headerTitle={placeholderPost.headerTitle}
-            headerSubtitle={placeholderPost.headerSubtitle}
-            content={placeholderPost.content}
-            image={placeholderPost.image ?? null}
-            upvotesCount={placeholderPost.upvotesCount}
-            commentsCount={placeholderPost.commentsCount}
-            quotesCount={placeholderPost.quotesCount}
+            headerImg={transformedCast.headerImg}
+            postTime={transformedCast.postTime}
+            headerTitle={transformedCast.headerTitle}
+            headerSubtitle={transformedCast.headerSubtitle}
+            content={transformedCast.content}
+            image={transformedCast.image}
+            upvotesCount={transformedCast.upvotesCount}
+            commentsCount={transformedCast.commentsCount}
+            quotesCount={transformedCast.quotesCount}
           />
         }
-        renderItem={({item, index}) => (
-          <MyComment
-            headerImg={item.headerImg}
-            postTime={item.postTime}
-            headerTitle={item.headerTitle}
-            headerSubtitle={item.headerSubtitle}
-            indentLevel={item.indentLevel ?? 0}
-            content={item.content}
-            image={item?.image ?? null}
-            upvotesCount={item.upvotesCount}
-            quotesCount={item.quotesCount}
-            commentCustomStyle={{
-              paddingBottom:
-                index < placeholderPosts.length - 1 &&
-                placeholderPosts[index + 1].indentLevel >= item.indentLevel
-                  ? 20
-                  : 0,
-              paddingTop:
-                index > 0 &&
-                placeholderPosts[index - 1].indentLevel > item.indentLevel
-                  ? 20
-                  : 0,
-            }}
-          />
-        )}
+        renderItem={({item, index}) => {
+          const transformedComment = TransformCast(item);
+          return (
+            <MyComment
+              headerImg={transformedComment.headerImg}
+              postTime={transformedComment.postTime}
+              headerTitle={transformedComment.headerTitle}
+              headerSubtitle={transformedComment.headerSubtitle}
+              indentLevel={item.depth}
+              content={transformedComment.content}
+              image={transformedComment.image}
+              upvotesCount={transformedComment.upvotesCount}
+              quotesCount={transformedComment.quotesCount}
+              // eslint-disable-next-line react-native/no-inline-styles
+              commentCustomStyle={{
+                paddingBottom:
+                  index < flattenedConversation.length - 1 &&
+                  flattenedConversation[index + 1].depth >= item.depth
+                    ? 20
+                    : 0,
+                paddingTop:
+                  index > 0 &&
+                  flattenedConversation[index - 1].depth > item.depth
+                    ? 20
+                    : 0,
+              }}
+            />
+          );
+        }}
       />
     </View>
   );
