@@ -1,11 +1,12 @@
 import React from 'react';
-import {Image, ImageSourcePropType, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import MyIconButton from '../MyIconButton';
 import UrlViewer from '../UrlViewer';
 import PostActionBar from './PostActionBar';
 
 type MyPostProps = {
-  headerImg: ImageSourcePropType | string;
+  headerImg: string;
   headerTitle: string;
   postTime: string;
   headerSubtitle: string;
@@ -32,10 +33,7 @@ const MyPost = ({
   return (
     <View style={styles.root}>
       <View style={styles.header}>
-        <Image
-          style={styles.headerImg}
-          source={typeof headerImg === 'string' ? {uri: headerImg} : headerImg}
-        />
+        <FastImage style={styles.headerImg} source={{uri: headerImg}} />
         <View style={styles.headerTextCtn}>
           <View style={{flexDirection: 'row'}}>
             <Text style={styles.headerTitle}>{headerTitle}</Text>

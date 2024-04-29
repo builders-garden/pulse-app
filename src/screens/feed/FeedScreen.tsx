@@ -48,6 +48,7 @@ function FeedScreen({navigation}: HomeTabScreenProps<'Feed'>) {
           />
           <FlatList
             data={feed}
+            windowSize={5}
             renderItem={({item}) => {
               const transformedItem = TransformFeedItem(item);
 

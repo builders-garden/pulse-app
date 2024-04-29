@@ -3581,7 +3581,7 @@ event-target-shim@^5.0.0, event-target-shim@^5.0.1:
 
 events@^3.2.0:
   version "3.3.0"
-  resolved "https://registry.npmjs.org/events/-/events-3.3.0.tgz"
+  resolved "https://registry.yarnpkg.com/events/-/events-3.3.0.tgz#31a95ad0a924e2d2c419a813aeb2c4e878ea7400"
   integrity sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==
 
 execa@^5.0.0, execa@^5.1.1:
@@ -5922,6 +5922,11 @@ react-native-encrypted-storage@^4.0.3:
   resolved "https://registry.npmjs.org/react-native-encrypted-storage/-/react-native-encrypted-storage-4.0.3.tgz"
   integrity sha512-0pJA4Aj2S1PIJEbU7pN/Qvf7JIJx3hFywx+i+bLHtgK0/6Zryf1V2xVsWcrD50dfiu3jY1eN2gesQ5osGxE7jA==
 
+react-native-fast-image@^8.6.3:
+  version "8.6.3"
+  resolved "https://registry.yarnpkg.com/react-native-fast-image/-/react-native-fast-image-8.6.3.tgz#6edc3f9190092a909d636d93eecbcc54a8822255"
+  integrity sha512-Sdw4ESidXCXOmQ9EcYguNY2swyoWmx53kym2zRsvi+VeFCHEdkO+WG1DK+6W81juot40bbfLNhkc63QnWtesNg==
+
 react-native-gesture-handler@^2.16.0:
   version "2.16.0"
   resolved "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-2.16.0.tgz"
@@ -6005,7 +6010,7 @@ react-native-video@^5.2.1:
 
 react-native-webview@^13.8.6:
   version "13.8.6"
-  resolved "https://registry.npmjs.org/react-native-webview/-/react-native-webview-13.8.6.tgz"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-13.8.6.tgz#5d4a62cb311d5ef8d910a8e112b3f1f2807bcd18"
   integrity sha512-jtZ9OgB2AN6rhDwto6dNL3PtOtl/SI4VN93pZEPbMLvRjqHfxiUrilGllL5fKAXq5Ry5FJyfUi82A4Ii8olZ7A==
   dependencies:
     escape-string-regexp "2.0.0"
@@ -6013,7 +6018,7 @@ react-native-webview@^13.8.6:
 
 react-native-youtube-iframe@^2.3.0:
   version "2.3.0"
-  resolved "https://registry.npmjs.org/react-native-youtube-iframe/-/react-native-youtube-iframe-2.3.0.tgz"
+  resolved "https://registry.yarnpkg.com/react-native-youtube-iframe/-/react-native-youtube-iframe-2.3.0.tgz#40ca8e55db929b91bfa8e8d30e411658cbc304c5"
   integrity sha512-M+z63xwXVtS4dX3k8PbtHUUcWN+gRZt6J1EtPE7Y60BMOB979KjpkdrHqeR96or9pNR2W8K5tQhIkMXW2jwo7Q==
   dependencies:
     events "^3.2.0"

@@ -1,52 +1,43 @@
-import axios from 'axios';
+import {getLinkPreview} from 'link-preview-js';
 import React, {useContext, useEffect, useState} from 'react';
-import {Image, Pressable, StyleSheet, View} from 'react-native';
+import {Pressable, StyleSheet} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import {LightboxContext} from '../contexts/lightbox/Lightbox.context';
+import {LinkPreview} from '../types';
 import WebPreview from './WebPreview';
 interface UrlViewerProps {
   url: string;
 }
 
 const UrlViewer = ({url}: UrlViewerProps) => {
-  const [mediaType, setMediaType] = useState<string>();
+  const [linkPreview, setLinkPreview] = useState<LinkPreview>();
   const lightboxContext = useContext(LightboxContext);
 
   useEffect(() => {
     const fetchMediaType = async () => {
       console.log('Checking media type for:', url);
-      if (url.includes('youtube.com') || url.includes('youtu.be')) {
-        setMediaType('youtube');
-      } else {
-        try {
-          const response = await axios.head(url);
-          const contentType = response.headers['content-type'];
-          if (contentType.startsWith('image')) {
-            setMediaType('image');
-          } else if (contentType.startsWith('video')) {
-            setMediaType('video');
-          } else {
-            setMediaType('web');
-          }
-        } catch (error) {
-          console.error('Failed to fetch media type:', error);
-        }
+      try {
+        const res: LinkPreview = await getLinkPreview(url);
+        setLinkPreview(res);
+      } catch (error) {
+        console.log('Failed to fetch media type:', url, JSON.stringify(error));
       }
     };
 
     fetchMediaType();
   }, [url]);
 
-  if (mediaType === 'image') {
+  if (linkPreview?.mediaType === 'image') {
     return (
       <Pressable onPress={() => lightboxContext.show({urls: [url]})}>
-        <Image source={{uri: url}} style={styles.viewer} />
+        <FastImage source={{uri: url}} style={styles.viewer} />
       </Pressable>
     );
-  } else if (mediaType === 'video') {
+  } else if (linkPreview?.mediaType === 'video') {
     return <Video paused controls source={{uri: url}} style={styles.viewer} />;
-  } else if (mediaType === 'youtube') {
+  } else if (linkPreview?.mediaType === 'youtube') {
     const videoId = url.split('v=')[1];
     return (
       <YoutubePlayer
@@ -55,10 +46,10 @@ const UrlViewer = ({url}: UrlViewerProps) => {
         webViewStyle={styles.youtubePlayer}
       />
     );
-  } else if (mediaType === 'web') {
-    return <WebPreview url={url} />;
+  } else if (linkPreview?.mediaType === 'website') {
+    return <WebPreview url={url} linkPreview={linkPreview} />;
   } else {
-    return <View />;
+    return <WebPreview url={url} />;
   }
 };
 
