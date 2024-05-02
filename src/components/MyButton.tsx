@@ -1,21 +1,26 @@
 import React from 'react';
 import {
   ActivityIndicator,
+  DimensionValue,
   Image,
   ImageSourcePropType,
   Pressable,
+  StyleProp,
   StyleSheet,
   Text,
+  ViewStyle,
 } from 'react-native';
 
 interface MyButtonProps {
   onPress: () => void;
   title: string;
-  style?: 'primary' | 'secondary';
+  style?: 'primary' | 'secondary' | 'tertiary';
   disabled?: boolean;
   loading?: boolean;
   iconLeft?: ImageSourcePropType;
   iconRight?: ImageSourcePropType;
+  customStyle?: StyleProp<ViewStyle>;
+  width?: DimensionValue;
 }
 
 const MyButton = ({
@@ -25,12 +30,19 @@ const MyButton = ({
   loading,
   iconLeft,
   iconRight,
+  width = '100%',
+  customStyle,
   onPress,
 }: MyButtonProps) => {
-  const btnStyle =
-    style === 'primary' ? styles.buttonPrimary : styles.buttonSecondary;
-  const textStyle =
-    style === 'primary' ? styles.buttonTextPrimary : styles.buttonTextSecondary;
+  let btnStyle = styles.buttonPrimary;
+  let textStyle = styles.buttonTextPrimary;
+  if (style === 'secondary') {
+    btnStyle = styles.buttonSecondary;
+    textStyle = styles.buttonTextSecondary;
+  } else if (style === 'tertiary') {
+    btnStyle = styles.buttonTertiary;
+    textStyle = styles.buttonTextTertiary;
+  }
 
   return (
     <Pressable
@@ -41,6 +53,8 @@ const MyButton = ({
         btnStyle,
         pressed && styles.pressedBtn,
         disabled && styles.disabledBtn,
+        customStyle && customStyle,
+        {width: width},
       ]}>
       {iconLeft && !loading && (
         <Image
@@ -71,13 +85,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
   },
   buttonPrimary: {
     backgroundColor: 'black',
   },
   buttonSecondary: {
     backgroundColor: 'white',
+  },
+  buttonTertiary: {
+    backgroundColor: 'white',
+    borderWidth: 2,
+    borderColor: 'black',
   },
   pressedBtn: {
     opacity: 0.7,
@@ -93,6 +111,9 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   buttonTextSecondary: {
+    color: 'black',
+  },
+  buttonTextTertiary: {
     color: 'black',
   },
 });

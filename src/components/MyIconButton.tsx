@@ -1,66 +1,31 @@
 import React from 'react';
-import {
-  Image,
-  ImageSourcePropType,
-  StyleProp,
-  StyleSheet,
-  TouchableOpacity,
-  ViewStyle,
-} from 'react-native';
+import {Image, ImageSourcePropType} from 'react-native';
+import MyIconButtonBase, {MyIconButtonBaseProps} from './MyIconButtonBase';
 
-interface MyIconButtonProps {
-  onPress: () => void;
-  disabled?: boolean;
-  icon: ImageSourcePropType;
+type MyIconButtonProps = Omit<MyIconButtonBaseProps, 'icon'> & {
   iconSize?: number;
-  style?: 'primary' | 'secondary';
-  customStyle?: StyleProp<ViewStyle>;
-}
+  icon: ImageSourcePropType;
+};
 
 const MyIconButton = ({
   disabled,
   style = 'primary',
+  filling = 'solid',
   icon,
   iconSize = 32,
   customStyle,
   onPress,
 }: MyIconButtonProps) => {
-  const btnStyle =
-    style === 'primary' ? styles.buttonPrimary : styles.buttonSecondary;
-
   return (
-    <TouchableOpacity
+    <MyIconButtonBase
       onPress={onPress}
       disabled={disabled}
-      activeOpacity={0.7}
-      style={[
-        styles.button,
-        btnStyle,
-        disabled && styles.disabledButton,
-        customStyle,
-      ]}>
-      <Image style={{width: iconSize, height: iconSize}} source={icon} />
-    </TouchableOpacity>
+      style={style}
+      filling={filling}
+      customStyle={customStyle}
+      icon={<Image style={{width: iconSize, height: iconSize}} source={icon} />}
+    />
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    padding: 4,
-    borderRadius: 100,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  disabledButton: {
-    backgroundColor: 'grey',
-  },
-  buttonPrimary: {
-    backgroundColor: 'black',
-  },
-  buttonSecondary: {
-    backgroundColor: 'white',
-  },
-});
 
 export default MyIconButton;

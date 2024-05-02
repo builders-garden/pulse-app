@@ -1,57 +1,54 @@
-import React from 'react';
-import {Image, ImageSourcePropType, Pressable, StyleSheet} from 'react-native';
+import React, {ReactNode} from 'react';
+import {Pressable, StyleSheet} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import {MyTheme} from '../theme';
 
 interface MyFloatingButtonProps {
   onPress: () => void;
   style?: 'primary' | 'secondary';
   disabled?: boolean;
-  icon: ImageSourcePropType;
+  icon: ReactNode;
 }
 
-const MyFloatingButton = ({
-  style = 'primary',
-  disabled,
-  icon,
-  onPress,
-}: MyFloatingButtonProps) => {
-  const btnStyle =
-    style === 'primary' ? styles.buttonPrimary : styles.buttonSecondary;
-
+const MyFloatingButton = ({disabled, icon, onPress}: MyFloatingButtonProps) => {
   return (
     <Pressable
       onPress={onPress}
       disabled={disabled}
       style={({pressed}) => [
         styles.button,
-        btnStyle,
         pressed && styles.pressedBtn,
         disabled && styles.disabledBtn,
       ]}>
-      <Image style={{width: 25, height: 25}} source={icon} />
+      <LinearGradient
+        style={styles.gradient}
+        colors={[MyTheme.primaryGradientFirst, MyTheme.primaryGradientSecond]}>
+        {icon && icon}
+        {/* <Image style={{width: 25, height: 25}} source={icon} /> */}
+      </LinearGradient>
     </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 55,
-    height: 55,
-    borderRadius: 100,
     position: 'absolute',
     bottom: 15,
     right: 15,
     zIndex: 2,
   },
-  buttonPrimary: {
-    backgroundColor: 'black',
+  gradient: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 55,
+    height: 55,
+    borderRadius: 100,
+    borderWidth: 2,
+    borderColor: MyTheme.primaryBorder,
   },
-  buttonSecondary: {
-    backgroundColor: 'white',
-  },
+
   pressedBtn: {
-    backgroundColor: '#444',
+    opacity: 0.7,
   },
   disabledBtn: {
     backgroundColor: 'grey',
@@ -59,12 +56,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  buttonTextPrimary: {
     color: 'white',
-  },
-  buttonTextSecondary: {
-    color: 'black',
   },
 });
 

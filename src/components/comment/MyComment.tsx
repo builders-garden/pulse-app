@@ -81,6 +81,7 @@ const MyComment = ({
           <MyIconButton
             iconSize={25}
             onPress={() => {}}
+            filling="clear"
             style="secondary"
             icon={require('../../assets/images/icons/vertical_dots.png')}
           />
@@ -108,9 +109,9 @@ const MyComment = ({
 const styles = StyleSheet.create({
   root: {
     // height: 300,
-    paddingHorizontal: 20,
     flexDirection: 'row',
     width: '100%',
+    borderRadius: 4,
   },
   indent: {
     borderLeftColor: 'lightgray',

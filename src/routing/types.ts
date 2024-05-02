@@ -17,7 +17,7 @@ export type RootStackScreenProps<T extends keyof RootStackParamList> =
   NativeStackScreenProps<RootStackParamList, T>;
 
 export type TabParamList = {
-  Profile: undefined;
+  Profile: {userFid: number};
   Discover: undefined;
   Notifications: undefined;
   Feed: undefined;

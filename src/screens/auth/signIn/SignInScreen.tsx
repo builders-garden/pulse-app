@@ -117,6 +117,21 @@ function SignInScreen() {
     />
   ));
 
+  // async function FetchAuthorizationUrl() {
+  //   try {
+  //     const res = await axios.get(`${API_URL}/get-auth-url`);
+  //     if (!res.ok) {
+  //       throw new Error('Failed to fetch auth url');
+  //     }
+  //     const {authorization_url} = (await res.json()) as {
+  //       authorization_url: string;
+  //     };
+  //     return authorization_url;
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
+
   // Create a signer to authenticate the user
   async function CreateSigner() {
     setSignerCreateStatus('loading');
@@ -298,6 +313,12 @@ function SignInScreen() {
           loading={signerCreateStatus === 'loading'}
           onPress={OnSignInButtonClick}
         />
+        {/* <NeynarSigninButton
+          successCallback={token => {
+            console.log(token);
+          }}
+          fetchAuthorizationUrl={FetchAuthorizationUrl}
+        /> */}
       </View>
     </SafeAreaView>
   );

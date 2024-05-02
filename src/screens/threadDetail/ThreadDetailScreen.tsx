@@ -56,18 +56,26 @@ function ThreadDetailScreen({route}: RootStackScreenProps<'ThreadDetail'>) {
     <View>
       <FlatList
         data={flattenedConversation}
+        style={{
+          padding: 15,
+        }}
         ListHeaderComponent={
-          <MyPost
-            headerImg={transformedCast.headerImg}
-            postTime={transformedCast.postTime}
-            headerTitle={transformedCast.headerTitle}
-            headerSubtitle={transformedCast.headerSubtitle}
-            content={transformedCast.content}
-            image={transformedCast.image}
-            upvotesCount={transformedCast.upvotesCount}
-            commentsCount={transformedCast.commentsCount}
-            quotesCount={transformedCast.quotesCount}
-          />
+          <View
+            style={{
+              paddingBottom: 15,
+            }}>
+            <MyPost
+              headerImg={transformedCast.headerImg}
+              postTime={transformedCast.postTime}
+              headerTitle={transformedCast.headerTitle}
+              headerSubtitle={transformedCast.headerSubtitle}
+              content={transformedCast.content}
+              image={transformedCast.image}
+              upvotesCount={transformedCast.upvotesCount}
+              commentsCount={transformedCast.commentsCount}
+              quotesCount={transformedCast.quotesCount}
+            />
+          </View>
         }
         renderItem={({item, index}) => {
           const transformedComment = TransformCast(item);

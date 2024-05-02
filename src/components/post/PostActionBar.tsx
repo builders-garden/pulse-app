@@ -1,8 +1,13 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import MyChip from '../MyChip';
-import MyIconButton from '../MyIconButton';
-
+import CommentImg from '../../assets/images/icons/comment.svg';
+import HatImg from '../../assets/images/icons/hat.svg';
+import QuoteImg from '../../assets/images/icons/quote.svg';
+import ShareImg from '../../assets/images/icons/share.svg';
+import UpvoteImg from '../../assets/images/icons/upvote.svg';
+import {MyTheme} from '../../theme';
+import MyChipBase from '../MyChipBase';
+import MyIconButtonBase from '../MyIconButtonBase';
 type PostActionBarProps = {
   commentsCount: number;
   quotesCount: number;
@@ -26,48 +31,84 @@ const PostActionBar = ({
 }: PostActionBarProps) => {
   return (
     <View style={styles.postActionBar}>
-      <MyChip
-        iconLeft={require('../../assets/images/icons/upvote.png')}
+      <MyChipBase
+        iconLeft={
+          <UpvoteImg
+            style={{marginRight: 3}}
+            width={18}
+            height={18}
+            color={MyTheme.grey400}
+          />
+        }
         title={upvotesCount.toString()}
         size="small"
+        style="secondary"
+        filling="clear"
         onPress={() => {
           onUpvotesPress && onUpvotesPress();
         }}
         customStyle={{marginRight: 5}}
       />
-      <MyChip
-        iconLeft={require('../../assets/images/icons/comment.png')}
+      <MyChipBase
+        iconLeft={
+          <CommentImg
+            color={MyTheme.grey400}
+            style={{marginRight: 3}}
+            width={18}
+            height={18}
+          />
+        }
         size="small"
+        style="secondary"
+        filling="clear"
         title={commentsCount.toString()}
         onPress={() => {
           onCommentsPress && onCommentsPress();
         }}
         customStyle={{marginRight: 5}}
       />
-      <MyChip
-        iconLeft={require('../../assets/images/icons/quote.png')}
+      <MyChipBase
+        iconLeft={
+          <QuoteImg
+            color={MyTheme.grey400}
+            style={{marginRight: 3}}
+            width={18}
+            height={18}
+          />
+        }
         size="small"
+        style="secondary"
+        filling="clear"
         title={quotesCount.toString()}
         onPress={() => {
           onQuotesPress && onQuotesPress();
         }}
         customStyle={{marginRight: 5}}
       />
-      <MyChip
-        iconLeft={require('../../assets/images/icons/quote.png')}
+      <MyChipBase
+        iconLeft={
+          <HatImg
+            color={MyTheme.grey400}
+            style={{marginRight: 3}}
+            width={18}
+            height={18}
+          />
+        }
         size="small"
         title="Tip"
+        filling="clear"
+        style="secondary"
         onPress={() => {
           onTipPress && onTipPress();
         }}
         customStyle={{marginRight: 5}}
       />
-      <MyIconButton
-        iconSize={18}
+      <MyIconButtonBase
         onPress={() => {
           onSharePress && onSharePress();
         }}
-        icon={require('../../assets/images/icons/share.png')}
+        filling="clear"
+        icon={<ShareImg width={18} height={18} color={MyTheme.grey400} />}
         customStyle={{marginLeft: 'auto'}}
       />
     </View>

@@ -1,5 +1,6 @@
 import React from 'react';
 import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
+import PenImg from '../../assets/images/icons/pen.svg';
 import MyCard from '../../components/MyCard';
 import MyFloatingButton from '../../components/MyFloatingButton';
 import {HomeTabScreenProps} from '../../routing/types';
@@ -145,7 +146,7 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
   return (
     <View>
       <MyFloatingButton
-        icon={require('../../assets/images/icons/feather.png')}
+        icon={<PenImg width={25} height={25} color="white" />}
         onPress={() => {
           navigation.navigate('CreateThread');
         }}

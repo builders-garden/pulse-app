@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
+import {MyTheme} from '../../theme';
 import MyIconButton from '../MyIconButton';
 import UrlViewer from '../UrlViewer';
 import PostActionBar from './PostActionBar';
@@ -50,6 +51,7 @@ const MyPost = ({
           iconSize={25}
           onPress={() => {}}
           style="secondary"
+          filling="clear"
           icon={require('../../assets/images/icons/vertical_dots.png')}
         />
         {/* <Entypo
@@ -76,7 +78,6 @@ const MyPost = ({
         quotesCount={quotesCount}
         upvotesCount={upvotesCount}
       />
-      <View style={styles.bottomBorder} />
     </View>
   );
 };
@@ -85,6 +86,8 @@ const styles = StyleSheet.create({
   root: {
     // height: 300,
     padding: 20,
+    borderRadius: 4,
+    backgroundColor: MyTheme.white,
   },
   header: {
     flexDirection: 'row',
@@ -94,7 +97,7 @@ const styles = StyleSheet.create({
   headerImg: {
     width: 30,
     height: 30,
-    borderRadius: 100,
+    borderRadius: 4,
     marginRight: 14,
   },
   headerTextCtn: {
@@ -102,20 +105,24 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   headerTitle: {
-    fontWeight: 'bold',
+    fontWeight: '600',
+    fontFamily: 'BeVietnamPro-Regular',
   },
   headerTime: {
     color: 'gray',
+    fontFamily: 'BeVietnamPro-Regular',
   },
   headerSubtitle: {
     color: 'gray',
     maxWidth: '100%',
+    fontFamily: 'BeVietnamPro-Regular',
   },
   contentCtn: {
     flexDirection: 'column',
   },
   contentBody: {
     marginBottom: 20,
+    fontFamily: 'BeVietnamPro-Regular',
   },
   contentImage: {
     // aspectRatio: 16 / 9,
@@ -132,11 +139,6 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 10,
     justifyContent: 'flex-start',
-  },
-  bottomBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'lightgray',
-    marginTop: 20,
   },
 });
 

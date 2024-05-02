@@ -3,20 +3,22 @@ import React from 'react';
 import Toast from 'react-native-toast-message';
 import MyInfoToast from './components/toasts/MyInfoToast';
 import AuthProvider from './contexts/auth/AuthProvider';
+import DrawerProvider from './contexts/drawer/DrawerProvider';
 import LightboxProvider from './contexts/lightbox/LightboxProvider';
 import StackContainer from './routing/StackContainer';
+import {MyTheme} from './theme';
 function App(): React.JSX.Element {
   // const isDarkMode = useColorScheme() === 'dark';
 
-  const MyTheme = {
+  const NavigationTheme = {
     ...DefaultTheme,
     colors: {
-      primary: 'white',
-      background: 'white',
-      card: 'black',
-      text: 'white',
-      border: 'white',
-      notification: 'red',
+      primary: MyTheme.white,
+      background: MyTheme.grey100,
+      card: MyTheme.white,
+      text: MyTheme.white,
+      border: MyTheme.grey400,
+      notification: MyTheme.primaryColor,
     },
   };
 
@@ -27,9 +29,11 @@ function App(): React.JSX.Element {
   return (
     <AuthProvider>
       <LightboxProvider>
-        <NavigationContainer theme={MyTheme}>
-          <StackContainer />
-        </NavigationContainer>
+        <DrawerProvider>
+          <NavigationContainer theme={NavigationTheme}>
+            <StackContainer />
+          </NavigationContainer>
+        </DrawerProvider>
       </LightboxProvider>
       <Toast config={toastConfig} />
     </AuthProvider>

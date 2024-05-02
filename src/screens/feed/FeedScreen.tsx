@@ -3,6 +3,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {FlatList, View} from 'react-native';
 import {FeedItem, FeedResponse} from '../../api/feed/types';
 import {RequestStatus} from '../../api/types';
+import PenImg from '../../assets/images/icons/pen.svg';
 import MyFloatingButton from '../../components/MyFloatingButton';
 import MyPlaceholderLoader from '../../components/MyPlaceholderLoader';
 import MyPost from '../../components/post/MyPost';
@@ -41,14 +42,16 @@ function FeedScreen({navigation}: HomeTabScreenProps<'Feed'>) {
       {feedFetchStatus === 'success' ? (
         <>
           <MyFloatingButton
-            icon={require('../../assets/images/icons/feather.png')}
+            icon={<PenImg width={25} height={25} color="white" />}
             onPress={() => {
               navigation.navigate('CreateThread');
             }}
           />
           <FlatList
+            style={{paddingHorizontal: 15, paddingTop: 15}}
             data={feed}
             windowSize={5}
+            ItemSeparatorComponent={() => <View style={{height: 15}} />}
             renderItem={({item}) => {
               const transformedItem = TransformFeedItem(item);
 

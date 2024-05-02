@@ -86,12 +86,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
     marginTop: 10,
+    fontFamily: 'BeVietnamPro-Regular',
   },
   titleOnly: {
     fontSize: 16,
+    fontFamily: 'BeVietnamPro-Regular',
   },
   description: {
     marginTop: 5,
+    fontFamily: 'BeVietnamPro-Regular',
   },
 });
 

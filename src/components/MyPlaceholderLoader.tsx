@@ -1,6 +1,7 @@
 import React from 'react';
 import ContentLoader, {Circle, Rect} from 'react-content-loader/native';
 import {StyleProp, View, ViewStyle} from 'react-native';
+import {MyTheme} from '../theme';
 
 interface MyPlaceholderLoaderProps {
   customStyle?: StyleProp<ViewStyle>;
@@ -15,8 +16,8 @@ const MyPlaceholderLoader = ({customStyle}: MyPlaceholderLoaderProps) => {
         height={200}
         preserveAspectRatio="none"
         viewBox="0 0 360 200"
-        backgroundColor="#f3f3f3"
-        foregroundColor="#ecebeb">
+        backgroundColor={MyTheme.grey200}
+        foregroundColor={MyTheme.grey100}>
         <Rect x="48" y="8" rx="3" ry="3" width="88" height="6" />
         <Rect x="48" y="26" rx="3" ry="3" width="52" height="6" />
         <Rect x="0" y="56" rx="3" ry="3" width="360" height="6" />
