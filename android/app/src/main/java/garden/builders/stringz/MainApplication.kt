@@ -1,4 +1,4 @@
-package com.pulse
+package garden.builders.stringz
 
 import android.app.Application
 import com.facebook.react.PackageList
