@@ -82,7 +82,8 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
   },
   profileCtn: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 20,
     flex: 1,
   },
   upperSection: {

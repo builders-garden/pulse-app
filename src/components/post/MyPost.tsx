@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {MyTheme} from '../../theme';
 import MyIconButton from '../MyIconButton';
@@ -16,6 +16,7 @@ type MyPostProps = {
   commentsCount: number;
   quotesCount: number;
   upvotesCount: number;
+  customStyle?: StyleProp<ViewStyle>;
   onContentBodyPress?: () => void;
 };
 
@@ -29,10 +30,11 @@ const MyPost = ({
   commentsCount,
   quotesCount,
   upvotesCount,
+  customStyle,
   onContentBodyPress,
 }: MyPostProps) => {
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, customStyle && customStyle]}>
       <View style={styles.header}>
         <FastImage style={styles.headerImg} source={{uri: headerImg}} />
         <View style={styles.headerTextCtn}>

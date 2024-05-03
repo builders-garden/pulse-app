@@ -74,9 +74,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "garden.builders.stringz"
+    namespace "com.buildersgarden.stringz"
     defaultConfig {
-        applicationId "garden.builders.stringz"
+        applicationId "com.buildersgarden.stringz"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

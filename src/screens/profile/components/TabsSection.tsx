@@ -3,9 +3,11 @@ import React, {useContext, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Comment, CommentResponse} from '../../../api/cast/types';
 import {Profile} from '../../../api/profile/types';
+import MyPlaceholderLoader from '../../../components/MyPlaceholderLoader';
 import MyTabs from '../../../components/tabs/MyTabs';
 import {AuthContext} from '../../../contexts/auth/Auth.context';
 import {ENDPOINT_PROFILE} from '../../../variables';
+import CommentsSection from './CommentsSection';
 
 // const FirstRoute = () => (
 //   <View style={{backgroundColor: '#ff4081', width: '100%', height: 200}} />
@@ -52,14 +54,19 @@ function TabsSection({profile}: TabsSectionProps) {
   }
 
   return (
-    <View style={{marginTop: 30}}>
+    <View style={{marginTop: 30, flex: 1}}>
       <MyTabs
         tabs={['Threads', 'Comments', 'About']}
         selectedTab={selectedTab}
         onPress={setSelectedTab}
       />
       {/* {selectedTab === 0 && <FirstRoute />} */}
-      {/* {selectedTab === 1 && <SecondRoute />} */}
+      {selectedTab === 1 &&
+        (commentsFetchStatus === 'success' ? (
+          <CommentsSection comments={comments} />
+        ) : (
+          <MyPlaceholderLoader customStyle={{marginTop: 15}} />
+        ))}
       {/* {selectedTab === 2 && <ThirdRoute />} */}
     </View>
   );

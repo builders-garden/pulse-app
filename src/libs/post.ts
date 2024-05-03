@@ -1,8 +1,8 @@
-import {Cast, CastWithDepth} from '../api/cast/types';
+import {Cast, CastWithDepth, Comment} from '../api/cast/types';
 import {FeedItem} from '../api/feed/types';
 import {formatDate} from './date';
 
-export function TransformFeedItem(item: FeedItem) {
+export function TransformFeedItem(item: FeedItem | Comment) {
   let headerTitle = '';
   let headerSubtitle = '';
   const content = item.text;

@@ -34,7 +34,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) requires access to your camera to take photos.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>$(PRODUCT_NAME) requires access to your microphone to record audio.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

@@ -1,4 +1,4 @@
-package garden.builders.stringz
+package com.buildersgarden.stringz
 
 import android.app.Application
 import com.facebook.react.PackageList
