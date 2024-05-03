@@ -44,7 +44,6 @@ function CreateThreadScreen() {
   async function onAddMediaPress() {
     if (threads[currentThreadIndex].images.length < maxImagesCount) {
       const res = await launchImageLibrary({mediaType: 'photo'});
-      console.log(res);
       const imageUri = res.assets?.[0]?.uri;
       if (imageUri !== undefined && imageUri !== null) {
         const newThreads = threads.slice();

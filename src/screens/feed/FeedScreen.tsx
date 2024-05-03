@@ -20,12 +20,10 @@ function FeedScreen({navigation}: HomeTabScreenProps<'Feed'>) {
     async function fetchFeed() {
       setFeedFetchStatus('loading');
       try {
-        console.log(ENDPOINT_FEED);
         const res = await axios.get<FeedResponse>(ENDPOINT_FEED, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
         // console.log('got response');
-        console.log(JSON.stringify(res.data));
         setFeed(res.data.result);
         setFeedFetchStatus('success');
       } catch (error) {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, {useContext, useEffect, useState} from 'react';
 import {FlatList, View} from 'react-native';
-import {Cast, CastResponse} from '../../api/cast/types';
+import {Cast, CastConversationResponse} from '../../api/cast/types';
 import {RequestStatus} from '../../api/types';
 import MyComment from '../../components/comment/MyComment';
 import MyPost from '../../components/post/MyPost';
@@ -19,17 +19,14 @@ function ThreadDetailScreen({route}: RootStackScreenProps<'ThreadDetail'>) {
     async function fetchCast() {
       setThreadFetchStatus('loading');
       try {
-        console.log(ENDPOINT_CAST);
         const url =
           ENDPOINT_CAST +
           route.params.threadHash +
           '/conversation?replyDepth=5';
-        const res = await axios.get<CastResponse>(url, {
+        const res = await axios.get<CastConversationResponse>(url, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
         // console.log('got response');
-        console.log('--------CAST--------');
-        console.log(JSON.stringify(res.data));
         setThread(res.data.result.conversation.cast);
         setThreadFetchStatus('success');
       } catch (error) {

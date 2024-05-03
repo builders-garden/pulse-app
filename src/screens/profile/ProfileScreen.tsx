@@ -27,12 +27,10 @@ function ProfileScreen({route}: HomeTabScreenProps<'Profile'>) {
     setProfileFetchStatus('loading');
     try {
       const finalUrl = ENDPOINT_PROFILE + (route?.params?.userFid ?? '409851');
-      console.log(finalUrl);
       const res = await axios.get<ProfileResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
       // console.log('got response');
-      console.log(JSON.stringify(res.data));
       setProfile(res.data.result);
       setProfileFetchStatus('success');
     } catch (error) {
@@ -65,7 +63,7 @@ function ProfileScreen({route}: HomeTabScreenProps<'Profile'>) {
     <View style={styles.profileCtn}>
       <UpperSection profile={profile} />
       <InfoSection profile={profile} />
-      <TabsSection />
+      <TabsSection profile={profile} />
     </View>
   );
 }

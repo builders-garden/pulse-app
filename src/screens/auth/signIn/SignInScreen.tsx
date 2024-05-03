@@ -93,7 +93,6 @@ function SignInScreen() {
         SignerPollLoop(signer);
       }
     } else {
-      console.log(pollInterval);
       if (pollInterval) {
         ClearSignerPollLoop();
       }
@@ -136,10 +135,7 @@ function SignInScreen() {
   async function CreateSigner() {
     setSignerCreateStatus('loading');
     try {
-      console.log(ENDPOINT_SIGNER);
       const res = await axios.post<Signer>(ENDPOINT_SIGNER);
-      console.log('got response');
-      console.log(res.data);
       setSigner(res.data);
       setSignerCreateStatus('success');
       return res.data;
@@ -174,7 +170,6 @@ function SignInScreen() {
     try {
       const pollUrl = `${ENDPOINT_SIGNER}${in_signer?.result.signer_uuid}`;
       // console.log(ENDPOINT_SIGNER);
-      console.log(pollUrl);
       const res = await axios.get<Signer>(pollUrl);
 
       if (res.data.result.status === 'pending_approval') {

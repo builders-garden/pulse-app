@@ -82,7 +82,6 @@ function TabsContainer() {
                 filling="clear"
                 customStyle={{marginLeft: 15}}
                 onPress={() => {
-                  console.log(drawerContext.state.visible);
                   drawerContext.show();
                 }}
                 icon={<MenuLinesImg color={MyTheme.black} />}

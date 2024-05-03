@@ -33,7 +33,6 @@ function LightboxProvider({children}: PropsWithChildren) {
     () => ({
       state: lightboxState,
       show: (data: ShowActionPayload) => {
-        console.log(data);
         dispatch({type: 'SHOW', payload: {urls: data.urls}});
       },
       hide: () => dispatch({type: 'HIDE'}),

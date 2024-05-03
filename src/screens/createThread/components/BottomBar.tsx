@@ -11,15 +11,15 @@ function BottomBar({onAddMediaPress, onSendPress}: BottomBarProps) {
   return (
     <View style={styles.root}>
       <MyChip
-        style="secondary"
+        style="primary"
         iconLeft={require('../../../assets/images/icons/plus.png')}
         title="Add media"
         onPress={onAddMediaPress}
         customStyle={styles.chip}
       />
       <MyChip
+        style="primary"
         iconLeft={require('../../../assets/images/icons/paperplane.png')}
-        style="secondary"
         title="Send"
         onPress={onSendPress}
       />

@@ -17,7 +17,6 @@ const UrlViewer = ({url}: UrlViewerProps) => {
 
   useEffect(() => {
     const fetchMediaType = async () => {
-      console.log('Checking media type for:', url);
       try {
         const res: LinkPreview = await getLinkPreview(url);
         setLinkPreview(res);

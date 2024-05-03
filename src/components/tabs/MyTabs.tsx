@@ -12,6 +12,7 @@ const MyTabs = ({tabs, selectedTab, onPress}: MyTabsProps) => {
   const tabsHtml = tabs.map((tab, index) => {
     return (
       <MyTabsItem
+        key={index}
         active={selectedTab === index}
         title={tab}
         onPress={() => {

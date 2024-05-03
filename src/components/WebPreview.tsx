@@ -19,7 +19,6 @@ interface WebPreviewProps {
 
 const WebPreview = ({url, linkPreview, customStyle}: WebPreviewProps) => {
   let title = url;
-  console.log('title:', title);
   let description = '';
   let image = '';
   if (linkPreview) {
