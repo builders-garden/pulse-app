@@ -32,9 +32,9 @@ function CommentsSection({comments}: CommentsSectionProps) {
               marginTop: index === 0 ? 15 : 0,
             }}
             onContentBodyPress={() => {
-              navigation.navigate('ThreadDetail', {
-                threadHash: item.hash,
-              });
+              // navigation.navigate('ThreadDetail', {
+              //   threadHash: item.hash,
+              // });
             }}
           />
         );

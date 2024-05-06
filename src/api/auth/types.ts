@@ -1,9 +1,17 @@
-export type Signer = {
+export type NeynarResponse = {
+  fid: string;
+  signer_uuid: string;
+  is_authenticated: boolean;
+};
+export type SignerResponse = {
   result: {
-    public_key: string;
-    signer_approval_url: string;
-    signer_uuid: string;
-    status: string;
-    token?: string;
+    createdAt: string;
+    fid: string;
+    updatedAt: string;
+  };
+};
+export type TokenResponse = {
+  result: {
+    token: string;
   };
 };

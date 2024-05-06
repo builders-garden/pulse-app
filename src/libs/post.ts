@@ -1,7 +1,43 @@
 import {Cast, CastWithDepth, Comment} from '../api/cast/types';
 import {FeedItem} from '../api/feed/types';
+import {UserCast} from '../api/user/types';
 import {formatDate} from './date';
 
+export function TransformUserCast(item: UserCast) {
+  let headerTitle = '';
+  let headerSubtitle = '';
+  const content = item.text;
+  if (
+    item.rootParentUrl &&
+    item.rootParentUrl.startsWith('https://warpcast.com/~/channel/')
+  ) {
+    headerTitle = item.rootParentUrl.replace(
+      'https://warpcast.com/~/channel',
+      '',
+    );
+    headerSubtitle = item.author.displayName + ' • @' + item.author.username;
+  } else {
+    headerTitle = item.author.displayName;
+    headerSubtitle = '@' + item.author.username;
+  }
+
+  const postTime = formatDate(new Date(item.timestamp));
+  let embed = item.embeds.find(
+    el => el.url !== '' && el.url !== null && el.url !== undefined,
+  );
+
+  return {
+    headerImg: item.author.pfp.url,
+    postTime: postTime,
+    headerTitle: headerTitle,
+    headerSubtitle: headerSubtitle,
+    content: content,
+    image: embed?.url ?? undefined,
+    upvotesCount: item.reactions.count,
+    commentsCount: item.replies.count,
+    quotesCount: item.recasts.count,
+  };
+}
 export function TransformFeedItem(item: FeedItem | Comment) {
   let headerTitle = '';
   let headerSubtitle = '';

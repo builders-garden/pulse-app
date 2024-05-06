@@ -20,6 +20,7 @@ function FeedScreen({navigation}: HomeTabScreenProps<'Feed'>) {
     async function fetchFeed() {
       setFeedFetchStatus('loading');
       try {
+        console.log('fetching feed', authContext.state.token);
         const res = await axios.get<FeedResponse>(ENDPOINT_FEED, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });

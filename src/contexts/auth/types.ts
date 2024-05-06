@@ -1,8 +1,10 @@
+import {Profile} from '../../api/profile/types';
+
 export interface AuthContextModel {
   state: User;
-  signIn: (data: SignInApiResponse) => void;
+  signIn: (data: SignInPayload) => void;
   signOut: () => void;
-  signUp: (data: SignUpApiResponse) => void;
+  signUp: (data: SignUpPayload) => void;
 }
 
 export enum UserStatus {
@@ -13,14 +15,18 @@ export enum UserStatus {
 
 export interface User {
   status: UserStatus;
-  id?: number;
-  email?: string;
   token?: string;
+  fid?: string;
+  profile?: Profile;
 }
 
 export interface SignInAction {
   type: 'SIGN_IN';
-  payload: string;
+  payload: {
+    token: string;
+    fid: string;
+    profile?: Profile;
+  };
 }
 export interface SignOutAction {
   type: 'SIGN_OUT';
@@ -32,9 +38,10 @@ export interface RestoreTokenAction {
 
 export type AuthAction = SignInAction | SignOutAction | RestoreTokenAction;
 
-export interface SignInApiResponse {
+export interface SignInPayload {
   token: string;
+  fid: string;
 }
-export interface SignUpApiResponse {
+export interface SignUpPayload {
   token: string;
 }

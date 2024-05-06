@@ -29,10 +29,13 @@ function TabsSection({profile}: TabsSectionProps) {
   const [selectedTab, setSelectedTab] = useState(0);
   const [commentsFetchStatus, setCommentsFetchStatus] = useState('idle');
   const [comments, setComments] = useState<Comment[]>([]);
+  // const [userCastsFetchStatus, setUserCastsFetchStatus] = useState('idle');
+  // const [userCasts, setUserCasts] = useState<UserCast[]>([]);
 
   useEffect(() => {
     if (profile) {
       fetchComments();
+      // fetchThreads();
     }
   }, [profile]);
 
@@ -52,6 +55,22 @@ function TabsSection({profile}: TabsSectionProps) {
       setCommentsFetchStatus('error');
     }
   }
+  // async function fetchThreads() {
+  //   setUserCastsFetchStatus('loading');
+  //   try {
+  //     const finalUrl =
+  //       ENDPOINT_PROFILE + profile.fid + '/replies-and-recasts?limit=10';
+  //     const res = await axios.get<UserCastsResponse>(finalUrl, {
+  //       headers: {Authorization: `Bearer ${authContext.state.token}`},
+  //     });
+  //     console.log('got response');
+  //     setUserCasts(res.data.result);
+  //     setUserCastsFetchStatus('success');
+  //   } catch (error) {
+  //     console.error(error);
+  //     setUserCastsFetchStatus('error');
+  //   }
+  // }
 
   return (
     <View style={{marginTop: 30, flex: 1}}>
@@ -67,6 +86,12 @@ function TabsSection({profile}: TabsSectionProps) {
         ) : (
           <MyPlaceholderLoader customStyle={{marginTop: 15}} />
         ))}
+      {/* {selectedTab === 0 &&
+        (commentsFetchStatus === 'success' ? (
+          <ThreadsSection threads={userCasts} />
+        ) : (
+          <MyPlaceholderLoader customStyle={{marginTop: 15}} />
+        ))} */}
       {/* {selectedTab === 2 && <ThirdRoute />} */}
     </View>
   );

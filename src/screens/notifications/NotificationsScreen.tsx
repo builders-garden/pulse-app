@@ -9,7 +9,7 @@ function NotificationsScreen() {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Text>Notifications Screen</Text>
-      <MyButton title="Sign out" onPress={authContext.signOut} />
+      <MyButton width={300} title="Sign out" onPress={authContext.signOut} />
     </View>
   );
 }

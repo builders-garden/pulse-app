@@ -1,11 +1,9 @@
+import {NeynarSigninButton} from '@neynar/react-native-signin';
 import axios from 'axios';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {
-  Alert,
-  AppState,
   Dimensions,
   Image,
-  Linking,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -13,9 +11,9 @@ import {
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Carousel from 'react-native-reanimated-carousel';
-import {Signer} from '../../../api/auth/types';
+import Toast from 'react-native-toast-message';
+import {SignerResponse, TokenResponse} from '../../../api/auth/types';
 import {RequestStatus} from '../../../api/types';
-import MyButton from '../../../components/MyButton';
 import MyLoader from '../../../components/MyLoader';
 import MyModal from '../../../components/MyModal';
 import {AuthContext} from '../../../contexts/auth/Auth.context';
@@ -43,62 +41,11 @@ const carouselData = [
 function SignInScreen() {
   const authContext = useContext(AuthContext);
   const [activeSlide, setActiveSlide] = useState(0);
-  const [signerCreateStatus, setSignerCreateStatus] =
-    useState<RequestStatus>('idle');
-  const [signer, setSigner] = useState<Signer>();
-  const [pollInterval, setPollInterval] = useState<NodeJS.Timeout | null>(null);
-  const [pollCounter, setPollCounter] = useState(0);
-  const [signerPollStatus, setSignerPollStatus] =
-    useState<RequestStatus>('idle');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [appStateVisible, setAppStateVisible] = useState(AppState.currentState);
-
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', nextAppState => {
-      setAppStateVisible(nextAppState);
-    });
-
-    return () => {
-      subscription.remove();
-      console.log('AppState subscription removed');
-    };
-  }, []);
-
-  useEffect(() => {
-    if (pollInterval) {
-      if (signer?.result.status !== 'pending_approval' || pollCounter > 20) {
-        ClearSignerPollLoop();
-        setIsModalOpen(false);
-        if (signer?.result.status === 'approved' && signer?.result.token) {
-          authContext.signIn({
-            token: signer?.result.token,
-          });
-        } else {
-          Alert.alert(
-            'Error',
-            'It was not possible to sign in. Please contact support.',
-          );
-        }
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signer, pollCounter, pollInterval]);
-
-  useEffect(() => {
-    if (appStateVisible === 'active') {
-      if (
-        signer?.result.status === 'pending_approval' &&
-        pollInterval === null
-      ) {
-        SignerPollLoop(signer);
-      }
-    } else {
-      if (pollInterval) {
-        ClearSignerPollLoop();
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appStateVisible]);
+  const [sendSignerStatus, setSendSignerStatus] =
+    useState<RequestStatus>('idle');
+  const [fetchTokenStatus, setFetchTokenStatus] =
+    useState<RequestStatus>('idle');
 
   const width = Dimensions.get('window').width - padding * 2;
   const height = Dimensions.get('window').height * 0.6;
@@ -116,141 +63,101 @@ function SignInScreen() {
     />
   ));
 
-  // async function FetchAuthorizationUrl() {
+  async function FetchAuthorizationUrl() {
+    try {
+      const res = await axios.get(`${ENDPOINT_SIGNER}get-auth-url`);
+      return res.data.result.url;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function SendSignerResponse(fid: string, uuid: string) {
+    try {
+      setSendSignerStatus('loading');
+      const res = await axios.post<SignerResponse>(`${ENDPOINT_SIGNER}`, {
+        fid,
+        signerUuid: uuid,
+      });
+      setSendSignerStatus('success');
+      console.log(res.data.result);
+      return res.data;
+    } catch (error) {
+      setSendSignerStatus('error');
+      console.error(error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Failed to send signer',
+      });
+    }
+  }
+
+  async function FetchToken(fid: string) {
+    try {
+      setFetchTokenStatus('loading');
+      const res = await axios.get<TokenResponse>(
+        `${ENDPOINT_SIGNER}tmp/${fid}/token`,
+      );
+      setFetchTokenStatus('success');
+      return res.data;
+    } catch (error) {
+      setFetchTokenStatus('error');
+      console.error(error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Failed to fetch token',
+      });
+    }
+  }
+
+  async function OnNeynarSuccess(fid: string, uuid: string) {
+    setIsModalOpen(true);
+    const signerRes = await SendSignerResponse(fid, uuid);
+    if (signerRes?.result.fid) {
+      const tokenRes = await FetchToken(signerRes?.result.fid);
+      if (tokenRes?.result.token) {
+        console.log(tokenRes.result.token);
+        await SignIn(tokenRes.result.token, fid);
+      }
+      setIsModalOpen(false);
+    }
+  }
+
+  // async function retrieveUserToken() {
   //   try {
-  //     const res = await axios.get(`${API_URL}/get-auth-url`);
-  //     if (!res.ok) {
-  //       throw new Error('Failed to fetch auth url');
+  //     const token = await EncryptedStorage.getItem('user_token');
+
+  //     if (token !== undefined) {
+  //       return token;
   //     }
-  //     const {authorization_url} = (await res.json()) as {
-  //       authorization_url: string;
-  //     };
-  //     return authorization_url;
   //   } catch (error) {
   //     console.error(error);
+  //     return null;
   //   }
   // }
 
-  // Create a signer to authenticate the user
-  async function CreateSigner() {
-    setSignerCreateStatus('loading');
+  async function storeUserToken(token: string) {
     try {
-      const res = await axios.post<Signer>(ENDPOINT_SIGNER);
-      setSigner(res.data);
-      setSignerCreateStatus('success');
-      return res.data;
-    } catch (error) {
-      console.error(error);
-      setSignerCreateStatus('error');
-    }
-  }
-
-  // Poll the signer status every 6 seconds
-  function SignerPollLoop(in_signer: Signer) {
-    console.log('Starting poll loop...');
-    const intervalId = setInterval(async () => {
-      await SignerPollStatus(in_signer);
-      setPollCounter(pollCounter + 1);
-    }, 3000);
-    setPollInterval(intervalId);
-  }
-
-  function ClearSignerPollLoop() {
-    if (pollInterval) {
-      console.log('Clearing poll loop...');
-      clearInterval(pollInterval);
-      setPollInterval(null);
-      setSignerPollStatus('idle');
-    }
-  }
-
-  // Poll the signer status to check if the user has approved the signer
-  async function SignerPollStatus(in_signer: Signer) {
-    setSignerPollStatus('loading');
-    try {
-      const pollUrl = `${ENDPOINT_SIGNER}${in_signer?.result.signer_uuid}`;
-      // console.log(ENDPOINT_SIGNER);
-      const res = await axios.get<Signer>(pollUrl);
-
-      if (res.data.result.status === 'pending_approval') {
-        return;
-      }
-      setSigner(res.data);
-      setSignerPollStatus('success');
-      // clearInterval(pollInterval!);
-
-      // authContext.signIn({
-      //   token: 'example',
-      // });
-    } catch (error) {
-      console.error(error);
-      setSignerPollStatus('error');
-    }
-  }
-
-  async function retrieveUserToken() {
-    try {
-      const token = await EncryptedStorage.getItem('user_token');
-
-      if (token !== undefined) {
-        return token;
-      }
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  }
-
-  async function storeUserToken() {
-    try {
-      await EncryptedStorage.setItem(
-        'user_token',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQwOTg1MSwiaWF0IjoxNzEzNzA3NzkyODc4LCJleHAiOjE3MTYyOTk3OTI4Nzh9.BoT-DK88H2jRyv32Se-wslFNhr1YYqyJ_QhZOwPNkBw',
-      );
+      await EncryptedStorage.setItem('user_token', token);
     } catch (error) {
       console.error(error);
     }
   }
 
-  // Handle the sign in button click
-  async function OnSignInButtonClick() {
-    const token = await retrieveUserToken();
-    if (token) {
-      authContext.signIn({
-        token: token,
-      });
-    } else {
-      await storeUserToken();
-      authContext.signIn({
-        token:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQwOTg1MSwiaWF0IjoxNzEzNzA3NzkyODc4LCJleHAiOjE3MTYyOTk3OTI4Nzh9.BoT-DK88H2jRyv32Se-wslFNhr1YYqyJ_QhZOwPNkBw',
+  async function SignIn(token: string, fid: string) {
+    try {
+      await storeUserToken(token);
+      authContext.signIn({token, fid});
+    } catch (error) {
+      console.error(error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Failed to sign in',
       });
     }
-    return;
-
-    setIsModalOpen(true);
-    const signerRes = await CreateSigner();
-    if (signerRes === undefined) {
-      Alert.alert(
-        'Error',
-        'It was not possible to create a signer. Please contact support.',
-      );
-      return;
-    }
-
-    const isSupported = await Linking.canOpenURL(
-      signerRes?.result?.signer_approval_url ?? '',
-    );
-
-    if (!isSupported) {
-      Alert.alert(
-        `Don't know how to open this URL: ${signerRes?.result.signer_approval_url}.`,
-      );
-      return;
-    }
-
-    // SignerPollLoop(signerRes);
-    await Linking.openURL(signerRes?.result.signer_approval_url);
   }
 
   return (
@@ -258,10 +165,10 @@ function SignInScreen() {
       <MyModal open={isModalOpen}>
         <MyLoader />
         <Text style={{marginTop: 10}}>
-          {signerCreateStatus === 'loading'
-            ? 'Creating signer...'
-            : signerPollStatus === 'loading'
-            ? 'Waiting for signer approval...'
+          {sendSignerStatus === 'loading'
+            ? 'Syncing signer...'
+            : fetchTokenStatus === 'loading'
+            ? 'Retrieving token...'
             : 'Loading...'}
         </Text>
       </MyModal>
@@ -302,18 +209,21 @@ function SignInScreen() {
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           {paginationItems}
         </View>
-        <MyButton
-          title="Login with Warpcast"
-          iconLeft={require('../../../assets/images/logos/warpcast.png')}
-          loading={signerCreateStatus === 'loading'}
-          onPress={OnSignInButtonClick}
-        />
-        {/* <NeynarSigninButton
+        <NeynarSigninButton
+          margin={0}
           successCallback={token => {
             console.log(token);
+            if (token.is_authenticated) {
+              OnNeynarSuccess(token.fid, token.signer_uuid);
+            } else {
+              console.log('User is not authenticated');
+            }
+          }}
+          errorCallback={error => {
+            console.log(error);
           }}
           fetchAuthorizationUrl={FetchAuthorizationUrl}
-        /> */}
+        />
       </View>
     </SafeAreaView>
   );
@@ -327,6 +237,7 @@ const styles = StyleSheet.create({
     padding: padding,
     flex: 1,
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   titleText: {
     textAlign: 'center',

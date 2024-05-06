@@ -1,13 +1,15 @@
 /* eslint-disable react/no-unstable-nested-components */
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React, {useContext} from 'react';
-import {Image, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import BellImg from '../assets/images/icons/bell.svg';
 import FeedImg from '../assets/images/icons/feed.svg';
 import MenuLinesImg from '../assets/images/icons/menu_lines.svg';
 import RadarImg from '../assets/images/icons/radar.svg';
 import MyIconButtonBase from '../components/MyIconButtonBase';
+import {AuthContext} from '../contexts/auth/Auth.context';
 import {DrawerContext} from '../contexts/drawer/Drawer.context';
 import DiscoverScreen from '../screens/discover/DiscoverScreen';
 import FeedScreen from '../screens/feed/FeedScreen';
@@ -20,6 +22,7 @@ const Tab = createBottomTabNavigator<TabParamList>();
 
 function TabsContainer() {
   const drawerContext = useContext(DrawerContext);
+  const authContext = useContext(AuthContext);
 
   return (
     <Tab.Navigator
@@ -41,10 +44,9 @@ function TabsContainer() {
           } else if (route.name === 'Notifications') {
             icon = <BellImg color={color} />;
           } else if (route.name === 'Profile') {
-            size = 35;
             icon = (
-              <Image
-                source={require('../assets/images/icons/avatar.png')}
+              <FastImage
+                source={{uri: authContext.state.profile?.pfp_url}}
                 style={{
                   width: size,
                   height: size,
