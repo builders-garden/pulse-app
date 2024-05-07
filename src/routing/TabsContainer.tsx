@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React, {useContext} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import BellImg from '../assets/images/icons/bell.svg';
@@ -50,9 +50,26 @@ function TabsContainer() {
                 style={{
                   width: size,
                   height: size,
+                  borderRadius: 5,
+                  zIndex: 1,
                 }}
               />
             );
+
+            if (focused) {
+              return (
+                <View>
+                  {icon}
+                  <LinearGradient
+                    style={styles.selectedTabBarProfile}
+                    colors={[
+                      MyTheme.primaryGradientFirst,
+                      MyTheme.primaryGradientSecond,
+                    ]}
+                  />
+                </View>
+              );
+            }
           }
 
           if (focused) {
@@ -103,6 +120,14 @@ const styles = StyleSheet.create({
   selectedTabBarBtn: {
     padding: 7,
     borderRadius: 12,
+  },
+  selectedTabBarProfile: {
+    borderRadius: 100,
+    position: 'absolute',
+    alignSelf: 'center',
+    width: 14,
+    height: 14,
+    bottom: -8,
   },
 });
 

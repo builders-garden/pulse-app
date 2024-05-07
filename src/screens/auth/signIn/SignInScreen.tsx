@@ -12,7 +12,7 @@ import {
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Carousel from 'react-native-reanimated-carousel';
 import Toast from 'react-native-toast-message';
-import {SignerResponse, TokenResponse} from '../../../api/auth/types';
+import {SignerResponse} from '../../../api/auth/types';
 import {RequestStatus} from '../../../api/types';
 import MyLoader from '../../../components/MyLoader';
 import MyModal from '../../../components/MyModal';
@@ -43,8 +43,6 @@ function SignInScreen() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sendSignerStatus, setSendSignerStatus] =
-    useState<RequestStatus>('idle');
-  const [fetchTokenStatus, setFetchTokenStatus] =
     useState<RequestStatus>('idle');
 
   const width = Dimensions.get('window').width - padding * 2;
@@ -80,7 +78,6 @@ function SignInScreen() {
         signerUuid: uuid,
       });
       setSendSignerStatus('success');
-      console.log(res.data.result);
       return res.data;
     } catch (error) {
       setSendSignerStatus('error');
@@ -93,36 +90,13 @@ function SignInScreen() {
     }
   }
 
-  async function FetchToken(fid: string) {
-    try {
-      setFetchTokenStatus('loading');
-      const res = await axios.get<TokenResponse>(
-        `${ENDPOINT_SIGNER}tmp/${fid}/token`,
-      );
-      setFetchTokenStatus('success');
-      return res.data;
-    } catch (error) {
-      setFetchTokenStatus('error');
-      console.error(error);
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: 'Failed to fetch token',
-      });
-    }
-  }
-
   async function OnNeynarSuccess(fid: string, uuid: string) {
     setIsModalOpen(true);
     const signerRes = await SendSignerResponse(fid, uuid);
-    if (signerRes?.result.fid) {
-      const tokenRes = await FetchToken(signerRes?.result.fid);
-      if (tokenRes?.result.token) {
-        console.log(tokenRes.result.token);
-        await SignIn(tokenRes.result.token, fid);
-      }
-      setIsModalOpen(false);
+    if (signerRes?.result.token && signerRes?.result.user?.fid) {
+      await SignIn(signerRes?.result.token, signerRes?.result.user?.fid);
     }
+    setIsModalOpen(false);
   }
 
   // async function retrieveUserToken() {
@@ -165,11 +139,7 @@ function SignInScreen() {
       <MyModal open={isModalOpen}>
         <MyLoader />
         <Text style={{marginTop: 10}}>
-          {sendSignerStatus === 'loading'
-            ? 'Syncing signer...'
-            : fetchTokenStatus === 'loading'
-            ? 'Retrieving token...'
-            : 'Loading...'}
+          {sendSignerStatus === 'loading' ? 'Syncing signer...' : 'Loading...'}
         </Text>
       </MyModal>
       <View style={styles.screenCtn}>

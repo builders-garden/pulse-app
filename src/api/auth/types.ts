@@ -5,9 +5,12 @@ export type NeynarResponse = {
 };
 export type SignerResponse = {
   result: {
-    createdAt: string;
-    fid: string;
-    updatedAt: string;
+    user: {
+      createdAt: string;
+      fid: string;
+      updatedAt: string;
+    };
+    token: string;
   };
 };
 export type TokenResponse = {
