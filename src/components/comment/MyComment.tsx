@@ -84,7 +84,7 @@ const MyComment = ({
             </Text>
           </View>
           <MyIconButton
-            iconSize={25}
+            iconSize={22}
             onPress={() => {}}
             filling="clear"
             style="secondary"
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     // height: 300,
     flexDirection: 'row',
     width: '100%',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     backgroundColor: MyTheme.white,
   },
   indent: {
@@ -159,28 +159,38 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   headerImg: {
-    width: 30,
-    height: 30,
-    borderRadius: 100,
-    marginRight: 14,
+    width: 22,
+    height: 22,
+    borderRadius: 2,
+    marginRight: 8,
   },
   headerTextCtn: {
     width: '80%',
     marginRight: 4,
     flexDirection: 'row',
+    alignItems: 'center',
   },
   headerTitle: {
-    fontWeight: 'bold',
-    maxWidth: '50%',
+    maxWidth: '35%',
+    fontWeight: 'normal',
+    fontSize: 12,
+    fontFamily: 'BeVietnamPro-Bold',
   },
   headerSubtitle: {
     color: 'gray',
     maxWidth: '30%',
+    fontSize: 12,
+    fontFamily: 'BeVietnamPro-Bold',
+    fontWeight: 'normal',
   },
   headerTime: {
     color: 'gray',
+    maxWidth: '35%',
+    fontSize: 12,
+    fontFamily: 'BeVietnamPro-Bold',
+    fontWeight: 'normal',
   },
-  quoteRoot: {flexDirection: 'row', width: '95%'},
+  quoteRoot: {flexDirection: 'row', width: '100%'},
   quoteBorder: {
     width: 2,
     flex: 1,

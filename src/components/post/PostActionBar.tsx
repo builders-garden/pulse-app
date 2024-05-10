@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
+import BookmarkImg from '../../assets/images/icons/bookmark.svg';
 import CommentImg from '../../assets/images/icons/comment.svg';
 import HatImg from '../../assets/images/icons/hat.svg';
 import QuoteImg from '../../assets/images/icons/quote.svg';
@@ -16,6 +17,7 @@ type PostActionBarProps = {
   onQuotesPress?: () => void;
   onUpvotesPress?: () => void;
   onTipPress?: () => void;
+  onBookmarkPress?: () => void;
   onSharePress?: () => void;
 };
 
@@ -27,6 +29,7 @@ const PostActionBar = ({
   onQuotesPress,
   onUpvotesPress,
   onTipPress,
+  onBookmarkPress,
   onSharePress,
 }: PostActionBarProps) => {
   return (
@@ -106,11 +109,18 @@ const PostActionBar = ({
       />
       <MyIconButtonBase
         onPress={() => {
+          onBookmarkPress && onBookmarkPress();
+        }}
+        filling="clear"
+        icon={<BookmarkImg width={18} height={18} color={MyTheme.grey400} />}
+        customStyle={{marginLeft: 'auto', marginRight: 8}}
+      />
+      <MyIconButtonBase
+        onPress={() => {
           onSharePress && onSharePress();
         }}
         filling="clear"
         icon={<ShareImg width={18} height={18} color={MyTheme.grey400} />}
-        customStyle={{marginLeft: 'auto'}}
       />
     </View>
   );

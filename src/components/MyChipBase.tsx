@@ -66,7 +66,9 @@ const MyChipBase = ({
       {loading ? (
         <ActivityIndicator color="white" />
       ) : (
-        <Text style={[textSize, textStyle, textCustomStyle]}>{title}</Text>
+        <Text style={[textSize, styles.chipText, textStyle, textCustomStyle]}>
+          {title}
+        </Text>
       )}
       {iconRight && iconRight}
     </Pressable>
@@ -106,10 +108,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   chipSecondarySolid: {
-    backgroundColor: MyTheme.grey400,
+    backgroundColor: MyTheme.grey300,
   },
   chipSecondaryOutline: {
-    borderColor: MyTheme.grey400,
+    borderColor: MyTheme.grey300,
     borderWidth: 2,
   },
   chipSecondaryClear: {
@@ -127,6 +129,9 @@ const styles = StyleSheet.create({
   },
   disabledchip: {
     opacity: 0.5,
+  },
+  chipText: {
+    fontFamily: 'BeVietnamPro-Regular',
   },
   chipTextSmall: {
     fontSize: 12,
@@ -151,10 +156,10 @@ const styles = StyleSheet.create({
     color: MyTheme.white,
   },
   chipTextSecondaryOutline: {
-    color: MyTheme.grey400,
+    color: MyTheme.grey300,
   },
   chipTextSecondaryClear: {
-    color: MyTheme.grey400,
+    color: MyTheme.grey300,
   },
   chipTextTertiarySolid: {
     color: MyTheme.black,

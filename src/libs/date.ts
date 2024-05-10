@@ -17,8 +17,8 @@ export function formatDate(date: Date): string {
     const day = date.getDate();
     const month = date.getMonth() + 1; // Months are zero based
     const year = date.getFullYear();
-    return `${month < 10 ? '0' + month : month}-${
+    return `${month < 10 ? '0' + month : month}/${
       day < 10 ? '0' + day : day
-    }-${year}`;
+    }/${year}`;
   }
 }

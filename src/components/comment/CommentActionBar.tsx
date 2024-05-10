@@ -1,19 +1,16 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import CommentImg from '../../assets/images/icons/comment.svg';
 import QuoteImg from '../../assets/images/icons/quote.svg';
-import ShareImg from '../../assets/images/icons/share.svg';
+import ReplyImg from '../../assets/images/icons/reply.svg';
 import UpvoteImg from '../../assets/images/icons/upvote.svg';
 import {MyTheme} from '../../theme';
 import MyChipBase from '../MyChipBase';
-import MyIconButtonBase from '../MyIconButtonBase';
 type CommentActionBarProps = {
   quotesCount: number;
   upvotesCount: number;
   onQuotesPress?: () => void;
   onReplyPress?: () => void;
   onUpvotesPress?: () => void;
-  onSharePress?: () => void;
 };
 
 const CommentActionBar = ({
@@ -22,7 +19,6 @@ const CommentActionBar = ({
   onQuotesPress,
   onReplyPress,
   onUpvotesPress,
-  onSharePress,
 }: CommentActionBarProps) => {
   return (
     <View style={styles.CommentActionBar}>
@@ -32,10 +28,10 @@ const CommentActionBar = ({
             style={{marginRight: 3}}
             width={18}
             height={18}
-            color={MyTheme.grey400}
+            color={MyTheme.grey300}
           />
         }
-        title={upvotesCount.toString()}
+        title={upvotesCount === 0 ? '' : upvotesCount.toString()}
         size="small"
         style="secondary"
         filling="clear"
@@ -47,47 +43,37 @@ const CommentActionBar = ({
       <MyChipBase
         size="small"
         iconLeft={
-          <CommentImg
+          <QuoteImg
             style={{marginRight: 3}}
             width={18}
             height={18}
-            color={MyTheme.grey400}
+            color={MyTheme.grey300}
           />
         }
-        title="Reply"
-        style="secondary"
         filling="clear"
+        style="secondary"
+        title={quotesCount === 0 ? '' : quotesCount.toString()}
         onPress={() => {
-          onReplyPress && onReplyPress();
+          onQuotesPress && onQuotesPress();
         }}
         customStyle={{marginRight: 5}}
       />
       <MyChipBase
         size="small"
         iconLeft={
-          <QuoteImg
+          <ReplyImg
             style={{marginRight: 3}}
             width={18}
             height={18}
-            color={MyTheme.grey400}
+            color={MyTheme.grey300}
           />
         }
         filling="clear"
         style="secondary"
-        title={`${quotesCount}`}
+        title="Reply"
         onPress={() => {
-          onQuotesPress && onQuotesPress();
+          onReplyPress && onReplyPress();
         }}
-        customStyle={{marginRight: 5}}
-      />
-
-      <MyIconButtonBase
-        onPress={() => {
-          onSharePress && onSharePress();
-        }}
-        filling="clear"
-        icon={<ShareImg width={18} height={18} color={MyTheme.grey400} />}
-        customStyle={{marginLeft: 'auto'}}
       />
     </View>
   );
@@ -99,7 +85,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     marginTop: 10,
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-end',
   },
 });
 

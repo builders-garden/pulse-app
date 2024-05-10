@@ -10,6 +10,7 @@ export const MyTheme = {
   grey300: '#BCBCBC',
   grey400: '#8E8E8E',
   grey500: '#636363',
+  greyTransparent: '#0F0F0F33',
   white: '#FFFFFF',
   black: '#000000',
 };

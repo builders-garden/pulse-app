@@ -114,15 +114,14 @@ function ThreadDetailScreen({route}: RootStackScreenProps<'ThreadDetail'>) {
               upvotesCount={transformedCast.upvotesCount}
               quotesCount={transformedCast.quotesCount}
               rootCustomStyle={{
-                paddingTop: 15,
+                paddingTop: 10,
                 borderTopLeftRadius: 4,
                 borderTopRightRadius: 4,
               }}
             />
           );
         }}
-        renderItem={({item, index, section}) => {
-          console.log('ittttttt', item);
+        renderItem={({item, index}) => {
           const transformedComment = TransformCast(item);
           return (
             <MyComment
@@ -143,12 +142,12 @@ function ThreadDetailScreen({route}: RootStackScreenProps<'ThreadDetail'>) {
         renderSectionFooter={() => (
           <View
             style={{
-              height: 20,
+              height: 10,
               backgroundColor: 'white',
               marginBottom: 20,
               borderBottomLeftRadius: 4,
               borderBottomRightRadius: 4,
-              paddingTop: 20,
+              paddingTop: 10,
             }}
           />
         )}

@@ -11,6 +11,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import uuid from 'react-native-uuid';
 import BottomBar from './components/BottomBar';
+import ChannelButton from './components/ChannelButton';
 import ThreadItem from './components/ThreadItem';
 import {Thread} from './types';
 const maxImagesCount = 2;
@@ -131,6 +132,9 @@ function CreateThreadScreen() {
   return (
     <View style={styles.root}>
       {/* <Text>Selected index: {currentThreadIndex}</Text> */}
+      <View style={{padding: 15}}>
+        <ChannelButton placeholder="Choose a channel" onPress={() => {}} />
+      </View>
       <FlatList
         style={styles.threadsCtn}
         data={threads}
