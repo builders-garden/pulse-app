@@ -7,6 +7,9 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import BorderLineImg from '../../assets/images/thread/quote_border_line.svg';
+import {MyTheme} from '../../theme';
 import MyIconButton from '../MyIconButton';
 import UrlViewer from '../UrlViewer';
 import CommentActionBar from './CommentActionBar';
@@ -17,6 +20,7 @@ type MyCommentProps = {
   headerTitle: string;
   postTime: string;
   headerSubtitle: string;
+  quote?: string;
   content: string;
   image?: string;
   quotesCount: number;
@@ -31,6 +35,7 @@ const MyComment = ({
   postTime,
   headerTitle,
   headerSubtitle,
+  quote,
   content,
   image,
   quotesCount,
@@ -92,8 +97,38 @@ const MyComment = ({
             style={{marginLeft: 'auto'}}
           /> */}
         </View>
+        {quote && (
+          <View style={styles.quoteRoot}>
+            <View style={{alignItems: 'flex-end'}}>
+              <BorderLineImg />
+              <LinearGradient
+                style={styles.quoteBorder}
+                colors={[
+                  MyTheme.primaryGradientFirst,
+                  MyTheme.primaryGradientSecond,
+                ]}
+              />
+            </View>
+            <View style={styles.quoteContent}>
+              <Text
+                style={styles.quoteText}
+                numberOfLines={2}
+                ellipsizeMode="tail">
+                {quote}
+              </Text>
+            </View>
+          </View>
+        )}
         <View style={styles.contentCtn}>
-          <Text style={{marginBottom: image ? 20 : 0}}>{content}</Text>
+          <Text
+            style={[
+              styles.contentText,
+              {
+                marginBottom: image ? 20 : 0,
+              },
+            ]}>
+            {content}
+          </Text>
           {/* {image && <Image style={styles.contentImage} source={{uri: image}} />} */}
           {image && <UrlViewer url={image} />}
         </View>
@@ -111,7 +146,8 @@ const styles = StyleSheet.create({
     // height: 300,
     flexDirection: 'row',
     width: '100%',
-    borderRadius: 4,
+    paddingHorizontal: 20,
+    backgroundColor: MyTheme.white,
   },
   indent: {
     borderLeftColor: 'lightgray',
@@ -144,8 +180,27 @@ const styles = StyleSheet.create({
   headerTime: {
     color: 'gray',
   },
+  quoteRoot: {flexDirection: 'row', width: '95%'},
+  quoteBorder: {
+    width: 2,
+    flex: 1,
+  },
+  quoteContent: {
+    padding: 10,
+    flex: 1,
+    backgroundColor: MyTheme.grey100,
+    borderRadius: 2,
+  },
+  quoteText: {
+    fontFamily: 'BeVietnamPro-Regular',
+    color: MyTheme.grey500,
+  },
   contentCtn: {
+    marginTop: 10,
     flexDirection: 'column',
+  },
+  contentText: {
+    fontFamily: 'BeVietnamPro-Regular',
   },
   contentImage: {
     // aspectRatio: 16 / 9,

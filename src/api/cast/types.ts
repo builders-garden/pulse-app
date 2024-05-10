@@ -30,4 +30,19 @@ export type Comment = Omit<FeedItem, 'reactions'> & {
   };
 };
 
-export type CastWithDepth = Omit<Cast, 'direct_replies'> & {depth: number};
+export type CastWithoutReplies = Omit<Cast, 'direct_replies'>;
+
+export type CastWithDepth = CastWithoutReplies & {
+  depth: number;
+};
+
+export type ConversationSection = {
+  header: CastWithoutReplies;
+  data: CastWithDepth[];
+  castIndex: number;
+};
+
+export type ConversationSectionList = {
+  casts: CastWithoutReplies[];
+  sections: ConversationSection[];
+};

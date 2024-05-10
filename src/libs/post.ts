@@ -1,4 +1,11 @@
-import {Cast, CastWithDepth, Comment} from '../api/cast/types';
+import {
+  Cast,
+  CastWithDepth,
+  CastWithoutReplies,
+  Comment,
+  ConversationSection,
+  ConversationSectionList,
+} from '../api/cast/types';
 import {FeedItem} from '../api/feed/types';
 import {UserCast} from '../api/user/types';
 import {formatDate} from './date';
@@ -73,7 +80,7 @@ export function TransformFeedItem(item: FeedItem | Comment) {
     quotesCount: item.reactions.recasts.length,
   };
 }
-export function TransformCast(item: Cast | CastWithDepth) {
+export function TransformCast(item: Cast | CastWithDepth | CastWithoutReplies) {
   let headerTitle = '';
   let headerSubtitle = '';
   const content = item.text;
@@ -108,10 +115,37 @@ export function TransformCast(item: Cast | CastWithDepth) {
     quotesCount: item.reactions.recasts_count,
   };
 }
+
+//
+export function TransformConversation(items: Cast[]): ConversationSectionList {
+  const casts: CastWithoutReplies[] = [];
+  const sections: ConversationSection[] = [];
+
+  for (let i = 0; i < items.length; i++) {
+    const {direct_replies, ...other} = items[i];
+    casts.push(other);
+
+    for (let j = 0; j < direct_replies.length; j++) {
+      const flattened = FlattenConversation(direct_replies[j], 0);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const {depth, ...rest} = flattened[0];
+      sections.push({
+        header: rest,
+        castIndex: i,
+        data: flattened.slice(1),
+      });
+    }
+  }
+  return {
+    casts: casts,
+    sections: sections,
+  };
+}
 export function FlattenConversation(item: Cast, depth: number = 0) {
   const flattened: CastWithDepth[] = [];
   const {direct_replies, ...other} = item;
   flattened.push({...other, depth: depth});
+
   for (let i = 0; i < direct_replies.length; i++) {
     const nextLevel = FlattenConversation(direct_replies[i], depth + 1);
     flattened.push(...nextLevel);

@@ -85,6 +85,7 @@ const PostActionBar = ({
         }}
         customStyle={{marginRight: 5}}
       />
+      <View style={styles.verticalDivider} />
       <MyChipBase
         iconLeft={
           <HatImg
@@ -101,7 +102,7 @@ const PostActionBar = ({
         onPress={() => {
           onTipPress && onTipPress();
         }}
-        customStyle={{marginRight: 5}}
+        customStyle={{marginLeft: 5}}
       />
       <MyIconButtonBase
         onPress={() => {
@@ -116,6 +117,7 @@ const PostActionBar = ({
 };
 
 const styles = StyleSheet.create({
+  verticalDivider: {width: 1, backgroundColor: MyTheme.grey400, height: '100%'},
   postActionBar: {
     flexDirection: 'row',
     alignItems: 'center',

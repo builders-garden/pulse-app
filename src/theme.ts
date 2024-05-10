@@ -9,6 +9,7 @@ export const MyTheme = {
   grey200: '#D3D3D3',
   grey300: '#BCBCBC',
   grey400: '#8E8E8E',
+  grey500: '#636363',
   white: '#FFFFFF',
   black: '#000000',
 };

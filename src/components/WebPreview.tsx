@@ -26,12 +26,19 @@ const WebPreview = ({url, linkPreview, customStyle}: WebPreviewProps) => {
   let image = '';
   if (linkPreview) {
     console.log('PASSO DI QUI');
-    if ('title' in linkPreview) {
+    if ('title' in linkPreview && linkPreview.title !== '') {
       title = linkPreview.title;
-      if ('description' in linkPreview) {
+      if (
+        'description' in linkPreview &&
+        linkPreview.description !== '' &&
+        linkPreview.description !== undefined &&
+        linkPreview.description !== null
+      ) {
         description = linkPreview.description ?? '';
+      } else {
+        description = url;
       }
-      if ('images' in linkPreview) {
+      if ('images' in linkPreview && linkPreview.images.length > 0) {
         image = linkPreview.images[0];
       }
     }

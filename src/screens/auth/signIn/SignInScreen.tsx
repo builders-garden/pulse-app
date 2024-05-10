@@ -14,6 +14,7 @@ import Carousel from 'react-native-reanimated-carousel';
 import Toast from 'react-native-toast-message';
 import {SignerResponse} from '../../../api/auth/types';
 import {RequestStatus} from '../../../api/types';
+import MyButton from '../../../components/MyButton';
 import MyLoader from '../../../components/MyLoader';
 import MyModal from '../../../components/MyModal';
 import {AuthContext} from '../../../contexts/auth/Auth.context';
@@ -134,6 +135,16 @@ function SignInScreen() {
     }
   }
 
+  // Handle the sign in button click
+  async function OnSignInButtonClick() {
+    authContext.signIn({
+      fid: '409851',
+      token:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQwOTg1MSwiaWF0IjoxNzEzNzA3NzkyODc4LCJleHAiOjE3MTYyOTk3OTI4Nzh9.BoT-DK88H2jRyv32Se-wslFNhr1YYqyJ_QhZOwPNkBw',
+    });
+    return;
+  }
+
   return (
     <SafeAreaView style={styles.safeContainer}>
       <MyModal open={isModalOpen}>
@@ -179,6 +190,11 @@ function SignInScreen() {
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           {paginationItems}
         </View>
+        <MyButton
+          title="Login with Warpcast"
+          iconLeft={require('../../../assets/images/logos/warpcast.png')}
+          onPress={OnSignInButtonClick}
+        />
         <NeynarSigninButton
           margin={0}
           successCallback={token => {
