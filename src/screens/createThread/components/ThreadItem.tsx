@@ -9,11 +9,15 @@ import {
   TextInputKeyPressEventData,
   View,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import BorderLineImg from '../../../assets/images/thread/border_line.svg';
+import {MyTheme} from '../../../theme';
 import {Thread} from '../types';
 
 type ThreadItemProps = {
   thread: Thread;
   textInputRef?: RefObject<TextInput>;
+  active: boolean;
   maxLength: number;
   onChangeText: (text: string) => void;
   onImagePress?: (index: number) => void;
@@ -23,6 +27,7 @@ type ThreadItemProps = {
 
 function ThreadItem({
   thread,
+  active,
   textInputRef = undefined,
   maxLength,
   onChangeText,
@@ -45,42 +50,63 @@ function ThreadItem({
 
   return (
     <View style={styles.root}>
-      <Text style={styles.counter}>
-        {thread.body.length}/{maxLength}
-      </Text>
-      <TextInput
-        ref={textInputRef}
-        onFocus={onFocus}
-        placeholderTextColor={'lightgray'}
-        multiline
-        placeholder="Type here!"
-        defaultValue={thread.body}
-        value={thread.body}
-        onChangeText={onChangeText}
-        style={styles.inputField}
-        maxLength={maxLength}
-        onKeyPress={e => {
-          onKeyPress && onKeyPress(e);
-        }}
-      />
-      <View style={styles.imagesCtn}>{imagesHtml}</View>
+      <View style={{alignItems: 'flex-end'}}>
+        <BorderLineImg color={MyTheme.primaryColor} />
+        <LinearGradient
+          style={styles.border}
+          colors={[MyTheme.primaryGradientFirst, MyTheme.primaryGradientSecond]}
+        />
+      </View>
+      <View style={styles.contentCtn}>
+        <TextInput
+          ref={textInputRef}
+          onFocus={onFocus}
+          placeholderTextColor={'lightgray'}
+          multiline
+          placeholder="Type here!"
+          defaultValue={thread.body}
+          value={thread.body}
+          onChangeText={onChangeText}
+          style={styles.inputField}
+          maxLength={maxLength}
+          onKeyPress={e => {
+            onKeyPress && onKeyPress(e);
+          }}
+        />
+        <View style={styles.bottomSection}>
+          <Text style={styles.counter}>
+            {thread.body.length}/{maxLength}
+          </Text>
+        </View>
+        <View style={styles.imagesCtn}>{imagesHtml}</View>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   root: {
-    borderLeftWidth: 3,
-    borderLeftColor: 'lightgray',
-    paddingLeft: 10,
-    marginTop: 15,
+    flexDirection: 'row',
+    left: -10,
+  },
+  border: {
+    width: 2,
+    flex: 1,
+  },
+  contentCtn: {
+    backgroundColor: MyTheme.white,
+    width: '100%',
+    padding: 15,
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
+  },
+  bottomSection: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
   counter: {
     fontSize: 12,
     color: 'gray',
-    position: 'absolute',
-    right: 0,
-    top: -15,
   },
   inputField: {
     fontSize: 16,

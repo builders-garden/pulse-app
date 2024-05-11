@@ -1,5 +1,5 @@
 export const MyTheme = {
-  primaryColor: '#E75706',
+  primaryColor: '#FE5B00',
   primaryGradientFirst: '#FF5C00',
   primaryGradientSecond: '#D83400',
   primaryLight: '#FF5C00',

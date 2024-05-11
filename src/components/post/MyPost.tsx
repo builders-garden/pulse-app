@@ -107,8 +107,8 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   headerTitle: {
-    fontWeight: '600',
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: 'BeVietnamPro-Bold',
+    color: MyTheme.black,
   },
   headerTime: {
     color: 'gray',

@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
+import {MyTheme} from '../theme';
 import MyIconButton from './MyIconButton';
 
 interface UserInfoProps {
@@ -54,8 +55,8 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   headerTitle: {
-    fontWeight: '600',
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: 'BeVietnamPro-Bold',
+    color: MyTheme.black,
   },
   headerTime: {
     color: 'gray',

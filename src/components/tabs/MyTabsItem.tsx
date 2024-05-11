@@ -45,8 +45,7 @@ const styles = StyleSheet.create({
   },
   tabItemText: {
     fontSize: 16,
-    fontFamily: 'BeVietnamPro-Regular',
-    fontWeight: 'bold',
+    fontFamily: 'BeVietnamPro-Bold',
   },
 });
 

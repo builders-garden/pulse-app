@@ -113,8 +113,7 @@ const styles = StyleSheet.create({
   },
   headingText: {
     color: MyTheme.grey300,
-    fontWeight: '600',
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: 'BeVietnamPro-Bold',
     marginBottom: 10,
   },
   sectionItemsCtn: {
