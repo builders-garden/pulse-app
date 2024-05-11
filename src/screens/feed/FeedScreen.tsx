@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {useCallback, useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {FlatList, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import {FeedItem, FeedResponse} from '../../api/feed/types';
@@ -106,7 +106,7 @@ function FeedScreen({navigation}: HomeTabScreenProps<'Feed'>) {
           <FlatList
             style={{paddingHorizontal: 15, paddingTop: 15}}
             data={feed}
-            windowSize={5}
+            windowSize={10}
             onEndReachedThreshold={1}
             onEndReached={fetchNewItems}
             onRefresh={fetchFeed}
