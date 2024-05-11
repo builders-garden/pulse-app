@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useContext, useEffect, useState} from 'react';
+import {useCallback, useContext, useEffect, useState} from 'react';
 import {FlatList, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import {FeedItem, FeedResponse} from '../../api/feed/types';
@@ -21,11 +21,8 @@ function FeedScreen({navigation}: HomeTabScreenProps<'Feed'>) {
     useState<RequestStatus>('idle');
   const [feed, setFeed] = useState<FeedItem[]>([]);
   const [cursor, setCursor] = useState<string>();
-  useEffect(() => {
-    fetchFeed();
-  }, [authContext]);
 
-  async function fetchFeed() {
+  const fetchFeed = useCallback(async () => {
     setFeedFetchStatus('loading');
     try {
       console.log('fetching feed', authContext.state.token);
@@ -40,7 +37,11 @@ function FeedScreen({navigation}: HomeTabScreenProps<'Feed'>) {
       console.error(error);
       setFeedFetchStatus('error');
     }
-  }
+  }, [authContext.state.token]);
+
+  useEffect(() => {
+    fetchFeed();
+  }, [fetchFeed, authContext]);
 
   async function fetchNewItems() {
     try {
@@ -65,6 +66,32 @@ function FeedScreen({navigation}: HomeTabScreenProps<'Feed'>) {
       setNewThreadsFetchStatus('error');
     }
   }
+
+  const renderItem = useCallback(
+    ({item}: {item: FeedItem}) => {
+      const transformedItem = TransformFeedItem(item);
+
+      return (
+        <MyPost
+          headerImg={transformedItem.headerImg}
+          postTime={transformedItem.postTime}
+          headerTitle={transformedItem.headerTitle}
+          headerSubtitle={transformedItem.headerSubtitle}
+          content={transformedItem.content}
+          image={transformedItem.image}
+          upvotesCount={transformedItem.upvotesCount}
+          commentsCount={transformedItem.commentsCount}
+          quotesCount={transformedItem.quotesCount}
+          onContentBodyPress={() => {
+            navigation.navigate('ThreadDetail', {
+              threadHash: item.hash,
+            });
+          }}
+        />
+      );
+    },
+    [navigation],
+  );
 
   return (
     <View>
@@ -93,28 +120,8 @@ function FeedScreen({navigation}: HomeTabScreenProps<'Feed'>) {
               ) : null
             }
             ItemSeparatorComponent={() => <View style={{height: 15}} />}
-            renderItem={({item}) => {
-              const transformedItem = TransformFeedItem(item);
-
-              return (
-                <MyPost
-                  headerImg={transformedItem.headerImg}
-                  postTime={transformedItem.postTime}
-                  headerTitle={transformedItem.headerTitle}
-                  headerSubtitle={transformedItem.headerSubtitle}
-                  content={transformedItem.content}
-                  image={transformedItem.image}
-                  upvotesCount={transformedItem.upvotesCount}
-                  commentsCount={transformedItem.commentsCount}
-                  quotesCount={transformedItem.quotesCount}
-                  onContentBodyPress={() => {
-                    navigation.navigate('ThreadDetail', {
-                      threadHash: item.hash,
-                    });
-                  }}
-                />
-              );
-            }}
+            renderItem={renderItem}
+            keyExtractor={(item, _) => item.hash}
           />
         </>
       ) : (
