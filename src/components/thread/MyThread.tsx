@@ -28,7 +28,7 @@ const MyThread = ({
   return (
     <View style={{flexDirection: 'row', left: -10}}>
       <View style={{alignItems: 'flex-end'}}>
-        <BorderLineImg />
+        <BorderLineImg color={MyTheme.primaryColor} />
         <LinearGradient
           style={styles.border}
           colors={[MyTheme.primaryGradientFirst, MyTheme.primaryGradientSecond]}
@@ -83,19 +83,6 @@ const styles = StyleSheet.create({
   headerTextCtn: {
     width: '80%',
     marginRight: 4,
-  },
-  headerTitle: {
-    fontWeight: '600',
-    fontFamily: 'BeVietnamPro-Regular',
-  },
-  headerTime: {
-    color: 'gray',
-    fontFamily: 'BeVietnamPro-Regular',
-  },
-  headerSubtitle: {
-    color: 'gray',
-    maxWidth: '100%',
-    fontFamily: 'BeVietnamPro-Regular',
   },
   contentCtn: {
     flexDirection: 'column',
