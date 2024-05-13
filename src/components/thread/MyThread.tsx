@@ -26,7 +26,7 @@ const MyThread = ({
   onContentBodyPress,
 }: MyThreadProps) => {
   return (
-    <View style={{flexDirection: 'row', left: -10}}>
+    <View style={{flexDirection: 'row'}}>
       <View style={{alignItems: 'flex-end'}}>
         <BorderLineImg color={MyTheme.primaryColor} />
         <LinearGradient
@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
   root: {
     // height: 300,
     padding: 20,
+    flex: 1,
     borderTopRightRadius: 8,
     borderBottomRightRadius: 8,
     backgroundColor: MyTheme.white,

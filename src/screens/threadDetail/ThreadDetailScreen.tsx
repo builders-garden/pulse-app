@@ -84,17 +84,22 @@ function ThreadDetailScreen({route}: RootStackScreenProps<'ThreadDetail'>) {
       <SectionList
         sections={flattenedConversation.sections}
         style={{
-          padding: 15,
+          paddingRight: 15,
+          paddingLeft: 5,
         }}
         ListHeaderComponent={
           <View
             style={{
               paddingBottom: 15,
+              paddingTop: 10,
             }}>
             <UserInfo
               title={transformedCast.headerTitle}
               subtitle={transformedCast.headerSubtitle}
               icon={transformedCast.headerImg}
+              customStyle={{
+                marginLeft: 10,
+              }}
               titleRight={transformedCast.postTime}
             />
             {threadsHtml}
@@ -115,6 +120,7 @@ function ThreadDetailScreen({route}: RootStackScreenProps<'ThreadDetail'>) {
               quotesCount={transformedCast.quotesCount}
               rootCustomStyle={{
                 paddingTop: 10,
+                marginLeft: 10,
                 borderTopLeftRadius: 4,
                 borderTopRightRadius: 4,
               }}
@@ -135,6 +141,9 @@ function ThreadDetailScreen({route}: RootStackScreenProps<'ThreadDetail'>) {
               image={transformedComment.image}
               upvotesCount={transformedComment.upvotesCount}
               quotesCount={transformedComment.quotesCount}
+              rootCustomStyle={{
+                marginLeft: 10,
+              }}
             />
           );
         }}
@@ -143,6 +152,8 @@ function ThreadDetailScreen({route}: RootStackScreenProps<'ThreadDetail'>) {
           <View
             style={{
               height: 10,
+              marginTop: -1,
+              marginLeft: 10,
               backgroundColor: 'white',
               marginBottom: 20,
               borderBottomLeftRadius: 4,

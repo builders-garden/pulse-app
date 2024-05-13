@@ -145,7 +145,6 @@ const styles = StyleSheet.create({
   root: {
     // height: 300,
     flexDirection: 'row',
-    width: '100%',
     paddingHorizontal: 15,
     backgroundColor: MyTheme.white,
   },

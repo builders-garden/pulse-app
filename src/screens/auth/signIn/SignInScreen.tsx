@@ -18,6 +18,7 @@ import MyButton from '../../../components/MyButton';
 import MyLoader from '../../../components/MyLoader';
 import MyModal from '../../../components/MyModal';
 import {AuthContext} from '../../../contexts/auth/Auth.context';
+import {MyTheme} from '../../../theme';
 import {ENDPOINT_SIGNER} from '../../../variables';
 const padding = 30;
 
@@ -231,12 +232,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     paddingHorizontal: 10,
+    color: MyTheme.black,
   },
   bodyText: {
     textAlign: 'center',
     fontSize: 20,
     marginBottom: 30,
     paddingHorizontal: 10,
+    color: MyTheme.black,
   },
   slide: {
     justifyContent: 'flex-start',

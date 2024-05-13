@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {MyTheme} from '../theme';
 import MyIconButton from './MyIconButton';
@@ -9,11 +9,18 @@ interface UserInfoProps {
   titleRight: string;
   subtitle: string;
   icon: string;
+  customStyle?: StyleProp<ViewStyle>;
 }
 
-const UserInfo = ({title, titleRight, subtitle, icon}: UserInfoProps) => {
+const UserInfo = ({
+  title,
+  titleRight,
+  subtitle,
+  icon,
+  customStyle,
+}: UserInfoProps) => {
   return (
-    <View style={styles.header}>
+    <View style={[styles.header, customStyle && customStyle]}>
       <FastImage style={styles.headerImg} source={{uri: icon}} />
       <View style={styles.headerTextCtn}>
         <View style={{flexDirection: 'row'}}>
