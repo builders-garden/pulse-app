@@ -64,4 +64,5 @@ yarn-error.log
 
 # testing
 /coverage
-.vscode/
+.vscode/ios/sentry.properties
+android/sentry.properties

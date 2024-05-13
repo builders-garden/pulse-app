@@ -7,6 +7,11 @@ import DrawerProvider from './contexts/drawer/DrawerProvider';
 import LightboxProvider from './contexts/lightbox/LightboxProvider';
 import StackContainer from './routing/StackContainer';
 import {MyTheme} from './theme';
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://7557a7f2a56ad29b7d17e918574585da@o4507152584933376.ingest.de.sentry.io/4507248348954704',
+});
 function App(): React.JSX.Element {
   // const isDarkMode = useColorScheme() === 'dark';
 

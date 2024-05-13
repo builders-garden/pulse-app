@@ -196,6 +196,7 @@ function SignInScreen() {
           iconLeft={require('../../../assets/images/logos/warpcast.png')}
           onPress={OnSignInButtonClick}
         />
+
         <NeynarSigninButton
           margin={0}
           successCallback={token => {
