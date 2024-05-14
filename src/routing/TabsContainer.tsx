@@ -111,7 +111,13 @@ function TabsContainer() {
       />
       <Tab.Screen name="Discover" component={DiscoverScreen} />
       <Tab.Screen name="Notifications" component={NotificationsScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen
+        name="Profile"
+        options={{
+          headerShadowVisible: false,
+        }}
+        component={ProfileScreen}
+      />
     </Tab.Navigator>
   );
 }

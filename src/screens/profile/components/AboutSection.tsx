@@ -1,14 +1,14 @@
 import React from 'react';
 import {FlatList} from 'react-native';
 import {Comment} from '../../../api/cast/types';
+import MyPost from '../../../components/post/MyPost';
 import {TransformFeedItem} from '../../../libs/post';
-import CommentBox from './CommentBox';
 
-interface CommentsSectionProps {
+interface AboutSectionProps {
   comments: Comment[];
 }
 
-function CommentsSection({comments}: CommentsSectionProps) {
+function AboutSection({comments}: AboutSectionProps) {
   return (
     <FlatList
       data={comments}
@@ -17,7 +17,7 @@ function CommentsSection({comments}: CommentsSectionProps) {
         const transformedItem = TransformFeedItem(item);
 
         return (
-          <CommentBox
+          <MyPost
             headerImg={transformedItem.headerImg}
             postTime={transformedItem.postTime}
             headerTitle={transformedItem.headerTitle}
@@ -25,7 +25,17 @@ function CommentsSection({comments}: CommentsSectionProps) {
             content={transformedItem.content}
             image={transformedItem.image}
             upvotesCount={transformedItem.upvotesCount}
+            commentsCount={transformedItem.commentsCount}
             quotesCount={transformedItem.quotesCount}
+            customStyle={{
+              marginBottom: 15,
+              marginTop: index === 0 ? 15 : 0,
+            }}
+            onContentBodyPress={() => {
+              // navigation.navigate('ThreadDetail', {
+              //   threadHash: item.hash,
+              // });
+            }}
           />
         );
       }}
@@ -33,4 +43,4 @@ function CommentsSection({comments}: CommentsSectionProps) {
   );
 }
 
-export default CommentsSection;
+export default AboutSection;

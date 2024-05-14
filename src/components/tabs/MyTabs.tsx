@@ -28,8 +28,8 @@ const MyTabs = ({tabs, selectedTab, onPress}: MyTabsProps) => {
 const styles = StyleSheet.create({
   tabsCtn: {
     flexDirection: 'row',
-    borderBottomColor: MyTheme.primaryColor,
-    borderBottomWidth: 4,
+    backgroundColor: MyTheme.white,
+    borderRadius: 8,
   },
 });
 export default MyTabs;

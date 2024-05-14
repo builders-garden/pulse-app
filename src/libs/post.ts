@@ -15,34 +15,34 @@ export function TransformUserCast(item: UserCast) {
   let headerSubtitle = '';
   const content = item.text;
   if (
-    item.rootParentUrl &&
-    item.rootParentUrl.startsWith('https://warpcast.com/~/channel/')
+    item.root_parent_url &&
+    item.root_parent_url.startsWith('https://warpcast.com/~/channel/')
   ) {
-    headerTitle = item.rootParentUrl.replace(
+    headerTitle = item.root_parent_url.replace(
       'https://warpcast.com/~/channel',
       '',
     );
-    headerSubtitle = item.author.displayName + ' • @' + item.author.username;
+    headerSubtitle = item.author.display_name + ' • @' + item.author.username;
   } else {
-    headerTitle = item.author.displayName;
+    headerTitle = item.author.display_name;
     headerSubtitle = '@' + item.author.username;
   }
 
   const postTime = formatDate(new Date(item.timestamp));
   let embed = item.embeds.find(
-    el => el.url !== '' && el.url !== null && el.url !== undefined,
+    el => el?.url !== '' && el?.url !== null && el?.url !== undefined,
   );
 
   return {
-    headerImg: item.author.pfp.url,
+    headerImg: item.author.pfp_url,
     postTime: postTime,
     headerTitle: headerTitle,
     headerSubtitle: headerSubtitle,
     content: content,
     image: embed?.url ?? undefined,
-    upvotesCount: item.reactions.count,
+    upvotesCount: item.reactions.likes_count,
     commentsCount: item.replies.count,
-    quotesCount: item.recasts.count,
+    quotesCount: item.reactions.recasts_count,
   };
 }
 export function TransformFeedItem(item: FeedItem | Comment) {

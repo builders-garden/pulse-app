@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {Profile, ProfileResponse} from '../../api/profile/types';
 import {RequestStatus} from '../../api/types';
@@ -8,7 +8,6 @@ import MyLoader from '../../components/MyLoader';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {HomeTabScreenProps} from '../../routing/types';
 import {ENDPOINT_PROFILE} from '../../variables';
-import InfoSection from './components/InfoSection';
 import TabsSection from './components/TabsSection';
 import UpperSection from './components/UpperSection';
 
@@ -62,7 +61,6 @@ function ProfileScreen({route}: HomeTabScreenProps<'Profile'>) {
   return (
     <View style={styles.profileCtn}>
       <UpperSection profile={profile} />
-      <InfoSection profile={profile} />
       <TabsSection profile={profile} />
     </View>
   );
@@ -82,8 +80,6 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
   },
   profileCtn: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
     flex: 1,
   },
   upperSection: {

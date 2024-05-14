@@ -1,7 +1,6 @@
 import React from 'react';
 import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
 import AvatarImg from '../../../assets/images/icons/avatar.svg';
-import {MyTheme} from '../../../theme';
 
 interface FollowCounterProps {
   count: number;
@@ -31,16 +30,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {width: 18, height: 18, marginRight: 3},
-  countStyle: {
-    marginRight: 2,
-    fontFamily: 'BeVietnamPro-Bold',
-    color: MyTheme.black,
-  },
+  countStyle: {fontWeight: 'bold', marginRight: 2},
   counterTextPrimary: {color: 'black'},
-  counterTextSecondary: {
-    color: MyTheme.grey400,
-    fontFamily: 'BeVietnamPro-Regular',
-  },
+  counterTextSecondary: {color: 'gray'},
 });
 
 export default FollowCounter;

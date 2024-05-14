@@ -4,15 +4,15 @@ import {
   NativeSyntheticEvent,
   Pressable,
   StyleSheet,
-  Text,
   TextInput,
   TextInputKeyPressEventData,
   View,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import BorderLineImg from '../../../assets/images/thread/border_line.svg';
-import {MyTheme} from '../../../theme';
-import {Thread} from '../types';
+import BorderLineImg from '../../../../assets/images/thread/border_line.svg';
+import {MyTheme} from '../../../../theme';
+import {Thread} from '../../types';
+import BottomSection from './BottomSection';
 
 type ThreadItemProps = {
   thread: Thread;
@@ -23,6 +23,7 @@ type ThreadItemProps = {
   onImagePress?: (index: number) => void;
   onKeyPress?: (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => void;
   onFocus: () => void;
+  onAddMediaPress: () => void;
 };
 
 function ThreadItem({
@@ -34,6 +35,7 @@ function ThreadItem({
   onKeyPress,
   onFocus,
   onImagePress,
+  onAddMediaPress,
 }: ThreadItemProps) {
   const imagesHtml = thread.images
     ?.filter(el => el !== undefined && el !== null)
@@ -51,10 +53,16 @@ function ThreadItem({
   return (
     <View style={styles.root}>
       <View style={{alignItems: 'flex-end'}}>
-        <BorderLineImg color={MyTheme.primaryColor} />
+        <BorderLineImg
+          color={active ? MyTheme.primaryColor : MyTheme.grey300}
+        />
         <LinearGradient
           style={styles.border}
-          colors={[MyTheme.primaryGradientFirst, MyTheme.primaryGradientSecond]}
+          colors={
+            active
+              ? [MyTheme.primaryGradientFirst, MyTheme.primaryGradientSecond]
+              : [MyTheme.grey300, MyTheme.grey300]
+          }
         />
       </View>
       <View style={styles.contentCtn}>
@@ -63,7 +71,7 @@ function ThreadItem({
           onFocus={onFocus}
           placeholderTextColor={'lightgray'}
           multiline
-          placeholder="Type here!"
+          placeholder="Write something interesting"
           defaultValue={thread.body}
           value={thread.body}
           onChangeText={onChangeText}
@@ -73,11 +81,13 @@ function ThreadItem({
             onKeyPress && onKeyPress(e);
           }}
         />
-        <View style={styles.bottomSection}>
-          <Text style={styles.counter}>
-            {thread.body.length}/{maxLength}
-          </Text>
-        </View>
+        <BottomSection
+          characterCount={thread.body.length}
+          maxCharacters={maxLength}
+          maxMedia={3}
+          mediaCount={thread.images?.length || 0}
+          onAddMediaPress={onAddMediaPress}
+        />
         <View style={styles.imagesCtn}>{imagesHtml}</View>
       </View>
     </View>

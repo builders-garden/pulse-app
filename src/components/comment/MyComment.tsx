@@ -14,7 +14,7 @@ import MyIconButton from '../MyIconButton';
 import UrlViewer from '../UrlViewer';
 import CommentActionBar from './CommentActionBar';
 
-type MyCommentProps = {
+export type MyCommentProps = {
   indentLevel?: number;
   headerImg: string;
   headerTitle: string;

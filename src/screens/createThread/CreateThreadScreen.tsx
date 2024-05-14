@@ -1,4 +1,4 @@
-import React, {createRef, useEffect, useState} from 'react';
+import React, {createRef, useCallback, useEffect, useState} from 'react';
 import {
   FlatList,
   NativeSyntheticEvent,
@@ -10,37 +10,50 @@ import {
 import {launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import uuid from 'react-native-uuid';
-import BottomBar from './components/BottomBar';
+import DiagonalArrowImg from '../../assets/images/icons/diagonal_arrow.svg';
+import MyButtonNew from '../../components/MyButtonNew';
+import {RootStackScreenProps} from '../../routing/types';
 import ChannelButton from './components/ChannelButton';
-import ThreadItem from './components/ThreadItem';
+import ThreadItem from './components/threadItem/ThreadItem';
 import {Thread} from './types';
 const maxImagesCount = 2;
 const inputLimit = 20;
 
-function CreateThreadScreen() {
+function CreateThreadScreen({
+  navigation,
+}: RootStackScreenProps<'CreateThread'>) {
   const [threads, setThreads] = useState<Thread[]>([
     {id: uuid.v4().toString(), body: '', images: [], video: '', links: []},
   ]);
   const [currentThreadIndex, setCurrentThreadIndex] = useState(0);
   const inputRef = createRef<TextInput>();
 
+  const renderHeader = useCallback(
+    () => (
+      <MyButtonNew
+        style="primary"
+        iconRight={<DiagonalArrowImg style={{marginLeft: 3}} />}
+        onPress={() => {
+          onPublishPress();
+        }}
+        title="Publish"
+        customStyle={{marginBottom: 20}}
+      />
+    ),
+    [],
+  );
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: renderHeader,
+    });
+  }, [navigation, renderHeader]);
+
   useEffect(() => {
     if (inputRef.current !== null) {
       inputRef.current?.focus();
     }
   }, [inputRef]);
-
-  // const threadsHtml = threads.map((thread, i) => (
-  //   <ThreadItem
-  //     key={i}
-  //     thread={thread}
-  //     onChangeText={newText => {
-  //       const newThreads = threads.slice();
-  //       newThreads[i] = {...newThreads[i], body: newText};
-  //       setThreads(newThreads);
-  //     }}
-  //   />
-  // ));
 
   async function onAddMediaPress() {
     if (threads[currentThreadIndex].images.length < maxImagesCount) {
@@ -129,6 +142,8 @@ function CreateThreadScreen() {
     }
   }
 
+  function onPublishPress() {}
+
   return (
     <View style={styles.root}>
       {/* <Text>Selected index: {currentThreadIndex}</Text> */}
@@ -141,16 +156,19 @@ function CreateThreadScreen() {
         renderItem={({item, index}) => (
           <ThreadItem
             key={item.id}
+            active={index === currentThreadIndex}
             textInputRef={index === currentThreadIndex ? inputRef : undefined}
             thread={item}
             maxLength={inputLimit}
             onFocus={() => setCurrentThreadIndex(index)}
             onKeyPress={e => onKeyPress(e, index)}
             onChangeText={newText => onThreadChangeText(newText, index)}
+            onAddMediaPress={onAddMediaPress}
           />
         )}
+        ItemSeparatorComponent={() => <View style={{height: 20}} />}
       />
-      <BottomBar onAddMediaPress={onAddMediaPress} onSendPress={() => {}} />
+      {/* <BottomBar onAddMediaPress={onAddMediaPress} onSendPress={() => {}} /> */}
     </View>
   );
 }

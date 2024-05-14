@@ -5,11 +5,11 @@ export type UserCastsResponse = {
 
 export type UserCast = {
   hash: string;
-  parentHash: null | string;
-  parentUrl: null;
-  rootParentUrl: null | string;
-  threadHash: string;
-  parentAuthor: {
+  parent_hash: null | string;
+  parent_url: null;
+  root_parent_url: null | string;
+  thread_hash: string;
+  parent_author: {
     fid: number | null;
   };
   author: Author;
@@ -18,13 +18,10 @@ export type UserCast = {
   embeds: {
     url: string;
   }[];
-  mentionedProfiles: Author[];
-  reactions: Reaction;
-  recasts: Reaction;
-  recasters: any[];
-  viewerContext: {
-    liked: boolean;
-    recasted: boolean;
+  mentioned_profiles: Author[];
+  reactions: {
+    likes_count: number;
+    recasts_count: number;
   };
   replies: {
     count: number;
@@ -33,27 +30,25 @@ export type UserCast = {
 
 export type Author = {
   fid: number;
-  custodyAddress: string;
+  custody_address: string;
   username: string;
-  displayName: string;
-  pfp: {
-    url: string;
-  };
+  display_name: string;
+  pfp_url: string;
   profile: {
     bio: {
       text: string;
-      mentionedProfiles: any[];
+      mentioned_profiles: any[];
     };
   };
-  followerCount: number;
-  followingCount: number;
+  follower_count: number;
+  following_count: number;
   verifications: string[];
-  verifiedAddresses: {
+  verified_addresses: {
     eth_addresses: string[];
     sol_addresses: string[];
   };
-  activeStatus: string;
-  powerBadge: boolean;
+  active_status: string;
+  power_badge: boolean;
 };
 
 export type Reaction = {

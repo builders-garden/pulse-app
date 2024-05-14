@@ -14,6 +14,7 @@ function ThreadsSection({threads}: ThreadsSectionProps) {
       data={threads}
       windowSize={5}
       renderItem={({item, index}) => {
+        console.log('item', JSON.stringify(item, null, 2));
         const transformedItem = TransformUserCast(item);
 
         return (

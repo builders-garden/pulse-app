@@ -1,7 +1,8 @@
 /* eslint-disable react/no-unstable-nested-components */
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useContext} from 'react';
-import MyIconButton from '../components/MyIconButton';
+import DiagonalArrowImg from '../assets/images/icons/diagonal_arrow.svg';
+import MyButtonNew from '../components/MyButtonNew';
 import {AuthContext} from '../contexts/auth/Auth.context';
 import {UserStatus} from '../contexts/auth/types';
 import SignInScreen from '../screens/auth/signIn/SignInScreen';
@@ -44,10 +45,12 @@ function StackContainer() {
               headerBackTitleVisible: false,
               headerTitle: '',
               headerRight: () => (
-                <MyIconButton
-                  icon={require('../assets/images/icons/help.png')}
-                  iconSize={25}
+                <MyButtonNew
+                  style="primary"
+                  iconRight={<DiagonalArrowImg style={{marginLeft: 3}} />}
                   onPress={() => {}}
+                  title="Publish"
+                  customStyle={{marginBottom: 10}}
                 />
               ),
             }}

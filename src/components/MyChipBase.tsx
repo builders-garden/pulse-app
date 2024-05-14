@@ -66,7 +66,7 @@ const MyChipBase = ({
       {loading ? (
         <ActivityIndicator color="white" />
       ) : (
-        <Text style={[textSize, styles.chipText, textStyle, textCustomStyle]}>
+        <Text style={[styles.chipText, textSize, textStyle, textCustomStyle]}>
           {title}
         </Text>
       )}
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   },
   chipTextSmall: {
     fontSize: 12,
-    fontWeight: 'bold',
+    fontFamily: 'BeVietnamPro-Bold',
   },
   chipTextMedium: {
     fontSize: 16,

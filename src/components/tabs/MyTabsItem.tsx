@@ -1,5 +1,5 @@
 import React from 'react';
-import {Pressable, StyleSheet, Text} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {MyTheme} from '../../theme';
 
 interface MyTabsItemProps {
@@ -9,9 +9,7 @@ interface MyTabsItemProps {
 }
 const MyTabsItem = ({title, active, onPress}: MyTabsItemProps) => {
   return (
-    <Pressable
-      style={[styles.tabItem, active ? styles.activeTab : styles.inactiveTab]}
-      onPress={onPress}>
+    <Pressable style={[styles.tabItem]} onPress={onPress}>
       <Text
         style={[
           styles.tabItemText,
@@ -19,6 +17,7 @@ const MyTabsItem = ({title, active, onPress}: MyTabsItemProps) => {
         ]}>
         {title}
       </Text>
+      {active && <View style={styles.activeTabIndicator} />}
     </Pressable>
   );
 };
@@ -29,23 +28,23 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     alignItems: 'center',
   },
-  activeTab: {
-    backgroundColor: MyTheme.primaryColor,
-    borderTopStartRadius: 12,
-    borderTopEndRadius: 12,
-  },
-  inactiveTab: {
-    backgroundColor: 'transparent',
-  },
   activeTabText: {
-    color: MyTheme.white,
+    color: MyTheme.primaryColor,
+    fontFamily: 'BeVietnamPro-Bold',
   },
   inactiveTabText: {
     color: MyTheme.grey400,
   },
   tabItemText: {
     fontSize: 16,
-    fontFamily: 'BeVietnamPro-Bold',
+    fontFamily: 'BeVietnamPro-Regular',
+  },
+  activeTabIndicator: {
+    width: 30,
+    height: 2,
+    backgroundColor: MyTheme.primaryColor,
+    position: 'absolute',
+    bottom: 7,
   },
 });
 
