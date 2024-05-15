@@ -82,18 +82,19 @@ function TabsSection({profile}: TabsSectionProps) {
         onPress={setSelectedTab}
       />
       {/* {selectedTab === 0 && <FirstRoute />} */}
+      {selectedTab === 0 &&
+        (userCastsFetchStatus === 'success' ? (
+          <ThreadsSection threads={userCasts} />
+        ) : (
+          <MyPlaceholderLoader customStyle={{marginTop: 15}} />
+        ))}
       {selectedTab === 1 &&
         (commentsFetchStatus === 'success' ? (
           <CommentsSection comments={comments} />
         ) : (
           <MyPlaceholderLoader customStyle={{marginTop: 15}} />
         ))}
-      {selectedTab === 0 &&
-        (commentsFetchStatus === 'success' ? (
-          <ThreadsSection threads={userCasts} />
-        ) : (
-          <MyPlaceholderLoader customStyle={{marginTop: 15}} />
-        ))}
+
       {/* {selectedTab === 2 && <ThirdRoute />} */}
     </View>
   );

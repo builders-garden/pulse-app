@@ -32,11 +32,6 @@ function ThreadsSection({threads}: ThreadsSectionProps) {
               marginBottom: 15,
               marginTop: index === 0 ? 15 : 0,
             }}
-            onContentBodyPress={() => {
-              // navigation.navigate('ThreadDetail', {
-              //   threadHash: item.hash,
-              // });
-            }}
           />
         );
       }}

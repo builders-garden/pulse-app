@@ -20,11 +20,13 @@ export type MyCommentProps = {
   headerTitle: string;
   postTime: string;
   headerSubtitle: string;
+  quoteTitle?: string;
   quote?: string;
   content: string;
   image?: string;
   quotesCount: number;
   upvotesCount: number;
+  hideActionBar?: boolean;
   commentCustomStyle?: StyleProp<ViewStyle>;
   rootCustomStyle?: StyleProp<ViewStyle>;
 };
@@ -35,11 +37,13 @@ const MyComment = ({
   postTime,
   headerTitle,
   headerSubtitle,
+  quoteTitle,
   quote,
   content,
   image,
   quotesCount,
   upvotesCount,
+  hideActionBar,
   commentCustomStyle,
   rootCustomStyle,
 }: MyCommentProps) => {
@@ -110,6 +114,14 @@ const MyComment = ({
               />
             </View>
             <View style={styles.quoteContent}>
+              {quoteTitle && (
+                <Text
+                  style={styles.quoteTitle}
+                  numberOfLines={1}
+                  ellipsizeMode="tail">
+                  {quoteTitle}
+                </Text>
+              )}
               <Text
                 style={styles.quoteText}
                 numberOfLines={2}
@@ -132,10 +144,12 @@ const MyComment = ({
           {/* {image && <Image style={styles.contentImage} source={{uri: image}} />} */}
           {image && <UrlViewer url={image} />}
         </View>
-        <CommentActionBar
-          quotesCount={quotesCount}
-          upvotesCount={upvotesCount}
-        />
+        {!hideActionBar && (
+          <CommentActionBar
+            quotesCount={quotesCount}
+            upvotesCount={upvotesCount}
+          />
+        )}
       </View>
     </View>
   );
@@ -200,6 +214,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: MyTheme.grey100,
     borderRadius: 2,
+  },
+  quoteTitle: {
+    fontFamily: 'BeVietnamPro-Bold',
+    color: MyTheme.grey500,
+    marginBottom: 3,
   },
   quoteText: {
     fontFamily: 'BeVietnamPro-Regular',

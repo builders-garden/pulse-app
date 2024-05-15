@@ -41,6 +41,8 @@ function CommentBox({
 const styles = StyleSheet.create({
   root: {
     borderRadius: 4,
+    backgroundColor: 'black',
+    padding: 10,
   },
 });
 
