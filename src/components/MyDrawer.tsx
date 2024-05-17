@@ -47,6 +47,7 @@ const MyDrawer = ({
     useState<RequestStatus>('idle');
 
   const fetchFavoritesChannels = useCallback(async () => {
+    console.log('fetching favorites');
     setFavoriteChannelsFetchStatus('loading');
     try {
       const finalUrl = ENDPOINT_FAVORITE_CHANNELS;
@@ -97,7 +98,7 @@ const MyDrawer = ({
             }}>
             <View style={styles.followingBox}>
               <ChatImg width={24} height={24} color={MyTheme.primaryLight} />
-              <Text style={styles.followingText}>FOLLOWING</Text>
+              <Text style={styles.followingText}>Following</Text>
             </View>
           </Pressable>
           <View style={styles.section}>
@@ -218,7 +219,7 @@ const styles = StyleSheet.create({
   followingText: {
     color: MyTheme.primaryLight,
     fontSize: 16,
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: MyTheme.fontRegular,
     marginLeft: 6,
   },
   section: {
@@ -226,7 +227,7 @@ const styles = StyleSheet.create({
   },
   headingText: {
     color: MyTheme.grey300,
-    fontFamily: 'BeVietnamPro-Bold',
+    fontFamily: MyTheme.fontBold,
     marginBottom: 10,
   },
   sectionItemsCtn: {
@@ -238,7 +239,7 @@ const styles = StyleSheet.create({
   },
   sectionItemImg: {width: 30, height: 30, borderRadius: 3},
   sectionItemText: {
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: MyTheme.fontRegular,
     fontSize: 14,
     marginTop: 5,
     width: 55,
@@ -250,9 +251,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sectionItemHorizontalText: {
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: MyTheme.fontRegular,
     fontSize: 14,
     marginLeft: 5,
+    color: MyTheme.black,
   },
 });
 

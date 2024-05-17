@@ -191,11 +191,7 @@ function SignInScreen() {
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           {paginationItems}
         </View>
-        <MyButton
-          title="Login with Warpcast"
-          iconLeft={require('../../../assets/images/logos/warpcast.png')}
-          onPress={OnSignInButtonClick}
-        />
+        <MyButton title="DEV login" onPress={OnSignInButtonClick} />
 
         <NeynarSigninButton
           margin={0}

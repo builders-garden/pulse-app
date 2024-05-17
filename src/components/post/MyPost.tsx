@@ -107,24 +107,25 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   headerTitle: {
-    fontFamily: 'BeVietnamPro-Bold',
+    fontFamily: MyTheme.fontBold,
     color: MyTheme.black,
   },
   headerTime: {
     color: 'gray',
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: MyTheme.fontRegular,
   },
   headerSubtitle: {
     color: 'gray',
     maxWidth: '100%',
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: MyTheme.fontRegular,
   },
   contentCtn: {
     flexDirection: 'column',
   },
   contentBody: {
     marginBottom: 20,
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: MyTheme.fontRegular,
+    color: MyTheme.black,
   },
   contentImage: {
     // aspectRatio: 16 / 9,

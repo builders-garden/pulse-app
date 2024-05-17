@@ -47,6 +47,7 @@ function FeedStackContainer() {
                   marginLeft: 15,
                   fontSize: 20,
                   textAlign: 'left',
+                  color: MyTheme.black,
                 }}>
                 Following
               </Text>

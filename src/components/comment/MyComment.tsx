@@ -187,21 +187,21 @@ const styles = StyleSheet.create({
     maxWidth: '35%',
     fontWeight: 'normal',
     fontSize: 12,
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: MyTheme.fontRegular,
     color: MyTheme.black,
   },
   headerSubtitle: {
-    color: 'gray',
+    color: MyTheme.grey400,
     maxWidth: '30%',
     fontSize: 12,
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: MyTheme.fontRegular,
     fontWeight: 'normal',
   },
   headerTime: {
-    color: 'gray',
+    color: MyTheme.grey400,
     maxWidth: '35%',
     fontSize: 12,
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: MyTheme.fontRegular,
     fontWeight: 'normal',
   },
   quoteRoot: {flexDirection: 'row', width: '100%'},
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   quoteText: {
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: MyTheme.fontRegular,
     color: MyTheme.grey500,
   },
   contentCtn: {
@@ -229,7 +229,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   contentText: {
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: MyTheme.fontRegular,
+    color: MyTheme.black,
   },
   contentImage: {
     // aspectRatio: 16 / 9,

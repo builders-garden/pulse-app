@@ -3,7 +3,6 @@ import {StyleSheet, Text, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {Profile} from '../../../api/profile/types';
 import FidImg from '../../../assets/images/icons/fid.svg';
-import MapPinImg from '../../../assets/images/icons/map_pin.svg';
 import FollowCounter from '../../../components/FollowCounter';
 import MyButtonNew from '../../../components/MyButtonNew';
 import {MyTheme} from '../../../theme';
@@ -44,10 +43,7 @@ function UpperSection({profile}: UpperSectionProps) {
           style="secondary"
         />
       </View>
-      <View style={styles.locationBox}>
-        <MapPinImg style={{marginRight: 3}} color={MyTheme.grey300} />
-        <Text style={styles.locationText}>Placeholder location</Text>
-      </View>
+
       <MyButtonNew
         title="Follow"
         onPress={() => {}}
