@@ -6,3 +6,5 @@ export const ENDPOINT_SIGNER = `${API_URL}/farcaster/signer/`;
 export const ENDPOINT_FEED = `${API_URL}/farcaster/feed/following?limit=10`;
 export const ENDPOINT_PROFILE = `${API_URL}/farcaster/users/`;
 export const ENDPOINT_CAST = `${API_URL}/farcaster/casts/`;
+export const ENDPOINT_FAVORITE_CHANNELS = `${API_URL}/farcaster/channels/trending?interval=1d`;
+export const ENDPOINT_CHANNEL = `${API_URL}/farcaster/channels/`;

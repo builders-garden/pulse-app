@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, {useCallback, useContext, useEffect, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import {FeedItem, FeedResponse} from '../../api/feed/types';
 import {RequestStatus} from '../../api/types';
@@ -11,10 +11,13 @@ import MyPlaceholderLoader from '../../components/MyPlaceholderLoader';
 import MyPost from '../../components/post/MyPost';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {TransformFeedItem} from '../../libs/post';
-import {FeedStackScreenProps} from '../../routing/types';
+import {RootStackScreenProps} from '../../routing/types';
 import {ENDPOINT_FEED} from '../../variables';
 
-function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
+function ChannelDetailScreen({
+  route,
+  navigation,
+}: RootStackScreenProps<'ChannelDetail'>) {
   const authContext = useContext(AuthContext);
   const [feedFetchStatus, setFeedFetchStatus] = useState<RequestStatus>('idle');
   const [newThreadsFetchStatus, setNewThreadsFetchStatus] =
@@ -34,7 +37,8 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
       setCursor(res.data.cursor);
       setFeedFetchStatus('success');
     } catch (error) {
-      console.error(error);
+      console.log(error);
+      console.log(JSON.stringify(error, null, 2));
       setFeedFetchStatus('error');
     }
   }, [authContext.state.token]);
@@ -97,6 +101,7 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
     <View>
       {feedFetchStatus === 'success' || feed.length > 0 ? (
         <>
+          <Text>CHANNEL FEED: {route.params.channelId}</Text>
           <MyFloatingButton
             icon={<PenImg width={25} height={25} color="white" />}
             onPress={() => {
@@ -134,4 +139,4 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
   );
 }
 
-export default FeedScreen;
+export default ChannelDetailScreen;

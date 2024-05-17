@@ -25,7 +25,6 @@ const WebPreview = ({url, linkPreview, customStyle}: WebPreviewProps) => {
   let description = '';
   let image = '';
   if (linkPreview) {
-    console.log('PASSO DI QUI');
     if ('title' in linkPreview && linkPreview.title !== '') {
       title = linkPreview.title;
       if (
@@ -43,10 +42,6 @@ const WebPreview = ({url, linkPreview, customStyle}: WebPreviewProps) => {
       }
     }
   }
-  console.log('WebPreview title', title);
-  console.log('WebPreview description', description);
-  console.log('WebPreview image', image);
-  console.log('WebPreview linkPreview', linkPreview);
 
   async function OpenURL() {
     const supported = await Linking.canOpenURL(url);

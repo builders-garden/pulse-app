@@ -12,7 +12,7 @@ export type Profile = {
   profile: {
     bio: {
       text: string;
-      mentioned_profiles: [];
+      mentioned_profiles?: [];
     };
   };
   follower_count: number;
@@ -24,4 +24,5 @@ export type Profile = {
   };
   active_status: string;
   power_badge: boolean;
+  notes?: any[];
 };

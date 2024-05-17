@@ -13,4 +13,8 @@ export const MyTheme = {
   greyTransparent: '#0F0F0F33',
   white: '#FFFFFF',
   black: '#000000',
+  fontRegular: 'BeVietnamPro-Regular',
+  fontBold: 'BeVietnamPro-Bold',
+  fontLight: 'BeVietnamPro-Light',
+  fontSemiBold: 'BeVietnamPro-SemiBold',
 };

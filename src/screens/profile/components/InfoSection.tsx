@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {Profile} from '../../../api/profile/types';
-import FollowCounter from './FollowCounter';
+import FollowCounter from '../../../components/FollowCounter';
 
 interface InfoSectionProps {
   profile: Profile;

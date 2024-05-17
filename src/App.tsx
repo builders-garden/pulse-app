@@ -1,4 +1,5 @@
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
+import * as Sentry from '@sentry/react-native';
 import React from 'react';
 import Toast from 'react-native-toast-message';
 import MyInfoToast from './components/toasts/MyInfoToast';
@@ -7,7 +8,6 @@ import DrawerProvider from './contexts/drawer/DrawerProvider';
 import LightboxProvider from './contexts/lightbox/LightboxProvider';
 import StackContainer from './routing/StackContainer';
 import {MyTheme} from './theme';
-import * as Sentry from '@sentry/react-native';
 
 Sentry.init({
   dsn: 'https://7557a7f2a56ad29b7d17e918574585da@o4507152584933376.ingest.de.sentry.io/4507248348954704',
@@ -34,11 +34,11 @@ function App(): React.JSX.Element {
   return (
     <AuthProvider>
       <LightboxProvider>
-        <DrawerProvider>
-          <NavigationContainer theme={NavigationTheme}>
+        <NavigationContainer theme={NavigationTheme}>
+          <DrawerProvider>
             <StackContainer />
-          </NavigationContainer>
-        </DrawerProvider>
+          </DrawerProvider>
+        </NavigationContainer>
       </LightboxProvider>
       <Toast config={toastConfig} />
     </AuthProvider>
