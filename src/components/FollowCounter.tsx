@@ -14,7 +14,7 @@ import {MyTheme} from '../theme';
 interface FollowCounterProps {
   count: number;
   label: string;
-  style: 'primary' | 'secondary';
+  style?: 'primary' | 'secondary';
   customStyle?: StyleProp<ViewStyle>;
   countCustomStyle?: StyleProp<TextStyle>;
 }
@@ -22,7 +22,7 @@ interface FollowCounterProps {
 function FollowCounter({
   count,
   label,
-  style,
+  style = 'primary',
   customStyle,
   countCustomStyle,
 }: FollowCounterProps) {

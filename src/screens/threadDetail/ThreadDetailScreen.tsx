@@ -16,7 +16,10 @@ import {TransformCast, TransformConversation} from '../../libs/post';
 import {RootStackScreenProps} from '../../routing/types';
 import {ENDPOINT_CAST} from '../../variables';
 
-function ThreadDetailScreen({route}: RootStackScreenProps<'ThreadDetail'>) {
+function ThreadDetailScreen({
+  route,
+  navigation,
+}: RootStackScreenProps<'ThreadDetail'>) {
   const authContext = useContext(AuthContext);
   const [threadFetchStatus, setThreadFetchStatus] =
     useState<RequestStatus>('idle');
@@ -49,6 +52,8 @@ function ThreadDetailScreen({route}: RootStackScreenProps<'ThreadDetail'>) {
       thread ? TransformConversation([thread]) : {casts: [], sections: []},
     [thread],
   );
+
+  console.log('flattenedConversation', JSON.stringify(flattenedConversation));
 
   if (threadFetchStatus === 'loading') {
     return (
@@ -124,6 +129,11 @@ function ThreadDetailScreen({route}: RootStackScreenProps<'ThreadDetail'>) {
                 borderTopLeftRadius: 4,
                 borderTopRightRadius: 4,
               }}
+              onContentBodyPress={() => {
+                navigation.push('ThreadDetail', {
+                  threadHash: section.header.hash,
+                });
+              }}
             />
           );
         }}
@@ -143,6 +153,11 @@ function ThreadDetailScreen({route}: RootStackScreenProps<'ThreadDetail'>) {
               quotesCount={transformedComment.quotesCount}
               rootCustomStyle={{
                 marginLeft: 10,
+              }}
+              onContentBodyPress={() => {
+                navigation.push('ThreadDetail', {
+                  threadHash: item.hash,
+                });
               }}
             />
           );

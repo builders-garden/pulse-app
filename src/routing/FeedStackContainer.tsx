@@ -56,7 +56,13 @@ function FeedStackContainer() {
         }}
         component={FeedScreen}
       />
-      <Stack.Screen name="ThreadDetail" component={ThreadDetailScreen} />
+      <Stack.Screen
+        name="ThreadDetail"
+        options={{
+          title: '',
+        }}
+        component={ThreadDetailScreen}
+      />
       <Stack.Screen
         name="Channel"
         component={ChannelScreen}

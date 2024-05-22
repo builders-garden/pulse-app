@@ -1,19 +1,25 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import MyChip from '../../../components/MyChip';
-import MyIconButton from '../../../components/MyIconButton';
-
-type TrendingPostActionBarProps = {
+import CommentImg from '../../../assets/images/icons/comment.svg';
+import QuoteImg from '../../../assets/images/icons/quote.svg';
+import UpvoteImg from '../../../assets/images/icons/upvote.svg';
+import VerticalDotsImg from '../../../assets/images/icons/vertical_dots.svg';
+import MyChipBase from '../../../components/MyChipBase';
+import MyIconButtonBase from '../../../components/MyIconButtonBase';
+import {MyTheme} from '../../../theme';
+type TrendingPostItemActionBarProps = {
   commentsCount: number;
   quotesCount: number;
   upvotesCount: number;
   onCommentsPress?: () => void;
   onQuotesPress?: () => void;
   onUpvotesPress?: () => void;
+  onTipPress?: () => void;
+  onBookmarkPress?: () => void;
   onSharePress?: () => void;
 };
 
-const TrendingPostActionBar = ({
+const TrendingPostItemActionBar = ({
   commentsCount,
   quotesCount,
   upvotesCount,
@@ -21,51 +27,81 @@ const TrendingPostActionBar = ({
   onQuotesPress,
   onUpvotesPress,
   onSharePress,
-}: TrendingPostActionBarProps) => {
+}: TrendingPostItemActionBarProps) => {
   return (
-    <View style={styles.TrendingPostActionBar}>
-      <MyChip
-        iconLeft={require('../../../assets/images/icons/upvote.png')}
-        title={`${upvotesCount}`}
+    <View style={styles.postActionBar}>
+      <MyChipBase
+        iconLeft={
+          <UpvoteImg
+            style={{marginRight: 3}}
+            width={18}
+            height={18}
+            color={MyTheme.grey400}
+          />
+        }
+        title={upvotesCount.toString()}
         size="small"
+        style="secondary"
+        filling="clear"
         onPress={() => {
           onUpvotesPress && onUpvotesPress();
         }}
         customStyle={{marginRight: 5}}
       />
-      <MyChip
-        iconLeft={require('../../../assets/images/icons/comment.png')}
+      <MyChipBase
+        iconLeft={
+          <CommentImg
+            color={MyTheme.grey400}
+            style={{marginRight: 3}}
+            width={18}
+            height={18}
+          />
+        }
         size="small"
-        title={`${commentsCount}`}
+        style="secondary"
+        filling="clear"
+        title={commentsCount.toString()}
         onPress={() => {
           onCommentsPress && onCommentsPress();
         }}
         customStyle={{marginRight: 5}}
       />
-      <MyChip
-        iconLeft={require('../../../assets/images/icons/quote.png')}
+      <MyChipBase
+        iconLeft={
+          <QuoteImg
+            color={MyTheme.grey400}
+            style={{marginRight: 3}}
+            width={18}
+            height={18}
+          />
+        }
         size="small"
-        title={`${quotesCount}`}
+        style="secondary"
+        filling="clear"
+        title={quotesCount.toString()}
         onPress={() => {
           onQuotesPress && onQuotesPress();
         }}
         customStyle={{marginRight: 5}}
       />
 
-      <MyIconButton
-        iconSize={18}
+      <MyIconButtonBase
         onPress={() => {
           onSharePress && onSharePress();
         }}
+        filling="clear"
         customStyle={{marginLeft: 'auto'}}
-        icon={require('../../../assets/images/icons/share.png')}
+        icon={
+          <VerticalDotsImg width={18} height={18} color={MyTheme.grey400} />
+        }
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  TrendingPostActionBar: {
+  verticalDivider: {width: 1, backgroundColor: MyTheme.grey400, height: '100%'},
+  postActionBar: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
@@ -74,4 +110,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TrendingPostActionBar;
+export default TrendingPostItemActionBar;

@@ -18,7 +18,7 @@ import UpperSection from './components/UpperSection';
 
 const HEADER_HEIGHT = 250;
 
-function ProfileScreen({route}: HomeTabScreenProps<'Profile'>) {
+function ProfileScreen({route, navigation}: HomeTabScreenProps<'Profile'>) {
   const authContext = useContext(AuthContext);
   const [profileFetchStatus, setProfileFetchStatus] =
     useState<RequestStatus>('idle');
@@ -105,6 +105,11 @@ function ProfileScreen({route}: HomeTabScreenProps<'Profile'>) {
               marginBottom: 15,
               marginTop: index === 0 ? 15 : 0,
             }}
+            onContentBodyPress={() => {
+              navigation.navigate('ThreadDetail', {
+                threadHash: item.hash,
+              });
+            }}
           />
         );
       } else {
@@ -129,11 +134,16 @@ function ProfileScreen({route}: HomeTabScreenProps<'Profile'>) {
               },
             ]}
             hideActionBar
+            onContentBodyPress={() => {
+              navigation.navigate('ThreadDetail', {
+                threadHash: item.hash,
+              });
+            }}
           />
         );
       }
     },
-    [selectedTab],
+    [selectedTab, navigation],
   );
 
   useEffect(() => {

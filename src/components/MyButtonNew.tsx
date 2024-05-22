@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   buttonText: {
-    fontFamily: 'BeVietnamPro-SemiBold',
+    fontFamily: MyTheme.fontSemiBold,
   },
   buttonTextSmall: {
     fontSize: 12,

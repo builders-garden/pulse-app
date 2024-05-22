@@ -4,11 +4,10 @@ import {
   NavigatorScreenParams,
 } from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {Channel} from '../api/channel/types';
 
 export type RootStackParamList = {
   ThreadDetail: {threadHash: string};
-  Channel: {channelId: string};
-  ChannelDetail: {channelId: string};
   Home: NavigatorScreenParams<TabParamList>;
   CreateThread: undefined;
   SignIn: undefined;
@@ -35,11 +34,11 @@ export type FeedStackParamList = {
   Feed: undefined;
   ThreadDetail: {threadHash: string};
   Channel: {channelId: string};
-  ChannelDetail: {channelId: string};
+  ChannelDetail: {channel: Channel};
 };
 
 export type FeedStackScreenProps<T extends keyof FeedStackParamList> =
   CompositeScreenProps<
     NativeStackScreenProps<FeedStackParamList, T>,
-    BottomTabScreenProps<TabParamList, 'Feed'>
+    HomeTabScreenProps<'FeedRoot'>
   >;

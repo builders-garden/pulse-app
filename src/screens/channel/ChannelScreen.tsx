@@ -13,11 +13,11 @@ import MyPlaceholderLoader from '../../components/MyPlaceholderLoader';
 import MyPost from '../../components/post/MyPost';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {TransformFeedItem} from '../../libs/post';
-import {RootStackScreenProps} from '../../routing/types';
+import {FeedStackScreenProps} from '../../routing/types';
 import {ENDPOINT_CHANNEL} from '../../variables';
 import Header from './components/Header';
 
-function ChannelScreen({route, navigation}: RootStackScreenProps<'Channel'>) {
+function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
   const authContext = useContext(AuthContext);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [feedFetchStatus, setFeedFetchStatus] = useState<RequestStatus>('idle');
@@ -172,7 +172,15 @@ function ChannelScreen({route, navigation}: RootStackScreenProps<'Channel'>) {
             onRefresh={refreshFeed}
             refreshing={feedFetchStatus === 'loading'}
             ListHeaderComponent={
-              <Header customStyle={{marginBottom: 15}} channel={channel!} />
+              <Header
+                customStyle={{marginBottom: 15}}
+                channel={channel!}
+                onSeeMorePress={() => {
+                  navigation.navigate('ChannelDetail', {
+                    channel: channel!,
+                  });
+                }}
+              />
             }
             ListFooterComponent={
               newThreadsFetchStatus === 'loading' ? (

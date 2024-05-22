@@ -1,25 +1,17 @@
 import React from 'react';
-import {
-  Image,
-  ImageSourcePropType,
-  StyleProp,
-  StyleSheet,
-  Text,
-  View,
-  ViewStyle,
-} from 'react-native';
-import MyChip from '../../../components/MyChip';
+import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import MyButtonNew from '../../../components/MyButtonNew';
+import {MyTheme} from '../../../theme';
 import TrendingPostActionBar from './TrendingPostActionBar';
 
 type TrendingPostItemProps = {
-  channel: string;
-  headerImg: ImageSourcePropType;
+  headerImg: string;
   headerTitle: string;
   postTime: string;
   headerSubtitle: string;
   content: string;
-  buttonText: string;
-  image?: ImageSourcePropType;
+  image?: string;
   commentsCount: number;
   quotesCount: number;
   upvotesCount: number;
@@ -29,7 +21,6 @@ type TrendingPostItemProps = {
 };
 
 const TrendingPostItem = ({
-  channel,
   headerImg,
   postTime,
   headerTitle,
@@ -44,107 +35,84 @@ const TrendingPostItem = ({
 }: TrendingPostItemProps) => {
   return (
     <View style={[styles.root, customStyle]}>
-      <MyChip
-        onPress={() => {}}
-        title={channel}
-        size="small"
-        style="tertiary"
-        iconLeft={require('../../../assets/images/placeholders/profile_pic.png')}
-        customStyle={{marginBottom: 10, marginRight: 'auto', paddingLeft: 4}}
-        textCustomStyle={{fontWeight: 'normal'}}
-      />
-      <View style={styles.header}>
-        <Image style={styles.headerImg} source={headerImg} />
-        <View style={styles.headerTextCtn}>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={styles.headerTitle}>{headerTitle}</Text>
-            <Text style={styles.headerTime}> • {postTime}</Text>
+      <View style={styles.ctn}>
+        <View style={styles.header}>
+          <FastImage source={{uri: headerImg}} style={styles.headerImg} />
+          <View style={styles.headerTextCtn}>
+            <Text numberOfLines={1} style={styles.headerTitle}>
+              {headerTitle}
+            </Text>
+            <View style={styles.headerSubtitleCtn}>
+              <Text numberOfLines={1} style={styles.headerSubtitle}>
+                /{headerSubtitle} • {postTime}
+              </Text>
+            </View>
           </View>
+          <MyButtonNew
+            customStyle={[styles.actionButton]}
+            onPress={() => {}}
+            title="Follow"
+          />
+        </View>
+        <View style={styles.contentCtn}>
           <Text
-            numberOfLines={1}
+            numberOfLines={3}
             ellipsizeMode="tail"
-            style={styles.headerSubtitle}>
-            {headerSubtitle}
+            onPress={() => {
+              if (onContentBodyPress) {
+                onContentBodyPress();
+              }
+            }}
+            style={styles.contentBody}>
+            {content}
           </Text>
         </View>
-        <MyChip
-          onPress={() => {}}
-          title="Follow"
-          customStyle={styles.headerFollowBtn}
+        <TrendingPostActionBar
+          commentsCount={commentsCount}
+          quotesCount={quotesCount}
+          upvotesCount={upvotesCount}
         />
-        {/* <MyIconButton
-          iconSize={25}
-          onPress={() => {}}
-          style="secondary"
-          icon={require('../../assets/images/icons/vertical_dots.png')}
-        /> */}
-        {/* <Entypo
-            name="dots-three-horizontal"
-            size={16}
-            color="gray"
-            style={{marginLeft: 'auto'}}
-          /> */}
       </View>
-      <View style={styles.contentCtn}>
-        <Text
-          numberOfLines={3}
-          ellipsizeMode="tail"
-          onPress={() => {
-            if (onContentBodyPress) {
-              onContentBodyPress();
-            }
-          }}
-          style={styles.contentBody}>
-          {content}
-        </Text>
-        {image && <Image style={styles.contentImage} source={image} />}
-      </View>
-      <TrendingPostActionBar
-        commentsCount={commentsCount}
-        quotesCount={quotesCount}
-        upvotesCount={upvotesCount}
-      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  root: {
+  ctn: {
     // height: 300,
     padding: 20,
     width: 300,
-    borderColor: 'lightgray',
-    borderWidth: 1,
     borderRadius: 4,
+    backgroundColor: MyTheme.white,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    justifyContent: 'flex-start',
+    width: '100%',
+    marginBottom: 16,
+  },
+  headerTextCtn: {
+    marginLeft: 10,
+    flex: 1,
+  },
+  headerTitle: {
+    fontFamily: MyTheme.fontBold,
+    color: MyTheme.black,
+    maxWidth: '90%',
+  },
+  headerSubtitleCtn: {
+    flexDirection: 'row',
+  },
+  headerSubtitle: {
+    fontFamily: MyTheme.fontRegular,
+    color: MyTheme.grey400,
+    maxWidth: '90%',
   },
   headerImg: {
     width: 30,
     height: 30,
-    borderRadius: 100,
-    marginRight: 14,
-  },
-  headerTextCtn: {
-    width: '50%',
-    marginRight: 4,
-  },
-
-  headerTitle: {
-    fontWeight: 'bold',
-  },
-  headerTime: {
-    color: 'gray',
-  },
-  headerSubtitle: {
-    color: 'gray',
-    maxWidth: '100%',
-  },
-  headerFollowBtn: {
-    marginLeft: 'auto',
+    borderRadius: 3,
   },
   contentCtn: {
     flexDirection: 'column',
@@ -157,9 +125,7 @@ const styles = StyleSheet.create({
     height: 200,
     width: '100%',
     resizeMode: 'cover',
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: 'grey',
+    borderRadius: 4,
   },
   footer: {
     flexDirection: 'row',
@@ -167,6 +133,12 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 10,
     justifyContent: 'flex-start',
+  },
+  actionButton: {
+    marginLeft: 'auto',
+    // paddingVertical: 6,
+    // paddingHorizontal: 10,
+    // alignSelf: 'flex-end',
   },
 });
 

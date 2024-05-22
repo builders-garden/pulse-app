@@ -1,25 +1,16 @@
 import React from 'react';
-import {
-  Pressable,
-  StyleProp,
-  StyleSheet,
-  Text,
-  View,
-  ViewStyle,
-} from 'react-native';
+import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {Channel} from '../../../api/channel/types';
 import FollowCounter from '../../../components/FollowCounter';
-import MyButtonNew from '../../../components/MyButtonNew';
 import {MyTheme} from '../../../theme';
 
 interface HeaderProps {
   channel: Channel;
   customStyle?: StyleProp<ViewStyle>;
-  onSeeMorePress?: () => void;
 }
 
-function Header({channel, customStyle, onSeeMorePress}: HeaderProps) {
+function Header({channel, customStyle}: HeaderProps) {
   return (
     <View style={[styles.upperSection, customStyle && customStyle]}>
       <View style={styles.channelInfo}>
@@ -31,34 +22,26 @@ function Header({channel, customStyle, onSeeMorePress}: HeaderProps) {
           <Text style={styles.nameText} numberOfLines={2}>
             {channel.name}
           </Text>
-          <View style={styles.urlCtn}>
-            <Text style={styles.subtitle} numberOfLines={1}>
-              /{channel.id}
-            </Text>
-            <Text style={[styles.dotSeparator]}> · </Text>
-            <FollowCounter
-              count={channel.follower_count}
-              label="Followers"
-              style="secondary"
-              customStyle={{marginRight: 10, flex: 1}}
-              countCustomStyle={{
-                fontFamily: 'BeVietnamPro-Regular',
-                color: MyTheme.grey400,
-              }}
-            />
-          </View>
+          <Text style={styles.subtitle} numberOfLines={1}>
+            /{channel.id}
+          </Text>
         </View>
-        <MyButtonNew
-          title="Join"
-          onPress={() => {}}
-          style="primary"
-          customStyle={{marginLeft: 'auto'}}
+      </View>
+      <View style={styles.countersCtn}>
+        <FollowCounter
+          count={channel.follower_count}
+          label="Followers"
+          style="secondary"
+          countCustomStyle={{
+            fontFamily: 'BeVietnamPro-Bold',
+            color: MyTheme.grey500,
+          }}
         />
+        <Text style={[styles.dotSeparator]}> · </Text>
+        <Text style={styles.mutualsCount}>50</Text>
+        <Text style={styles.mutualsLabel}> Mutuals</Text>
       </View>
       <Text style={styles.description}>{channel.description}</Text>
-      <Pressable onPress={onSeeMorePress}>
-        <Text style={styles.seeMoreText}>See more</Text>
-      </Pressable>
     </View>
   );
 }
@@ -74,41 +57,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   channelImage: {
-    width: 40,
-    height: 40,
+    width: 60,
+    height: 60,
     borderRadius: 8,
   },
   nameText: {
     fontSize: 16,
     color: MyTheme.black,
     fontFamily: 'BeVietnamPro-Bold',
-    flex: 1,
-  },
-  urlCtn: {
-    marginTop: 5,
-    flexDirection: 'row',
-    alignItems: 'center',
-    maxWidth: '100%',
   },
   subtitle: {
+    marginTop: 5,
     color: MyTheme.grey400,
     fontFamily: 'BeVietnamPro-Regular',
     maxWidth: '60%',
   },
+  countersCtn: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginTop: 15,
+  },
   dotSeparator: {
-    marginHorizontal: 5,
+    marginHorizontal: 3,
     color: MyTheme.grey400,
+    fontFamily: 'BeVietnamPro-Bold',
+  },
+  mutualsCount: {
+    fontFamily: 'BeVietnamPro-Bold',
+    color: MyTheme.grey500,
+  },
+  mutualsLabel: {
     fontFamily: 'BeVietnamPro-Regular',
+    color: MyTheme.grey400,
   },
   description: {
     marginTop: 15,
     color: MyTheme.grey500,
     fontFamily: 'BeVietnamPro-Regular',
-  },
-  countersCtn: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    marginTop: 15,
   },
   seeMoreText: {
     color: MyTheme.primaryColor,

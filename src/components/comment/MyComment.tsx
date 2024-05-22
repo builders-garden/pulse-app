@@ -29,6 +29,7 @@ export type MyCommentProps = {
   hideActionBar?: boolean;
   commentCustomStyle?: StyleProp<ViewStyle>;
   rootCustomStyle?: StyleProp<ViewStyle>;
+  onContentBodyPress?: () => void;
 };
 
 const MyComment = ({
@@ -46,6 +47,7 @@ const MyComment = ({
   hideActionBar,
   commentCustomStyle,
   rootCustomStyle,
+  onContentBodyPress,
 }: MyCommentProps) => {
   const indentSize = 5;
 
@@ -138,7 +140,10 @@ const MyComment = ({
               {
                 marginBottom: image ? 20 : 0,
               },
-            ]}>
+            ]}
+            onPress={() => {
+              onContentBodyPress && onContentBodyPress();
+            }}>
             {content}
           </Text>
           {/* {image && <Image style={styles.contentImage} source={{uri: image}} />} */}
