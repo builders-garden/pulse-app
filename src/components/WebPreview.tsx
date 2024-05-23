@@ -74,7 +74,7 @@ const WebPreview = ({url, linkPreview, customStyle}: WebPreviewProps) => {
         <Image source={{uri: image}} style={styles.image} />
       ) : (
         <View style={styles.placeholderBox}>
-          <LinkImg width={100} height={100} />
+          <LinkImg width={50} height={50} />
         </View>
       )}
       {title !== '' && <Text style={styles.title}>{title}</Text>}
@@ -90,39 +90,38 @@ const WebPreview = ({url, linkPreview, customStyle}: WebPreviewProps) => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    padding: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 18,
+    backgroundColor: MyTheme.white,
   },
   image: {
     width: '100%',
     height: 150,
-    borderRadius: 8,
     resizeMode: 'cover',
   },
   placeholderBox: {
     width: '100%',
-    height: 150,
-    borderRadius: 8,
-    justifyContent: 'center',
+    height: 80,
+    justifyContent: 'flex-end',
     alignItems: 'center',
     backgroundColor: MyTheme.white,
-    marginBottom: 10,
   },
   title: {
     fontSize: 16,
-    fontWeight: '500',
     marginTop: 10,
-    fontFamily: MyTheme.fontRegular,
+    paddingHorizontal: 10,
+    fontFamily: MyTheme.fontBold,
     color: MyTheme.black,
   },
   titleOnly: {
     fontSize: 16,
+    marginTop: 10,
+    marginBottom: 10,
+    paddingHorizontal: 10,
     fontFamily: MyTheme.fontRegular,
     color: MyTheme.black,
   },
   description: {
-    marginTop: 5,
+    marginBottom: 10,
+    paddingHorizontal: 10,
     fontFamily: MyTheme.fontRegular,
     color: MyTheme.black,
   },

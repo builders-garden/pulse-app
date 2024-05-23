@@ -73,6 +73,8 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
 
       return (
         <MyPost
+          upvoted={item.viewer_context.liked}
+          recasted={item.viewer_context.recasted}
           postHash={item.hash}
           headerImg={transformedItem.headerImg}
           postTime={transformedItem.postTime}

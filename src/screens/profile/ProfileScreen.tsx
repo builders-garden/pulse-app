@@ -34,9 +34,11 @@ function ProfileScreen({route, navigation}: HomeTabScreenProps<'Profile'>) {
     setProfileFetchStatus('loading');
     try {
       const finalUrl = ENDPOINT_PROFILE + (route?.params?.userFid ?? '409851');
+      console.log('fetching profile', finalUrl);
       const res = await axios.get<ProfileResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
+      console.log('got response', res.data.result);
       // console.log('got response');
       setProfile(res.data.result);
       setProfileFetchStatus('success');

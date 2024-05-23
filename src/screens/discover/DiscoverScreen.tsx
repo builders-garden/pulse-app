@@ -2,142 +2,29 @@ import axios from 'axios';
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {TrendingCastResult, TrendingCastsResponse} from '../../api/cast/types';
-import {ChannelActivity, ChannelsResponse} from '../../api/channel/types';
+import {
+  ChannelActivity,
+  ChannelsResponse,
+  MostFollowedChannel,
+  MostFollowedChannelsResponse,
+} from '../../api/channel/types';
 import {RequestStatus} from '../../api/types';
 import PenImg from '../../assets/images/icons/pen.svg';
 import MyButton from '../../components/MyButton';
 import MyFloatingButton from '../../components/MyFloatingButton';
 import MyLoader from '../../components/MyLoader';
 import {AuthContext} from '../../contexts/auth/Auth.context';
-import {TransformTopChannels} from '../../libs/channels';
+import {TransformMostFollowedChannels} from '../../libs/channels';
 import {formatDate} from '../../libs/date';
 import {HomeTabScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
 import {
+  ENDPOINT_MOST_FOLLOWED_CHANNELS,
   ENDPOINT_TRENDING_CASTS,
   ENDPOINT_TRENDING_CHANNELS,
 } from '../../variables';
 import ChannelCard from './components/ChannelCard';
 import TrendingPostItem from './components/TrendingPostItem';
-
-const placeholderCards = [
-  {
-    title: 'test title',
-    subtitle: '66.4k followers',
-    body: 'Lorem ipsum dolor sit amet consectetur. Mauris tincidunt pellentesque sit vitae magna.',
-    buttonText: 'Follow',
-  },
-  {
-    title: 'test title',
-    subtitle: '66.4k followers',
-    body: 'Lorem ipsum dolor sit amet consectetur.',
-    buttonText: 'Follow',
-  },
-  {
-    title: 'test title',
-    subtitle: '66.4k followers',
-    body: 'Lorem ipsum dolor sit amet consectetur.',
-    buttonText: 'Follow',
-  },
-  {
-    title: 'test title',
-    subtitle: '66.4k followers',
-    body: 'Lorem ipsum dolor sit amet consectetur. Mauris tincidunt pellentesque sit vitae magna.',
-    buttonText: 'Follow',
-  },
-  {
-    title: 'test title',
-    subtitle: '66.4k followers',
-    body: 'Lorem ipsum dolor sit amet consectetur. Mauris tincidunt pellentesque sit vitae magna.',
-    buttonText: 'Follow',
-  },
-];
-
-const placeholderPosts = [
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: '/degen',
-    headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
-    content:
-      'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
-    image: require('../../assets/images/placeholders/picture.png'),
-    upvotesCount: 10,
-    commentsCount: 3,
-    quotesCount: 2,
-    postTime: '2h',
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: '/degen',
-    headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
-    content:
-      'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
-    upvotesCount: 10,
-    commentsCount: 3,
-    quotesCount: 2,
-    postTime: '2h',
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: '/degen',
-    headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
-    content:
-      'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
-    image: require('../../assets/images/placeholders/picture.png'),
-    upvotesCount: 10,
-    commentsCount: 3,
-    quotesCount: 2,
-    postTime: '2h',
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: '/degen',
-    headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
-    content:
-      'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
-    image: require('../../assets/images/placeholders/picture.png'),
-    upvotesCount: 10,
-    commentsCount: 3,
-    quotesCount: 2,
-    postTime: '2h',
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: '/degen',
-    headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
-    content:
-      'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
-    image: require('../../assets/images/placeholders/picture.png'),
-    upvotesCount: 10,
-    commentsCount: 3,
-    quotesCount: 2,
-    postTime: '2h',
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: '/degen',
-    headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
-    content:
-      'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
-    image: require('../../assets/images/placeholders/picture.png'),
-    upvotesCount: 10,
-    commentsCount: 3,
-    quotesCount: 2,
-    postTime: '2h',
-  },
-  {
-    headerImg: require('../../assets/images/placeholders/profile_pic.png'),
-    headerTitle: '/degen',
-    headerSubtitle: 'limone.eth - serial frame hacker • @limone.eth',
-    content:
-      'time to share what we built this weekend in london!fluidpay, stealth p2p payments on @base with usdc thanks to @fluidkey and @safe smart accounts- social login- pay your friends- send request links- create virtual cards- connect your @gnosispaycc @frankk @orbulo',
-    image: require('../../assets/images/placeholders/picture.png'),
-    upvotesCount: 10,
-    commentsCount: 3,
-    quotesCount: 2,
-    postTime: '2h',
-  },
-];
 
 function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
   const authContext = useContext(AuthContext);
@@ -148,9 +35,9 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
     useState<RequestStatus>('idle');
   const [topChannels, setTopChannels] = useState<
     {
-      item1: ChannelActivity;
-      item2?: ChannelActivity;
-      item3?: ChannelActivity;
+      item1: MostFollowedChannel;
+      item2?: MostFollowedChannel;
+      item3?: MostFollowedChannel;
     }[]
   >([]);
   const [trendingPostsFetchStatus, setTrendingPostsFetchStatus] =
@@ -192,11 +79,11 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
     setTopChannelsFetchStatus('loading');
     try {
       console.log('fetching channels...');
-      const finalUrl = ENDPOINT_TRENDING_CHANNELS;
-      const res = await axios.get<ChannelsResponse>(finalUrl, {
+      const finalUrl = ENDPOINT_MOST_FOLLOWED_CHANNELS;
+      const res = await axios.get<MostFollowedChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
-      const transformed = TransformTopChannels(res.data.result);
+      const transformed = TransformMostFollowedChannels(res.data.result);
       setTopChannels(transformed);
       setTopChannelsFetchStatus('success');
     } catch (error) {
@@ -218,7 +105,11 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
   const renderForYouItem = useCallback(
     ({item, index}: {item: ChannelActivity; index: number}) => (
       <ChannelCard
-        channel={item.channel}
+        description={item.channel.description}
+        followerCount={item.channel.follower_count}
+        imageUrl={item.channel.image_url}
+        id={item.channel.id}
+        name={item.channel.name}
         customStyle={{
           marginLeft: index == 0 ? 20 : 10,
           marginRight: index == channelsForYou.length - 1 ? 20 : 0,
@@ -264,9 +155,9 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
       index,
     }: {
       item: {
-        item1: ChannelActivity;
-        item2?: ChannelActivity;
-        item3?: ChannelActivity;
+        item1: MostFollowedChannel;
+        item2?: MostFollowedChannel;
+        item3?: MostFollowedChannel;
       };
       index: number;
     }) => (
@@ -276,7 +167,11 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
           marginRight: index == topChannels.length - 1 ? 20 : 0,
         }}>
         <ChannelCard
-          channel={item.item1.channel}
+          name={item.item1.name}
+          description={'description'}
+          followerCount={item.item1.followerCount}
+          imageUrl={item.item1.imageUrl}
+          id={item.item1.channelId}
           customStyle={{
             marginRight: index == topChannels.length - 1 ? 20 : 0,
             height: 130,
@@ -286,7 +181,11 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
         />
         {item.item2 && (
           <ChannelCard
-            channel={item.item2.channel}
+            name={item.item2.name}
+            description={'description'}
+            followerCount={item.item2.followerCount}
+            imageUrl={item.item2.imageUrl}
+            id={item.item2.channelId}
             customStyle={{
               marginRight: index == topChannels.length - 1 ? 20 : 0,
               marginTop: 10,
@@ -298,7 +197,11 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
         )}
         {item.item3 && (
           <ChannelCard
-            channel={item.item3.channel}
+            name={item.item3.name}
+            description={'description'}
+            followerCount={item.item3.followerCount}
+            imageUrl={item.item3.imageUrl}
+            id={item.item3.channelId}
             customStyle={{
               marginRight: index == topChannels.length - 1 ? 20 : 0,
               marginTop: 10,

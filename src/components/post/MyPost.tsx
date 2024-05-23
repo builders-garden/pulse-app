@@ -18,6 +18,8 @@ type MyPostProps = {
   headerSubtitle: string;
   content: string;
   image?: string;
+  upvoted: boolean;
+  recasted: boolean;
   commentsCount: number;
   quotesCount: number;
   upvotesCount: number;
@@ -33,6 +35,8 @@ const MyPost = ({
   headerSubtitle,
   content,
   image,
+  upvoted,
+  recasted,
   commentsCount,
   quotesCount,
   upvotesCount,
@@ -40,13 +44,13 @@ const MyPost = ({
   onContentBodyPress,
 }: MyPostProps) => {
   const authContext = useContext(AuthContext);
-  const [isUpvoted, setIsUpvoted] = useState(false);
-  const [isRecasted, setIsRecasted] = useState(false);
+  const [isUpvoted, setIsUpvoted] = useState(0);
+  const [isRecasted, setIsRecasted] = useState(0);
 
   const toggleUpvote = useCallback(async () => {
     try {
       const finalUrl = `${ENDPOINT_CAST}${postHash}/reactions`;
-      if (isUpvoted) {
+      if ((upvoted && isUpvoted === 0) || isUpvoted === 1) {
         console.log('deleting', finalUrl);
         const res = await axios.delete<ReactionResponse>(finalUrl, {
           data: {
@@ -56,9 +60,13 @@ const MyPost = ({
         });
         console.log('got response', res.data);
         if (res.data.result.success) {
-          setIsUpvoted(false);
+          if (isUpvoted === 1) {
+            setIsUpvoted(0);
+          } else if (isUpvoted === 0) {
+            setIsUpvoted(-1);
+          }
         }
-      } else {
+      } else if ((!upvoted && isUpvoted === 0) || isUpvoted === -1) {
         console.log('upvoting', finalUrl);
         const res = await axios.post<ReactionResponse>(
           finalUrl,
@@ -71,17 +79,21 @@ const MyPost = ({
         );
         console.log('got response', res.data);
         if (res.data.result.success) {
-          setIsUpvoted(true);
+          if (isUpvoted === -1) {
+            setIsUpvoted(0);
+          } else if (isUpvoted === 0) {
+            setIsUpvoted(1);
+          }
         }
       }
     } catch (error) {
       console.error(error);
     }
-  }, [authContext.state.token, postHash, isUpvoted]);
+  }, [authContext.state.token, postHash, isUpvoted, upvoted]);
   const toggleRecast = useCallback(async () => {
     try {
       const finalUrl = `${ENDPOINT_CAST}${postHash}/reactions`;
-      if (isRecasted) {
+      if ((recasted && isRecasted === 0) || isRecasted === 1) {
         console.log('deleting recast', finalUrl);
         const res = await axios.delete<ReactionResponse>(finalUrl, {
           data: {
@@ -91,9 +103,13 @@ const MyPost = ({
         });
         console.log('got response', res.data);
         if (res.data.result.success) {
-          setIsRecasted(false);
+          if (isRecasted === 1) {
+            setIsRecasted(0);
+          } else if (isRecasted === 0) {
+            setIsRecasted(-1);
+          }
         }
-      } else {
+      } else if ((!recasted && isRecasted === 0) || isRecasted === -1) {
         console.log('recasting', finalUrl);
         const res = await axios.post<ReactionResponse>(
           finalUrl,
@@ -106,13 +122,17 @@ const MyPost = ({
         );
         console.log('got response', res.data);
         if (res.data.result.success) {
-          setIsRecasted(true);
+          if (isRecasted === -1) {
+            setIsRecasted(0);
+          } else if (isRecasted === 0) {
+            setIsRecasted(1);
+          }
         }
       }
     } catch (error) {
       console.error(error);
     }
-  }, [authContext.state.token, postHash, isRecasted]);
+  }, [authContext.state.token, postHash, isRecasted, recasted]);
 
   return (
     <View style={[styles.root, customStyle && customStyle]}>
@@ -157,11 +177,11 @@ const MyPost = ({
         {image && <UrlViewer url={image} />}
       </View>
       <PostActionBar
-        isUpvoted={isUpvoted}
-        isRecasted={isRecasted}
+        isUpvoted={isUpvoted === 0 ? upvoted : isUpvoted === 1}
+        isRecasted={isRecasted === 0 ? recasted : isRecasted === 1}
         commentsCount={commentsCount}
-        quotesCount={quotesCount + (isRecasted ? 1 : 0)}
-        upvotesCount={upvotesCount + (isUpvoted ? 1 : 0)}
+        quotesCount={quotesCount + isRecasted}
+        upvotesCount={upvotesCount + isUpvoted}
         onUpvotesPress={() => {
           toggleUpvote();
         }}

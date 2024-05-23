@@ -8,7 +8,6 @@ import {
   ViewStyle,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {Channel} from '../../../api/channel/types';
 import FollowCounter from '../../../components/FollowCounter';
 import MyButtonNew from '../../../components/MyButtonNew';
 import {formatNumber} from '../../../libs/numbers';
@@ -17,19 +16,27 @@ import {MyTheme} from '../../../theme';
 interface ChannelCardProps {
   onPress: () => void;
   onButtonPress: () => void;
-  channel: Channel;
+  imageUrl: string;
+  name: string;
+  id: string;
+  description: string;
+  followerCount: number;
   disabled?: boolean;
   customStyle?: StyleProp<ViewStyle>;
 }
 
 const ChannelCard = ({
-  channel,
   disabled,
   customStyle,
+  imageUrl,
+  name,
+  id,
+  description,
+  followerCount,
   onPress,
   onButtonPress,
 }: ChannelCardProps) => {
-  const formattedCount = formatNumber(channel.follower_count);
+  const formattedCount = formatNumber(followerCount);
 
   return (
     <Pressable
@@ -42,14 +49,14 @@ const ChannelCard = ({
         customStyle,
       ]}>
       <View style={styles.header}>
-        <FastImage source={{uri: channel.image_url}} style={styles.headerImg} />
+        <FastImage source={{uri: imageUrl}} style={styles.headerImg} />
         <View style={styles.headerTextCtn}>
           <Text numberOfLines={1} style={styles.headerTitle}>
-            {channel.name}
+            {name}
           </Text>
           <View style={styles.headerSubtitleCtn}>
             <Text numberOfLines={1} style={styles.headerSubtitle}>
-              /{channel.id} •{' '}
+              /{id} •{' '}
             </Text>
             <FollowCounter
               count={formattedCount}
@@ -68,7 +75,7 @@ const ChannelCard = ({
         />
       </View>
       <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.body]}>
-        {channel.description}
+        {description}
       </Text>
     </Pressable>
   );
