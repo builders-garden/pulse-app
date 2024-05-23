@@ -1,8 +1,7 @@
 import axios from 'axios';
-import React, {useContext, useEffect, useMemo, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {SectionList, Text, View} from 'react-native';
 import {
-  Cast,
   CastConversationResponse,
   ConversationSectionList,
 } from '../../api/cast/types';
@@ -12,8 +11,9 @@ import UserInfo from '../../components/UserInfo';
 import MyComment from '../../components/comment/MyComment';
 import MyThread from '../../components/thread/MyThread';
 import {AuthContext} from '../../contexts/auth/Auth.context';
-import {TransformCast, TransformConversation} from '../../libs/post';
+import {TransformCast} from '../../libs/post';
 import {RootStackScreenProps} from '../../routing/types';
+import {MyTheme} from '../../theme';
 import {ENDPOINT_CAST} from '../../variables';
 
 function ThreadDetailScreen({
@@ -23,7 +23,7 @@ function ThreadDetailScreen({
   const authContext = useContext(AuthContext);
   const [threadFetchStatus, setThreadFetchStatus] =
     useState<RequestStatus>('idle');
-  const [thread, setThread] = useState<Cast>();
+  const [thread, setThread] = useState<ConversationSectionList>();
   useEffect(() => {
     async function fetchCast() {
       setThreadFetchStatus('loading');
@@ -36,7 +36,8 @@ function ThreadDetailScreen({
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
         // console.log('got response');
-        setThread(res.data.result.conversation.cast);
+        console.log(res.data);
+        setThread(res.data.result);
         setThreadFetchStatus('success');
       } catch (error) {
         console.error(error);
@@ -47,14 +48,6 @@ function ThreadDetailScreen({
     fetchCast();
   }, [authContext, route.params.threadHash]);
 
-  const flattenedConversation = useMemo<ConversationSectionList>(
-    () =>
-      thread ? TransformConversation([thread]) : {casts: [], sections: []},
-    [thread],
-  );
-
-  console.log('flattenedConversation', JSON.stringify(flattenedConversation));
-
   if (threadFetchStatus === 'loading') {
     return (
       <View style={{width: '100%', padding: 20}}>
@@ -63,13 +56,23 @@ function ThreadDetailScreen({
     );
   } else if (thread == null || thread === undefined) {
     return (
-      <View>
-        <Text>No thread visible</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Text
+          style={{
+            fontFamily: MyTheme.fontRegular,
+          }}>
+          No thread visible
+        </Text>
       </View>
     );
   }
 
-  const threadsHtml = flattenedConversation.casts.map((item, index) => {
+  const threadsHtml = thread.casts.map((item, index) => {
     const transformedCast = TransformCast(item);
     return (
       <MyThread
@@ -83,11 +86,11 @@ function ThreadDetailScreen({
     );
   });
 
-  const transformedCast = TransformCast(flattenedConversation.casts[0]);
+  const transformedCast = TransformCast(thread.casts[0]);
   return (
     <View>
       <SectionList
-        sections={flattenedConversation.sections}
+        sections={thread.sections}
         style={{
           paddingRight: 15,
           paddingLeft: 5,
@@ -117,7 +120,7 @@ function ThreadDetailScreen({
             <MyComment
               headerImg={transformedCast.headerImg}
               postTime={transformedCast.postTime}
-              quote={flattenedConversation.casts[section.castIndex].text}
+              quote={thread.casts[section.castIndex].text}
               headerTitle={transformedCast.headerTitle}
               headerSubtitle={transformedCast.headerSubtitle}
               content={transformedCast.content}

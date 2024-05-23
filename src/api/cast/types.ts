@@ -1,11 +1,7 @@
 import {FeedItem, Reaction} from '../feed/types';
 
 export type CastConversationResponse = {
-  result: {
-    conversation: {
-      cast: Cast;
-    };
-  };
+  result: ConversationSectionList;
 };
 export type CommentResponse = {
   result: Comment[];
