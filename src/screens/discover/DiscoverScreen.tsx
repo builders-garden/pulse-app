@@ -7,6 +7,8 @@ import {
   ChannelsResponse,
   MostFollowedChannel,
   MostFollowedChannelsResponse,
+  MostRecentChannel,
+  MostRecentChannelsResponse,
 } from '../../api/channel/types';
 import {RequestStatus} from '../../api/types';
 import PenImg from '../../assets/images/icons/pen.svg';
@@ -14,12 +16,13 @@ import MyButton from '../../components/MyButton';
 import MyFloatingButton from '../../components/MyFloatingButton';
 import MyLoader from '../../components/MyLoader';
 import {AuthContext} from '../../contexts/auth/Auth.context';
-import {TransformMostFollowedChannels} from '../../libs/channels';
+import {TransformArrayTo3x3} from '../../libs/arrays';
 import {formatDate} from '../../libs/date';
 import {HomeTabScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
 import {
   ENDPOINT_MOST_FOLLOWED_CHANNELS,
+  ENDPOINT_MOST_RECENT_CHANNELS,
   ENDPOINT_TRENDING_CASTS,
   ENDPOINT_TRENDING_CHANNELS,
 } from '../../variables';
@@ -33,21 +36,21 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
   const [channelsForYou, setChannelsForYou] = useState<ChannelActivity[]>([]);
   const [topChannelsFetchStatus, setTopChannelsFetchStatus] =
     useState<RequestStatus>('idle');
-  const [topChannels, setTopChannels] = useState<
-    {
-      item1: MostFollowedChannel;
-      item2?: MostFollowedChannel;
-      item3?: MostFollowedChannel;
-    }[]
+  const [topChannels, setTopChannels] = useState<MostFollowedChannel[][]>([]);
+  const [mostRecentChannelsFetchStatus, setMostRecentChannelsFetchStatus] =
+    useState<RequestStatus>('idle');
+  const [mostRecentChannels, setMostRecentChannels] = useState<
+    MostRecentChannel[][]
   >([]);
   const [trendingPostsFetchStatus, setTrendingPostsFetchStatus] =
     useState<RequestStatus>('idle');
   const [trendingPosts, setTrendingPosts] = useState<TrendingCastResult[]>([]);
 
+  // FETCH FUNCTIONS
   const fetchChannelsForYou = useCallback(async () => {
     setChannelsForYouFetchStatus('loading');
     try {
-      console.log('fetching channels...');
+      console.log('fetching trending channels...');
       const finalUrl = ENDPOINT_TRENDING_CHANNELS;
       const res = await axios.get<ChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
@@ -78,12 +81,14 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
   const fetchTopChannels = useCallback(async () => {
     setTopChannelsFetchStatus('loading');
     try {
-      console.log('fetching channels...');
+      console.log('fetching top channels...');
       const finalUrl = ENDPOINT_MOST_FOLLOWED_CHANNELS;
       const res = await axios.get<MostFollowedChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
-      const transformed = TransformMostFollowedChannels(res.data.result);
+      const transformed = TransformArrayTo3x3<MostFollowedChannel>(
+        res.data.result,
+      );
       setTopChannels(transformed);
       setTopChannelsFetchStatus('success');
     } catch (error) {
@@ -91,7 +96,26 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
       setTopChannelsFetchStatus('error');
     }
   }, [authContext.state.token]);
+  const fetchMostRecentChannels = useCallback(async () => {
+    setMostRecentChannelsFetchStatus('loading');
+    try {
+      console.log('fetching most recent channels...');
+      const finalUrl = ENDPOINT_MOST_RECENT_CHANNELS + '?limit=9';
+      const res = await axios.get<MostRecentChannelsResponse>(finalUrl, {
+        headers: {Authorization: `Bearer ${authContext.state.token}`},
+      });
+      const transformed = TransformArrayTo3x3<MostRecentChannel>(
+        res.data.result,
+      );
+      setMostRecentChannels(transformed);
+      setMostRecentChannelsFetchStatus('success');
+    } catch (error) {
+      console.error(error);
+      setMostRecentChannelsFetchStatus('error');
+    }
+  }, [authContext.state.token]);
 
+  // EFFECTS
   useEffect(() => {
     fetchChannelsForYou();
   }, [fetchChannelsForYou, authContext]);
@@ -101,7 +125,11 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
   useEffect(() => {
     fetchTrendingPosts();
   }, [fetchTrendingPosts, authContext]);
+  useEffect(() => {
+    fetchMostRecentChannels();
+  }, [fetchMostRecentChannels, authContext]);
 
+  // RENDER FUNCTIONS
   const renderForYouItem = useCallback(
     ({item, index}: {item: ChannelActivity; index: number}) => (
       <ChannelCard
@@ -120,7 +148,6 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
     ),
     [channelsForYou],
   );
-
   const renderTrendingPostItem = useCallback(
     ({item, index}: {item: TrendingCastResult; index: number}) => {
       console.log(item.cast.castedAtTimestamp);
@@ -148,94 +175,71 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
     },
     [trendingPosts],
   );
-
   const renderTopChannelItem = useCallback(
-    ({
-      item,
-      index,
-    }: {
-      item: {
-        item1: MostFollowedChannel;
-        item2?: MostFollowedChannel;
-        item3?: MostFollowedChannel;
-      };
-      index: number;
-    }) => (
+    ({item, index}: {item: MostFollowedChannel[]; index: number}) => (
       <View
         style={{
           marginLeft: index == 0 ? 20 : 10,
           marginRight: index == topChannels.length - 1 ? 20 : 0,
         }}>
-        <ChannelCard
-          name={item.item1.name}
-          description={'description'}
-          followerCount={item.item1.followerCount}
-          imageUrl={item.item1.imageUrl}
-          id={item.item1.channelId}
-          customStyle={{
-            marginRight: index == topChannels.length - 1 ? 20 : 0,
-            height: 130,
-          }}
-          onPress={() => {}}
-          onButtonPress={() => {}}
-        />
-        {item.item2 && (
-          <ChannelCard
-            name={item.item2.name}
-            description={'description'}
-            followerCount={item.item2.followerCount}
-            imageUrl={item.item2.imageUrl}
-            id={item.item2.channelId}
-            customStyle={{
-              marginRight: index == topChannels.length - 1 ? 20 : 0,
-              marginTop: 10,
-              height: 130,
-            }}
-            onPress={() => {}}
-            onButtonPress={() => {}}
-          />
-        )}
-        {item.item3 && (
-          <ChannelCard
-            name={item.item3.name}
-            description={'description'}
-            followerCount={item.item3.followerCount}
-            imageUrl={item.item3.imageUrl}
-            id={item.item3.channelId}
-            customStyle={{
-              marginRight: index == topChannels.length - 1 ? 20 : 0,
-              marginTop: 10,
-              height: 130,
-            }}
-            onPress={() => {}}
-            onButtonPress={() => {}}
-          />
-        )}
+        {item.map((channel, subIndex) => {
+          return (
+            <ChannelCard
+              key={channel.channelId}
+              name={channel.name}
+              description={'description'}
+              followerCount={channel.followerCount}
+              imageUrl={channel.imageUrl}
+              id={channel.channelId}
+              customStyle={{
+                marginRight: index == topChannels.length - 1 ? 20 : 0,
+                marginTop: subIndex == 0 ? 0 : 10,
+                height: 130,
+              }}
+              onPress={() => {}}
+              onButtonPress={() => {}}
+            />
+          );
+        })}
+      </View>
+    ),
+    [topChannels],
+  );
+  const renderMostRecentChannelItem = useCallback(
+    ({item, index}: {item: MostRecentChannel[]; index: number}) => (
+      <View
+        style={{
+          marginLeft: index == 0 ? 20 : 10,
+          marginRight: index == topChannels.length - 1 ? 20 : 0,
+        }}>
+        {item.map((channel, subIndex) => {
+          return (
+            <ChannelCard
+              key={channel.channelId}
+              name={channel.name}
+              description={'description'}
+              imageUrl={channel.imageUrl}
+              id={channel.channelId}
+              customStyle={{
+                marginRight: index == topChannels.length - 1 ? 20 : 0,
+                marginTop: subIndex == 0 ? 0 : 10,
+                height: 130,
+              }}
+              onPress={() => {}}
+              onButtonPress={() => {}}
+            />
+          );
+        })}
       </View>
     ),
     [topChannels],
   );
 
-  // const transformedTopChannels = placeholderCards.reduce(
-  //   (acc, curr, index, array) => {
-  //     if (index % 2 === 0) {
-  //       if (index === array.length - 1) {
-  //         acc.push({item1: curr});
-  //       } else {
-  //         acc.push({item1: curr, item2: array[index + 1]});
-  //       }
-  //     }
-  //     return acc;
-  //   },
-  //   [] as Array<{
-  //     item1: (typeof placeholderCards)[0];
-  //     item2?: (typeof placeholderCards)[0];
-  //   }>,
-  // );
-
   if (
     channelsForYouFetchStatus === 'loading' ||
-    trendingPostsFetchStatus === 'loading'
+    trendingPostsFetchStatus === 'loading' ||
+    topChannelsFetchStatus === 'loading' ||
+    mostRecentChannelsFetchStatus === 'loading'
   ) {
     return (
       <View style={styles.loadingCtn}>
@@ -244,7 +248,9 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
     );
   } else if (
     channelsForYouFetchStatus === 'error' ||
-    trendingPostsFetchStatus === 'error'
+    trendingPostsFetchStatus === 'error' ||
+    topChannelsFetchStatus === 'error' ||
+    mostRecentChannelsFetchStatus === 'error'
   ) {
     return (
       <View style={styles.errorCtn}>
@@ -254,8 +260,12 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
           onPress={() => {
             if (channelsForYouFetchStatus === 'error') {
               fetchChannelsForYou();
-            } else {
+            } else if (trendingPostsFetchStatus === 'error') {
               fetchTrendingPosts();
+            } else if (topChannelsFetchStatus === 'error') {
+              fetchTopChannels();
+            } else if (mostRecentChannelsFetchStatus === 'error') {
+              fetchMostRecentChannels();
             }
           }}
         />
@@ -296,12 +306,20 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
             renderItem={renderTopChannelItem}
           />
         </View> */}
-        <View style={{marginTop: 30, marginBottom: 20}}>
+        <View style={{marginTop: 30}}>
           <Text style={styles.sectionLabel}>Top channels</Text>
           <FlatList
             horizontal
             data={topChannels}
             renderItem={renderTopChannelItem}
+          />
+        </View>
+        <View style={{marginTop: 30, marginBottom: 20}}>
+          <Text style={styles.sectionLabel}>Most recent channels</Text>
+          <FlatList
+            horizontal
+            data={mostRecentChannels}
+            renderItem={renderMostRecentChannelItem}
           />
         </View>
       </ScrollView>

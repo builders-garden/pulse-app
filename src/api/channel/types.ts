@@ -6,6 +6,9 @@ export type ChannelsResponse = {
 export type MostFollowedChannelsResponse = {
   result: MostFollowedChannel[];
 };
+export type MostRecentChannelsResponse = {
+  result: MostRecentChannel[];
+};
 export type ChannelResponse = {
   result: Channel;
 };
@@ -38,4 +41,8 @@ export type MostFollowedChannel = {
   followerCount: number;
   imageUrl: string;
   url: string;
+};
+
+export type MostRecentChannel = Omit<MostFollowedChannel, 'followerCount'> & {
+  createdAtTimestamp: string;
 };

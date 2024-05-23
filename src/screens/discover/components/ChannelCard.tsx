@@ -20,7 +20,7 @@ interface ChannelCardProps {
   name: string;
   id: string;
   description: string;
-  followerCount: number;
+  followerCount?: number;
   disabled?: boolean;
   customStyle?: StyleProp<ViewStyle>;
 }
@@ -36,7 +36,7 @@ const ChannelCard = ({
   onPress,
   onButtonPress,
 }: ChannelCardProps) => {
-  const formattedCount = formatNumber(followerCount);
+  const formattedCount = followerCount ? formatNumber(followerCount) : '';
 
   return (
     <Pressable
@@ -55,17 +55,26 @@ const ChannelCard = ({
             {name}
           </Text>
           <View style={styles.headerSubtitleCtn}>
-            <Text numberOfLines={1} style={styles.headerSubtitle}>
-              /{id} •{' '}
-            </Text>
-            <FollowCounter
-              count={formattedCount}
-              label=""
-              countCustomStyle={{
-                fontFamily: MyTheme.fontRegular,
-                color: MyTheme.grey400,
-              }}
-            />
+            {followerCount ? (
+              <>
+                <Text numberOfLines={1} style={styles.headerSubtitle}>
+                  /{id} •{' '}
+                </Text>
+
+                <FollowCounter
+                  count={formattedCount}
+                  label=""
+                  countCustomStyle={{
+                    fontFamily: MyTheme.fontRegular,
+                    color: MyTheme.grey400,
+                  }}
+                />
+              </>
+            ) : (
+              <Text numberOfLines={1} style={styles.headerSubtitle}>
+                /{id}
+              </Text>
+            )}
           </View>
         </View>
         <MyButtonNew
