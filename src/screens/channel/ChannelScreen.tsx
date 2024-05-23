@@ -110,6 +110,7 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
 
       return (
         <MyPost
+          postHash={item.hash}
           headerImg={transformedItem.headerImg}
           postTime={transformedItem.postTime}
           headerTitle={transformedItem.headerTitle}

@@ -91,6 +91,7 @@ function ProfileScreen({route, navigation}: HomeTabScreenProps<'Profile'>) {
 
         return (
           <MyPost
+            postHash={item.hash}
             headerImg={transformedItem.headerImg}
             postTime={transformedItem.postTime}
             headerTitle={transformedItem.headerTitle}

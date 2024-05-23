@@ -73,6 +73,7 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
 
       return (
         <MyPost
+          postHash={item.hash}
           headerImg={transformedItem.headerImg}
           postTime={transformedItem.postTime}
           headerTitle={transformedItem.headerTitle}

@@ -6,6 +6,7 @@ import HatImg from '../../assets/images/icons/hat.svg';
 import QuoteImg from '../../assets/images/icons/quote.svg';
 import ShareImg from '../../assets/images/icons/share.svg';
 import UpvoteImg from '../../assets/images/icons/upvote.svg';
+import UpvoteFillImg from '../../assets/images/icons/upvote_fill.svg';
 import {MyTheme} from '../../theme';
 import MyChipBase from '../MyChipBase';
 import MyIconButtonBase from '../MyIconButtonBase';
@@ -13,6 +14,8 @@ type PostActionBarProps = {
   commentsCount: number;
   quotesCount: number;
   upvotesCount: number;
+  isUpvoted?: boolean;
+  isRecasted?: boolean;
   onCommentsPress?: () => void;
   onQuotesPress?: () => void;
   onUpvotesPress?: () => void;
@@ -25,6 +28,8 @@ const PostActionBar = ({
   commentsCount,
   quotesCount,
   upvotesCount,
+  isUpvoted,
+  isRecasted,
   onCommentsPress,
   onQuotesPress,
   onUpvotesPress,
@@ -36,16 +41,25 @@ const PostActionBar = ({
     <View style={styles.postActionBar}>
       <MyChipBase
         iconLeft={
-          <UpvoteImg
-            style={{marginRight: 3}}
-            width={18}
-            height={18}
-            color={MyTheme.grey400}
-          />
+          isUpvoted ? (
+            <UpvoteFillImg
+              style={{marginRight: 3}}
+              width={18}
+              height={18}
+              color={MyTheme.primaryColor}
+            />
+          ) : (
+            <UpvoteImg
+              style={{marginRight: 3}}
+              width={18}
+              height={18}
+              color={MyTheme.grey300}
+            />
+          )
         }
         title={upvotesCount.toString()}
         size="small"
-        style="secondary"
+        style={isUpvoted ? 'primary' : 'secondary'}
         filling="clear"
         onPress={() => {
           onUpvotesPress && onUpvotesPress();
@@ -55,7 +69,7 @@ const PostActionBar = ({
       <MyChipBase
         iconLeft={
           <CommentImg
-            color={MyTheme.grey400}
+            color={MyTheme.grey300}
             style={{marginRight: 3}}
             width={18}
             height={18}
@@ -72,15 +86,24 @@ const PostActionBar = ({
       />
       <MyChipBase
         iconLeft={
-          <QuoteImg
-            color={MyTheme.grey400}
-            style={{marginRight: 3}}
-            width={18}
-            height={18}
-          />
+          isRecasted ? (
+            <QuoteImg
+              color={MyTheme.primaryColor}
+              style={{marginRight: 3}}
+              width={18}
+              height={18}
+            />
+          ) : (
+            <QuoteImg
+              color={MyTheme.grey300}
+              style={{marginRight: 3}}
+              width={18}
+              height={18}
+            />
+          )
         }
         size="small"
-        style="secondary"
+        style={isRecasted ? 'primary' : 'secondary'}
         filling="clear"
         title={quotesCount.toString()}
         onPress={() => {
@@ -92,7 +115,7 @@ const PostActionBar = ({
       <MyChipBase
         iconLeft={
           <HatImg
-            color={MyTheme.grey400}
+            color={MyTheme.grey300}
             style={{marginRight: 3}}
             width={18}
             height={18}
@@ -112,7 +135,7 @@ const PostActionBar = ({
           onBookmarkPress && onBookmarkPress();
         }}
         filling="clear"
-        icon={<BookmarkImg width={18} height={18} color={MyTheme.grey400} />}
+        icon={<BookmarkImg width={18} height={18} color={MyTheme.grey300} />}
         customStyle={{marginLeft: 'auto', marginRight: 8}}
       />
       <MyIconButtonBase
@@ -120,20 +143,22 @@ const PostActionBar = ({
           onSharePress && onSharePress();
         }}
         filling="clear"
-        icon={<ShareImg width={18} height={18} color={MyTheme.grey400} />}
+        icon={<ShareImg width={18} height={18} color={MyTheme.grey300} />}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  verticalDivider: {width: 1, backgroundColor: MyTheme.grey400, height: '100%'},
+  verticalDivider: {width: 1, backgroundColor: MyTheme.grey300, height: '100%'},
   postActionBar: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
     marginTop: 10,
     justifyContent: 'flex-start',
+    paddingHorizontal: 10,
+    marginBottom: 10,
   },
 });
 

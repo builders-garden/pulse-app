@@ -56,9 +56,6 @@ const styles = StyleSheet.create({
   viewer: {
     width: '100%',
     height: 200,
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: 'lightgray',
   },
   youtubePlayer: {
     width: '100%',

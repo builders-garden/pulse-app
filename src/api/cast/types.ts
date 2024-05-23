@@ -14,6 +14,11 @@ export type CommentResponse = {
 export type TrendingCastsResponse = {
   result: TrendingCastResult[];
 };
+export type ReactionResponse = {
+  result: {
+    success: boolean;
+  };
+};
 
 export type Cast = Omit<FeedItem, 'reactions'> & {
   reactions: {
