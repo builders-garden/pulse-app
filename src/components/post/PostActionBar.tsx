@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import BookmarkImg from '../../assets/images/icons/bookmark.svg';
 import CommentImg from '../../assets/images/icons/comment.svg';
 import HatImg from '../../assets/images/icons/hat.svg';
@@ -16,6 +16,7 @@ type PostActionBarProps = {
   upvotesCount: number;
   isUpvoted?: boolean;
   isRecasted?: boolean;
+  customStyle?: StyleProp<ViewStyle>;
   onCommentsPress?: () => void;
   onQuotesPress?: () => void;
   onUpvotesPress?: () => void;
@@ -30,6 +31,7 @@ const PostActionBar = ({
   upvotesCount,
   isUpvoted,
   isRecasted,
+  customStyle,
   onCommentsPress,
   onQuotesPress,
   onUpvotesPress,
@@ -38,7 +40,7 @@ const PostActionBar = ({
   onSharePress,
 }: PostActionBarProps) => {
   return (
-    <View style={styles.postActionBar}>
+    <View style={[styles.postActionBar, customStyle && customStyle]}>
       <MyChipBase
         iconLeft={
           isUpvoted ? (
@@ -157,8 +159,6 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 10,
     justifyContent: 'flex-start',
-    paddingHorizontal: 10,
-    marginBottom: 10,
   },
 });
 

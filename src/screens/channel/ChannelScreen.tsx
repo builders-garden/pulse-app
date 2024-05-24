@@ -14,7 +14,7 @@ import MyPost from '../../components/post/MyPost';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {TransformFeedItem} from '../../libs/post';
 import {FeedStackScreenProps} from '../../routing/types';
-import {ENDPOINT_CHANNEL} from '../../variables';
+import {ENDPOINT_CHANNELS} from '../../variables';
 import Header from './components/Header';
 
 function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
@@ -34,7 +34,7 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
     // route.params.channelId
     try {
       console.log('fetching channel...');
-      const finalUrl = ENDPOINT_CHANNEL + route.params.channelId;
+      const finalUrl = ENDPOINT_CHANNELS + '/' + route.params.channelId;
       const res = await axios.get<ChannelResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
@@ -51,7 +51,7 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
     try {
       console.log('fetching feed...');
       const finalUrl =
-        ENDPOINT_CHANNEL + route.params.channelId + '/feed?limit=10';
+        ENDPOINT_CHANNELS + '/' + route.params.channelId + '/feed?limit=10';
       console.log('finalUrl', finalUrl);
       const res = await axios.get<FeedResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
@@ -83,7 +83,7 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
       setNewThreadsFetchStatus('loading');
       console.log('fetching new threads');
       const finalUrl =
-        ENDPOINT_CHANNEL + route.params.channelId + '/feed?limit=10';
+        ENDPOINT_CHANNELS + '/' + route.params.channelId + '/feed?limit=10';
       const res = await axios.get<FeedResponse>(
         `${finalUrl}&cursor=${cursor}`,
         {

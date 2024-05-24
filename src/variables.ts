@@ -11,4 +11,4 @@ export const ENDPOINT_TRENDING_CHANNELS = `${API_URL}/farcaster/channels/trendin
 export const ENDPOINT_MOST_FOLLOWED_CHANNELS = `${API_URL}/farcaster/channels/most-followed?limit=9`;
 export const ENDPOINT_MOST_RECENT_CHANNELS = `${API_URL}/farcaster/channels/most-recently-created`;
 export const ENDPOINT_TRENDING_CASTS = `${API_URL}/farcaster/casts/trending?timeFrame=one_hour&criteria=social_capital_value&limit=5`;
-export const ENDPOINT_CHANNEL = `${API_URL}/farcaster/channels/`;
+export const ENDPOINT_CHANNELS = `${API_URL}/farcaster/channels`;

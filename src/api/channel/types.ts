@@ -1,18 +1,26 @@
 import {Profile} from '../profile/types';
 
-export type ChannelsResponse = {
+export type TrendingChannelsResponse = {
   result: ChannelActivity[];
 };
+export type FavoriteChannelsResponse = TrendingChannelsResponse;
 export type MostFollowedChannelsResponse = {
   result: MostFollowedChannel[];
 };
 export type MostRecentChannelsResponse = {
   result: MostRecentChannel[];
 };
+export type ChannelsResponse = {
+  result: {
+    channels: Channel[];
+    next: {
+      cursor: string;
+    };
+  };
+};
 export type ChannelResponse = {
   result: Channel;
 };
-
 export type ChannelActivity = {
   object: string;
   cast_count_1d: string;

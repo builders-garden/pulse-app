@@ -1,5 +1,5 @@
 import React, {PropsWithChildren, useMemo, useReducer} from 'react';
-import MyDrawer from '../../components/MyDrawer';
+import MyDrawer from '../../components/drawer/MyDrawer';
 import {DrawerContext} from './Drawer.context';
 import {DrawerAction, DrawerState} from './types';
 

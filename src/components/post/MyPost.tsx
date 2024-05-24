@@ -182,6 +182,7 @@ const MyPost = ({
         commentsCount={commentsCount}
         quotesCount={quotesCount + isRecasted}
         upvotesCount={upvotesCount + isUpvoted}
+        customStyle={styles.footer}
         onUpvotesPress={() => {
           toggleUpvote();
         }}
@@ -248,11 +249,8 @@ const styles = StyleSheet.create({
     borderColor: 'black',
   },
   footer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    marginTop: 10,
-    justifyContent: 'flex-start',
+    paddingHorizontal: 10,
+    marginBottom: 10,
   },
 });
 

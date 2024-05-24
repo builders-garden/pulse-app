@@ -4,11 +4,11 @@ import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {TrendingCastResult, TrendingCastsResponse} from '../../api/cast/types';
 import {
   ChannelActivity,
-  ChannelsResponse,
   MostFollowedChannel,
   MostFollowedChannelsResponse,
   MostRecentChannel,
   MostRecentChannelsResponse,
+  TrendingChannelsResponse,
 } from '../../api/channel/types';
 import {RequestStatus} from '../../api/types';
 import PenImg from '../../assets/images/icons/pen.svg';
@@ -52,7 +52,7 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
     try {
       console.log('fetching trending channels...');
       const finalUrl = ENDPOINT_TRENDING_CHANNELS;
-      const res = await axios.get<ChannelsResponse>(finalUrl, {
+      const res = await axios.get<TrendingChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
       setChannelsForYou(res.data.result.slice(0, 5));

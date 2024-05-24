@@ -43,29 +43,33 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
     fetchFeed();
   }, [fetchFeed, authContext]);
 
-  async function fetchNewItems() {
-    try {
-      setNewThreadsFetchStatus('loading');
-      console.log('fetching new threads');
-      const res = await axios.get<FeedResponse>(
-        `${ENDPOINT_FEED}&cursor=${cursor}`,
-        {
-          headers: {Authorization: `Bearer ${authContext.state.token}`},
-        },
-      );
-      // console.log('got response');
-      setFeed([...feed, ...res.data.result]);
-      setCursor(res.data.cursor);
-      setNewThreadsFetchStatus('success');
-    } catch (error) {
-      console.error(error);
-      Toast.show({
-        type: 'error',
-        text1: 'Error fetching new items',
-      });
-      setNewThreadsFetchStatus('error');
+  const fetchNewItems = useCallback(async () => {
+    if (newThreadsFetchStatus !== 'loading') {
+      try {
+        setNewThreadsFetchStatus('loading');
+        console.log('fetching new threads');
+        const res = await axios.get<FeedResponse>(
+          `${ENDPOINT_FEED}&cursor=${cursor}`,
+          {
+            headers: {Authorization: `Bearer ${authContext.state.token}`},
+          },
+        );
+        // console.log('got response');
+        setFeed([...feed, ...res.data.result]);
+        setCursor(res.data.cursor);
+        setNewThreadsFetchStatus('success');
+      } catch (error) {
+        console.error(error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error fetching new items',
+        });
+        setNewThreadsFetchStatus('error');
+      }
+    } else {
+      console.log('already fetching new threads');
     }
-  }
+  }, [authContext.state.token, cursor, feed, newThreadsFetchStatus]);
 
   const renderItem = useCallback(
     ({item}: {item: FeedItem}) => {
