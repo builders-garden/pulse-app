@@ -4,7 +4,6 @@ import {
   NavigatorScreenParams,
 } from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {Channel} from '../api/channel/types';
 
 export type RootStackParamList = {
   ThreadDetail: {threadHash: string};
@@ -34,7 +33,7 @@ export type FeedStackParamList = {
   Feed: undefined;
   ThreadDetail: {threadHash: string};
   Channel: {channelId: string};
-  ChannelDetail: {channel: Channel};
+  ChannelDetail: {channelId: string};
 };
 
 export type FeedStackScreenProps<T extends keyof FeedStackParamList> =

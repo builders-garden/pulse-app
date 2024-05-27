@@ -121,6 +121,8 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
           upvotesCount={transformedItem.upvotesCount}
           commentsCount={transformedItem.commentsCount}
           quotesCount={transformedItem.quotesCount}
+          recasted={item?.viewer_context?.recasted}
+          upvoted={item?.viewer_context?.liked}
           onContentBodyPress={() => {
             navigation.navigate('ThreadDetail', {
               threadHash: item.hash,
@@ -178,7 +180,7 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
                 channel={channel!}
                 onSeeMorePress={() => {
                   navigation.navigate('ChannelDetail', {
-                    channel: channel!,
+                    channelId: channel?.id!,
                   });
                 }}
               />
