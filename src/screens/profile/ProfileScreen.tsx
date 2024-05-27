@@ -31,22 +31,24 @@ function ProfileScreen({route, navigation}: HomeTabScreenProps<'Profile'>) {
   const [userCasts, setUserCasts] = useState<UserCast[]>([]);
 
   const fetchProfile = useCallback(async () => {
-    setProfileFetchStatus('loading');
-    try {
-      const finalUrl = ENDPOINT_PROFILE + authContext.state.fid;
-      console.log('fetching profile', finalUrl);
-      const res = await axios.get<ProfileResponse>(finalUrl, {
-        headers: {Authorization: `Bearer ${authContext.state.token}`},
-      });
-      console.log('got response', res.data.result);
-      // console.log('got response');
-      setProfile(res.data.result);
-      setProfileFetchStatus('success');
-    } catch (error) {
-      console.error(error);
-      setProfileFetchStatus('error');
+    if (authContext.state?.fid) {
+      setProfileFetchStatus('loading');
+      try {
+        const finalUrl = ENDPOINT_PROFILE + authContext.state.fid;
+        console.log('fetching profile', finalUrl);
+        const res = await axios.get<ProfileResponse>(finalUrl, {
+          headers: {Authorization: `Bearer ${authContext.state.token}`},
+        });
+        console.log('got response', res.data.result);
+        // console.log('got response');
+        setProfile(res.data.result);
+        setProfileFetchStatus('success');
+      } catch (error) {
+        console.error(error);
+        setProfileFetchStatus('error');
+      }
     }
-  }, [authContext.state.token, route?.params?.userFid]);
+  }, [authContext.state.token, authContext.state?.fid]);
 
   const fetchComments = useCallback(async () => {
     if (profile?.fid) {
@@ -57,7 +59,7 @@ function ProfileScreen({route, navigation}: HomeTabScreenProps<'Profile'>) {
         const res = await axios.get<CommentResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
-        console.log('got response');
+        console.log('got comments');
         setComments(res.data.result);
         setCommentsFetchStatus('success');
       } catch (error) {
@@ -76,7 +78,7 @@ function ProfileScreen({route, navigation}: HomeTabScreenProps<'Profile'>) {
         const res = await axios.get<UserCastsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
-        console.log('got response');
+        console.log('got threads');
         setUserCasts(res.data.result);
         setUserCastsFetchStatus('success');
       } catch (error) {
@@ -88,6 +90,12 @@ function ProfileScreen({route, navigation}: HomeTabScreenProps<'Profile'>) {
 
   const renderItem = useCallback(
     ({item, index}: {item: UserCast | Comment; index: number}) => {
+      if (
+        userCastsFetchStatus !== 'success' ||
+        commentsFetchStatus !== 'success'
+      ) {
+        return null;
+      }
       if (selectedTab === 0) {
         const transformedItem = TransformUserCast(item as UserCast);
 
@@ -100,6 +108,9 @@ function ProfileScreen({route, navigation}: HomeTabScreenProps<'Profile'>) {
             headerSubtitle={transformedItem.headerSubtitle}
             content={transformedItem.content}
             image={transformedItem.image}
+            // TODO: implement upvote and recast
+            recasted={false}
+            upvoted={false}
             upvotesCount={transformedItem.upvotesCount}
             commentsCount={transformedItem.commentsCount}
             quotesCount={transformedItem.quotesCount}
@@ -146,12 +157,12 @@ function ProfileScreen({route, navigation}: HomeTabScreenProps<'Profile'>) {
         );
       }
     },
-    [selectedTab, navigation],
+    [selectedTab, navigation, userCastsFetchStatus, commentsFetchStatus],
   );
 
   useEffect(() => {
     fetchProfile();
-  }, [authContext, route?.params?.userFid, fetchProfile]);
+  }, [authContext, authContext.state?.fid, fetchProfile]);
 
   useEffect(() => {
     if (profile) {
@@ -184,32 +195,32 @@ function ProfileScreen({route, navigation}: HomeTabScreenProps<'Profile'>) {
     );
   }
 
-  if (userCastsFetchStatus === 'loading' || commentsFetchStatus === 'loading') {
-    return (
-      <View style={styles.loadingCtn}>
-        <MyLoader />
-      </View>
-    );
-  } else if (
-    userCastsFetchStatus === 'error' ||
-    commentsFetchStatus === 'error'
-  ) {
-    return (
-      <View style={styles.errorCtn}>
-        <MyButton
-          title="Retry"
-          width={'auto'}
-          onPress={() => {
-            if (userCastsFetchStatus === 'error') {
-              fetchThreads();
-            } else {
-              fetchComments();
-            }
-          }}
-        />
-      </View>
-    );
-  }
+  // if (userCastsFetchStatus === 'loading' || commentsFetchStatus === 'loading') {
+  //   return (
+  //     <View style={styles.loadingCtn}>
+  //       <MyLoader />
+  //     </View>
+  //   );
+  // } else if (
+  //   userCastsFetchStatus === 'error' ||
+  //   commentsFetchStatus === 'error'
+  // ) {
+  //   return (
+  //     <View style={styles.errorCtn}>
+  //       <MyButton
+  //         title="Retry"
+  //         width={'auto'}
+  //         onPress={() => {
+  //           if (userCastsFetchStatus === 'error') {
+  //             fetchThreads();
+  //           } else {
+  //             fetchComments();
+  //           }
+  //         }}
+  //       />
+  //     </View>
+  //   );
+  // }
 
   return (
     <FlatList
@@ -225,6 +236,27 @@ function ProfileScreen({route, navigation}: HomeTabScreenProps<'Profile'>) {
               onPress={setSelectedTab}
             />
           </View>
+          {userCastsFetchStatus === 'loading' ||
+          commentsFetchStatus === 'loading' ? (
+            <View style={styles.loadingCtn}>
+              <MyLoader />
+            </View>
+          ) : userCastsFetchStatus === 'error' ||
+            commentsFetchStatus === 'error' ? (
+            <View style={styles.errorCtn}>
+              <MyButton
+                title="Retry"
+                width={'auto'}
+                onPress={() => {
+                  if (userCastsFetchStatus === 'error') {
+                    fetchThreads();
+                  } else {
+                    fetchComments();
+                  }
+                }}
+              />
+            </View>
+          ) : null}
         </View>
       }
       renderItem={renderItem}

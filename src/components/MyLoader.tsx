@@ -1,5 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import {Animated, Easing, StyleSheet} from 'react-native';
+import {MyTheme} from '../theme';
 
 const MyLoader = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -40,10 +41,12 @@ const styles = StyleSheet.create({
   loader: {
     width: 50,
     aspectRatio: 1,
-    borderRadius: 50,
+    borderRadius: 100,
     borderWidth: 3,
-    borderColor: 'lightgray',
-    borderRightColor: 'black',
+    borderLeftColor: MyTheme.grey300,
+    borderTopColor: MyTheme.grey300,
+    borderBottomColor: MyTheme.grey300,
+    borderRightColor: MyTheme.primaryColor,
     // border: 8px solid lightblue;
     // border-right-color: orange;
     // animation: l2 1s infinite linear;
