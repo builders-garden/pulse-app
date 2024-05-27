@@ -1,20 +1,18 @@
 /* eslint-disable react/no-unstable-nested-components */
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React, {useContext} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import BellImg from '../assets/images/icons/bell.svg';
 import FeedImg from '../assets/images/icons/feed.svg';
-import MenuLinesImg from '../assets/images/icons/menu_lines.svg';
 import RadarImg from '../assets/images/icons/radar.svg';
-import MyIconButtonBase from '../components/MyIconButtonBase';
+import MyHeader from '../components/MyHeader';
 import {AuthContext} from '../contexts/auth/Auth.context';
-import {DrawerContext} from '../contexts/drawer/Drawer.context';
-import DiscoverScreen from '../screens/discover/DiscoverScreen';
 import NotificationsScreen from '../screens/notifications/NotificationsScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
 import {MyTheme} from '../theme';
+import DiscoverStackContainer from './DiscoverStackContainer';
 import FeedStackContainer from './FeedStackContainer';
 import {TabParamList} from './types';
 
@@ -22,7 +20,6 @@ const Tab = createBottomTabNavigator<TabParamList>();
 
 function TabsContainer() {
   const authContext = useContext(AuthContext);
-  const drawerContext = useContext(DrawerContext);
 
   return (
     <Tab.Navigator
@@ -39,7 +36,7 @@ function TabsContainer() {
 
           if (route.name === 'FeedRoot') {
             icon = <FeedImg color={color} />;
-          } else if (route.name === 'Discover') {
+          } else if (route.name === 'DiscoverRoot') {
             icon = <RadarImg color={color} />;
           } else if (route.name === 'Notifications') {
             icon = <BellImg color={color} />;
@@ -96,39 +93,22 @@ function TabsContainer() {
           headerShown: false,
         }}
       />
-      <Tab.Screen name="Discover" component={DiscoverScreen} />
+      <Tab.Screen
+        name="DiscoverRoot"
+        options={{
+          headerShown: false,
+        }}
+        component={DiscoverStackContainer}
+      />
       <Tab.Screen
         name="Notifications"
         options={{
           title: '',
           headerLeft: () => (
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <MyIconButtonBase
-                style="secondary"
-                filling="clear"
-                customStyle={{marginLeft: 15}}
-                onPress={() => {
-                  drawerContext.show();
-                }}
-                icon={<MenuLinesImg color={MyTheme.black} />}
-              />
-              <View style={styles.headerIcon}>
-                <BellImg color={MyTheme.primaryColor} />
-              </View>
-              <Text
-                style={{
-                  fontFamily: MyTheme.fontRegular,
-                  fontSize: 20,
-                  textAlign: 'left',
-                  color: MyTheme.black,
-                }}>
-                Notifications
-              </Text>
-            </View>
+            <MyHeader
+              title="Notifications"
+              icon={<BellImg color={MyTheme.primaryColor} />}
+            />
           ),
           headerShadowVisible: false,
         }}

@@ -1,18 +1,18 @@
 /* eslint-disable react/no-unstable-nested-components */
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import ChatImg from '../assets/images/icons/chat.svg';
+import RadarImg from '../assets/images/icons/radar.svg';
 import MyHeader from '../components/MyHeader';
 import ChannelScreen from '../screens/channel/ChannelScreen';
 import ChannelDetailScreen from '../screens/channelDetail/ChannelDetailScreen';
-import FeedScreen from '../screens/feed/FeedScreen';
+import DiscoverScreen from '../screens/discover/DiscoverScreen';
 import ThreadDetailScreen from '../screens/threadDetail/ThreadDetailScreen';
 import {MyTheme} from '../theme';
-import {FeedStackParamList} from './types';
+import {DiscoverStackParamList} from './types';
 
-const Stack = createNativeStackNavigator<FeedStackParamList>();
+const Stack = createNativeStackNavigator<DiscoverStackParamList>();
 
-function FeedStackContainer() {
+function DiscoverStackContainer() {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -22,19 +22,19 @@ function FeedStackContainer() {
         headerTintColor: MyTheme.black,
         headerShadowVisible: false,
       }}
-      initialRouteName="Feed">
+      initialRouteName="Discover">
       <Stack.Screen
-        name="Feed"
+        name="Discover"
         options={{
           title: '',
           headerLeft: () => (
             <MyHeader
-              title="Following"
-              icon={<ChatImg color={MyTheme.primaryColor} />}
+              title="Discover"
+              icon={<RadarImg color={MyTheme.primaryColor} />}
             />
           ),
         }}
-        component={FeedScreen}
+        component={DiscoverScreen}
       />
       <Stack.Screen
         name="ThreadDetail"
@@ -55,4 +55,4 @@ function FeedStackContainer() {
   );
 }
 
-export default FeedStackContainer;
+export default DiscoverStackContainer;

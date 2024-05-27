@@ -39,6 +39,7 @@ const MyDrawerHeader = ({
                 navigation.dispatch(
                   StackActions.replace('Channel', {
                     channelId: item.channel.id,
+                    showDrawer: true,
                   }),
                 );
                 // navigation.navigate('Channel', {
@@ -70,6 +71,7 @@ const MyDrawerHeader = ({
                 navigation.dispatch(
                   StackActions.replace('Channel', {
                     channelId: item.channelId,
+                    showDrawer: true,
                   }),
                 );
                 // navigation.navigate('Channel', {

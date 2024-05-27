@@ -18,7 +18,7 @@ export type RootStackScreenProps<T extends keyof RootStackParamList> =
 
 export type TabParamList = {
   Profile: {userFid: number};
-  Discover: undefined;
+  DiscoverRoot: NavigatorScreenParams<DiscoverStackParamList>;
   Notifications: undefined;
   FeedRoot: NavigatorScreenParams<FeedStackParamList>;
 };
@@ -32,7 +32,7 @@ export type HomeTabScreenProps<T extends keyof TabParamList> =
 export type FeedStackParamList = {
   Feed: undefined;
   ThreadDetail: {threadHash: string};
-  Channel: {channelId: string};
+  Channel: {channelId: string; showDrawer?: boolean};
   ChannelDetail: {channelId: string};
 };
 
@@ -40,4 +40,16 @@ export type FeedStackScreenProps<T extends keyof FeedStackParamList> =
   CompositeScreenProps<
     NativeStackScreenProps<FeedStackParamList, T>,
     HomeTabScreenProps<'FeedRoot'>
+  >;
+export type DiscoverStackParamList = {
+  Discover: undefined;
+  ThreadDetail: {threadHash: string};
+  Channel: {channelId: string; showDrawer?: boolean};
+  ChannelDetail: {channelId: string};
+};
+
+export type DiscoverStackScreenProps<T extends keyof DiscoverStackParamList> =
+  CompositeScreenProps<
+    NativeStackScreenProps<DiscoverStackParamList, T>,
+    HomeTabScreenProps<'DiscoverRoot'>
   >;

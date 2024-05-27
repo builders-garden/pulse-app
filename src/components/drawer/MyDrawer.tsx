@@ -188,6 +188,7 @@ const MyDrawer = ({
             navigation.dispatch(
               StackActions.replace('Channel', {
                 channelId: item.id,
+                showDrawer: true,
               }),
             );
           }}

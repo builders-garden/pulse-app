@@ -18,7 +18,7 @@ import MyLoader from '../../components/MyLoader';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {TransformArrayTo3x3} from '../../libs/arrays';
 import {formatDate} from '../../libs/date';
-import {HomeTabScreenProps} from '../../routing/types';
+import {DiscoverStackScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
 import {
   ENDPOINT_MOST_FOLLOWED_CHANNELS,
@@ -29,7 +29,7 @@ import {
 import ChannelCard from './components/ChannelCard';
 import TrendingPostItem from './components/TrendingPostItem';
 
-function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
+function DiscoverScreen({navigation}: DiscoverStackScreenProps<'Discover'>) {
   const authContext = useContext(AuthContext);
   const [channelsForYouFetchStatus, setChannelsForYouFetchStatus] =
     useState<RequestStatus>('idle');
@@ -142,11 +142,13 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
           marginLeft: index == 0 ? 20 : 10,
           marginRight: index == channelsForYou.length - 1 ? 20 : 0,
         }}
-        onPress={() => {}}
+        onPress={() => {
+          navigation.navigate('Channel', {channelId: item.channel.id});
+        }}
         onButtonPress={() => {}}
       />
     ),
-    [channelsForYou],
+    [channelsForYou, navigation],
   );
   const renderTrendingPostItem = useCallback(
     ({item, index}: {item: TrendingCastResult; index: number}) => {
@@ -168,12 +170,14 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
             marginLeft: index == 0 ? 20 : 10,
             marginRight: index == trendingPosts.length - 1 ? 20 : 0,
           }}
-          onContentBodyPress={() => {}}
+          onContentBodyPress={() => {
+            navigation.navigate('ThreadDetail', {threadHash: item.cast.hash});
+          }}
           onButtonPress={() => {}}
         />
       );
     },
-    [trendingPosts],
+    [trendingPosts, navigation],
   );
   const renderTopChannelItem = useCallback(
     ({item, index}: {item: MostFollowedChannel[]; index: number}) => (
@@ -196,14 +200,16 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
                 marginTop: subIndex == 0 ? 0 : 10,
                 height: 130,
               }}
-              onPress={() => {}}
+              onPress={() => {
+                navigation.navigate('Channel', {channelId: channel.channelId});
+              }}
               onButtonPress={() => {}}
             />
           );
         })}
       </View>
     ),
-    [topChannels],
+    [topChannels, navigation],
   );
   const renderMostRecentChannelItem = useCallback(
     ({item, index}: {item: MostRecentChannel[]; index: number}) => (
@@ -225,14 +231,16 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
                 marginTop: subIndex == 0 ? 0 : 10,
                 height: 130,
               }}
-              onPress={() => {}}
+              onPress={() => {
+                navigation.navigate('Channel', {channelId: channel.channelId});
+              }}
               onButtonPress={() => {}}
             />
           );
         })}
       </View>
     ),
-    [topChannels],
+    [topChannels, navigation],
   );
 
   if (
@@ -283,7 +291,7 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
       />
       <ScrollView style={styles.root}>
         <View>
-          <Text style={styles.sectionLabel}>For you</Text>
+          <Text style={styles.sectionLabel}>Trending channels</Text>
           <FlatList
             horizontal
             data={channelsForYou}
@@ -315,7 +323,7 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
           />
         </View>
         <View style={{marginTop: 30, marginBottom: 20}}>
-          <Text style={styles.sectionLabel}>Most recent channels</Text>
+          <Text style={styles.sectionLabel}>New channels</Text>
           <FlatList
             horizontal
             data={mostRecentChannels}

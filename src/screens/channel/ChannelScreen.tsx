@@ -5,20 +5,25 @@ import Toast from 'react-native-toast-message';
 import {Channel, ChannelResponse} from '../../api/channel/types';
 import {FeedItem, FeedResponse} from '../../api/feed/types';
 import {RequestStatus} from '../../api/types';
+import MenuLinesImg from '../../assets/images/icons/menu_lines.svg';
 import PenImg from '../../assets/images/icons/pen.svg';
 import MyButton from '../../components/MyButton';
 import MyFloatingButton from '../../components/MyFloatingButton';
+import MyIconButtonBase from '../../components/MyIconButtonBase';
 import MyLoader from '../../components/MyLoader';
 import MyPlaceholderLoader from '../../components/MyPlaceholderLoader';
 import MyPost from '../../components/post/MyPost';
 import {AuthContext} from '../../contexts/auth/Auth.context';
+import {DrawerContext} from '../../contexts/drawer/Drawer.context';
 import {TransformFeedItem} from '../../libs/post';
 import {FeedStackScreenProps} from '../../routing/types';
+import {MyTheme} from '../../theme';
 import {ENDPOINT_CHANNELS} from '../../variables';
 import Header from './components/Header';
 
 function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
   const authContext = useContext(AuthContext);
+  const drawerContext = useContext(DrawerContext);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [feedFetchStatus, setFeedFetchStatus] = useState<RequestStatus>('idle');
   const [newThreadsFetchStatus, setNewThreadsFetchStatus] =
@@ -71,6 +76,25 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
     setIsRefreshing(false);
   }, [fetchFeed]);
 
+  useEffect(() => {
+    if (route.params.showDrawer) {
+      navigation.setOptions({
+        headerLeft: () => (
+          <>
+            <MyIconButtonBase
+              style="secondary"
+              filling="clear"
+              customStyle={{marginLeft: 15}}
+              onPress={() => {
+                drawerContext.show();
+              }}
+              icon={<MenuLinesImg color={MyTheme.black} />}
+            />
+          </>
+        ),
+      });
+    }
+  }, [navigation, route.params.showDrawer, drawerContext]);
   useEffect(() => {
     fetchFeed();
   }, [fetchFeed, authContext]);
