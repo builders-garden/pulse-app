@@ -33,7 +33,7 @@ function ProfileScreen({route, navigation}: HomeTabScreenProps<'Profile'>) {
   const fetchProfile = useCallback(async () => {
     setProfileFetchStatus('loading');
     try {
-      const finalUrl = ENDPOINT_PROFILE + (route?.params?.userFid ?? '409851');
+      const finalUrl = ENDPOINT_PROFILE + authContext.state.fid;
       console.log('fetching profile', finalUrl);
       const res = await axios.get<ProfileResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},

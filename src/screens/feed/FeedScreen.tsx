@@ -29,8 +29,12 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
       const res = await axios.get<FeedResponse>(ENDPOINT_FEED, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
-      // console.log('got response');
-      setFeed(res.data.result);
+      console.log('got response', JSON.stringify(res.data));
+      // TODO: da rimuovere, fix temporaneo per i cast che arrivano duplicati
+      const filtered = res.data.result.filter((value, index, self) => {
+        return index === self.findIndex(item => item.hash === value.hash);
+      });
+      setFeed(filtered);
       setCursor(res.data.cursor);
       setFeedFetchStatus('success');
     } catch (error) {
@@ -44,7 +48,7 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
   }, [fetchFeed, authContext]);
 
   const fetchNewItems = useCallback(async () => {
-    if (newThreadsFetchStatus !== 'loading') {
+    if (newThreadsFetchStatus !== 'loading' && cursor) {
       try {
         setNewThreadsFetchStatus('loading');
         console.log('fetching new threads');
@@ -55,7 +59,11 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
           },
         );
         // console.log('got response');
-        setFeed([...feed, ...res.data.result]);
+        // TODO: da rimuovere, fix temporaneo per i cast che arrivano duplicati
+        const filtered = res.data.result.filter((value, index, self) => {
+          return index === self.findIndex(item => item.hash === value.hash);
+        });
+        setFeed([...feed, ...filtered]);
         setCursor(res.data.cursor);
         setNewThreadsFetchStatus('success');
       } catch (error) {
@@ -66,8 +74,6 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
         });
         setNewThreadsFetchStatus('error');
       }
-    } else {
-      console.log('already fetching new threads');
     }
   }, [authContext.state.token, cursor, feed, newThreadsFetchStatus]);
 
@@ -113,7 +119,7 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
           <FlatList
             style={{paddingHorizontal: 15, paddingTop: 15}}
             data={feed}
-            windowSize={10}
+            windowSize={14}
             onEndReachedThreshold={1}
             onEndReached={fetchNewItems}
             onRefresh={fetchFeed}
@@ -128,7 +134,7 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
             }
             ItemSeparatorComponent={() => <View style={{height: 15}} />}
             renderItem={renderItem}
-            keyExtractor={(item, _) => item.hash}
+            keyExtractor={(item, index) => item.hash + index.toString()} // TODO: da rimuovere, fix temporaneo per i cast che arrivano duplicati
           />
         </>
       ) : (

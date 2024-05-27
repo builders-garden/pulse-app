@@ -25,4 +25,8 @@ export type Profile = {
   active_status: string;
   power_badge: boolean;
   notes?: any[];
+  viewer_context?: {
+    following: boolean;
+    followed_by: boolean;
+  };
 };

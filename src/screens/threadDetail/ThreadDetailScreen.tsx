@@ -38,19 +38,6 @@ function ThreadDetailScreen({
         // console.log('got response');
         console.log(res.data);
         const transformed = res.data.result;
-        transformed.casts = transformed.casts.map(item => {
-          return {
-            ...item,
-            viewer_context: {
-              liked: item.reactions.likes.some(
-                author => author.fid.toString() === authContext.state.fid,
-              ),
-              recasted: item.reactions.recasts.some(
-                author => author.fid.toString() === authContext.state.fid,
-              ),
-            },
-          };
-        });
         setThread(transformed);
         setThreadFetchStatus('success');
       } catch (error) {

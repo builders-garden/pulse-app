@@ -122,7 +122,8 @@ const MyDrawer = ({
   const fetchNewAllChannels = useCallback(async () => {
     if (
       newAllChannelsFetchStatus !== 'loading' &&
-      allChannelsFetchStatus === 'success'
+      allChannelsFetchStatus === 'success' &&
+      isOpen
     ) {
       try {
         setNewAllChannelsFetchStatus('loading');
@@ -143,8 +144,6 @@ const MyDrawer = ({
         });
         setNewAllChannelsFetchStatus('error');
       }
-    } else {
-      console.log('already fetching');
     }
   }, [
     authContext.state.token,
@@ -152,6 +151,7 @@ const MyDrawer = ({
     allChannels,
     allChannelsFetchStatus,
     newAllChannelsFetchStatus,
+    isOpen,
   ]);
   const refresh = useCallback(async () => {
     setIsRefreshing(true);
@@ -249,10 +249,8 @@ const MyDrawer = ({
         isRefreshing) && (
         <SafeAreaView>
           <FlatList
-            style={{paddingHorizontal: 15, paddingTop: 15}}
             data={allChannels}
             windowSize={20}
-            onEndReachedThreshold={0.1}
             onEndReached={fetchNewAllChannels}
             onRefresh={refresh}
             refreshing={isRefreshing}
@@ -369,6 +367,7 @@ const styles = StyleSheet.create({
   sectionItemHorizontal: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 15,
   },
   sectionItemHorizontalText: {
     fontFamily: MyTheme.fontRegular,

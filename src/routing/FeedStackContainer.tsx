@@ -35,7 +35,6 @@ function FeedStackContainer() {
               <MyIconButtonBase
                 style="secondary"
                 filling="clear"
-                customStyle={{marginLeft: 15}}
                 onPress={() => {
                   drawerContext.show();
                 }}

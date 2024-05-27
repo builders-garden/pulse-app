@@ -138,10 +138,15 @@ function SignInScreen() {
 
   // Handle the sign in button click
   async function OnSignInButtonClick() {
+    // authContext.signIn({
+    //   fid: '409851',
+    //   token:
+    //     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQwOTg1MSwiaWF0IjoxNzEzNzA3NzkyODc4LCJleHAiOjE3MTYyOTk3OTI4Nzh9.BoT-DK88H2jRyv32Se-wslFNhr1YYqyJ_QhZOwPNkBw',
+    // });
     authContext.signIn({
-      fid: '409851',
+      fid: '262800',
       token:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQwOTg1MSwiaWF0IjoxNzEzNzA3NzkyODc4LCJleHAiOjE3MTYyOTk3OTI4Nzh9.BoT-DK88H2jRyv32Se-wslFNhr1YYqyJ_QhZOwPNkBw',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjI2MjgwMCwiaWF0IjoxNzE1OTMzMzI0NTM0LCJleHAiOjE3MTY1MzgxMjQ1MzR9.t1hFsVaL62LGP_1CZZ1TECZvre8W7D3YekwWZEfE0i8',
     });
     return;
   }
