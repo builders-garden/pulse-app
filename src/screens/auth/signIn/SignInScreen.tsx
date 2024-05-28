@@ -1,6 +1,6 @@
-import {NeynarSigninButton} from '@neynar/react-native-signin';
+import {NeynarSigninButton, Variant} from '@neynar/react-native-signin';
 import axios from 'axios';
-import React, {useContext, useState} from 'react';
+import React, {useCallback, useContext, useState} from 'react';
 import {
   Dimensions,
   Image,
@@ -14,29 +14,63 @@ import Carousel from 'react-native-reanimated-carousel';
 import Toast from 'react-native-toast-message';
 import {SignerResponse} from '../../../api/auth/types';
 import {RequestStatus} from '../../../api/types';
-import MyButton from '../../../components/MyButton';
+import MyFloatingButton from '../../../components/MyFloatingButton';
 import MyLoader from '../../../components/MyLoader';
 import MyModal from '../../../components/MyModal';
 import {AuthContext} from '../../../contexts/auth/Auth.context';
 import {MyTheme} from '../../../theme';
+import {OnboardingSlide} from '../../../types';
 import {ENDPOINT_SIGNER} from '../../../variables';
-const padding = 30;
 
-const carouselData = [
+const carouselData: OnboardingSlide[] = [
   {
-    title: 'Experience Farcaster like never before!',
+    title: (
+      <Text>
+        Finally enjoy{' '}
+        <Text
+          style={{
+            fontFamily: MyTheme.fontBold,
+          }}>
+          threads
+        </Text>{' '}
+        on Farcaster
+      </Text>
+    ),
     body: 'Lorem ipsum dolor sit amet consectetur. Mi viverra nullam eu at id luctus. Amet nisl id.',
-    image: require('../../../assets/images/placeholders/picture.png'),
+    image: require('../../../assets/images/onboarding/screen.jpg'),
   },
   {
-    title: 'A social based on conversations',
+    title: (
+      <Text>
+        Finally enjoy{' '}
+        <Text
+          style={{
+            fontFamily: MyTheme.fontBold,
+          }}>
+          threads
+        </Text>{' '}
+        on Farcaster
+      </Text>
+    ),
     body: 'Lorem ipsum dolor sit amet consectetur. Mi viverra nullam eu at id luctus. Amet nisl id.',
-    image: require('../../../assets/images/placeholders/picture.png'),
+    image: require('../../../assets/images/onboarding/screen.jpg'),
+    inverted: true,
   },
   {
-    title: 'Explore and discover Farcaster echosystem',
+    title: (
+      <Text>
+        Enhanced{' '}
+        <Text
+          style={{
+            fontFamily: MyTheme.fontBold,
+          }}>
+          content
+        </Text>{' '}
+        experience
+      </Text>
+    ),
     body: 'Lorem ipsum dolor sit amet consectetur. Mi viverra nullam eu at id luctus. Amet nisl id.',
-    image: require('../../../assets/images/placeholders/picture.png'),
+    image: require('../../../assets/images/onboarding/screen.jpg'),
   },
 ];
 
@@ -47,8 +81,45 @@ function SignInScreen() {
   const [sendSignerStatus, setSendSignerStatus] =
     useState<RequestStatus>('idle');
 
-  const width = Dimensions.get('window').width - padding * 2;
-  const height = Dimensions.get('window').height * 0.6;
+  const width = Dimensions.get('window').width;
+  const height = Dimensions.get('window').height * 0.8;
+
+  const renderItem = useCallback(
+    ({item}: {item: OnboardingSlide}) => {
+      const imgTag = (
+        <Image
+          source={item.image}
+          style={[
+            {
+              height: height * 0.7,
+            },
+            styles.slideImg,
+          ]}
+        />
+      );
+      return (
+        <View
+          style={[
+            styles.slide,
+            item.inverted && {
+              flexDirection: 'column-reverse',
+            },
+          ]}>
+          {!item.inverted && imgTag}
+          <View style={styles.slideTextsCtn}>
+            <View style={styles.textBox}>
+              <Text style={styles.titleText}>{item.title}</Text>
+            </View>
+            <View style={styles.textBox}>
+              <Text style={styles.bodyText}>{item.body}</Text>
+            </View>
+          </View>
+          {item.inverted && imgTag}
+        </View>
+      );
+    },
+    [height],
+  );
 
   const paginationItems = carouselData.map((_, index) => (
     <View
@@ -177,42 +248,36 @@ function SignInScreen() {
                 setActiveSlide(current);
               }
             }}
-            renderItem={({item}) => (
-              <View style={styles.slide}>
-                <Text style={styles.titleText}>{item.title}</Text>
-                <Text style={styles.bodyText}>{item.body}</Text>
-                <Image
-                  source={item.image}
-                  style={{
-                    width: width,
-                    height: height / 2,
-                    resizeMode: 'contain',
-                  }}
-                />
-              </View>
-            )}
+            renderItem={renderItem}
           />
         </View>
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           {paginationItems}
         </View>
-        <MyButton title="DEV login" onPress={OnSignInButtonClick} />
+        <MyFloatingButton icon onPress={OnSignInButtonClick} />
 
-        <NeynarSigninButton
-          margin={0}
-          successCallback={token => {
-            console.log(token);
-            if (token.is_authenticated) {
-              OnNeynarSuccess(token.fid, token.signer_uuid);
-            } else {
-              console.log('User is not authenticated');
-            }
-          }}
-          errorCallback={error => {
-            console.log(error);
-          }}
-          fetchAuthorizationUrl={FetchAuthorizationUrl}
-        />
+        <View style={styles.warpcastBtnCtn}>
+          <NeynarSigninButton
+            margin={0}
+            successCallback={token => {
+              console.log(token);
+              if (token.is_authenticated) {
+                OnNeynarSuccess(token.fid, token.signer_uuid);
+              } else {
+                console.log('User is not authenticated');
+              }
+            }}
+            variant={Variant.WARPCAST}
+            buttonStyles={styles.warpcastBtn}
+            textStyles={styles.warpcastBtnText}
+            backgroundColor={MyTheme.warpcast}
+            borderRadius={4}
+            errorCallback={error => {
+              console.log(error);
+            }}
+            fetchAuthorizationUrl={FetchAuthorizationUrl}
+          />
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -223,28 +288,45 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   screenCtn: {
-    padding: padding,
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  slideTextsCtn: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  textBox: {
+    backgroundColor: MyTheme.white,
+    flex: 1,
+    paddingVertical: 20,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    justifyContent: 'center',
+  },
   titleText: {
-    textAlign: 'center',
-    fontSize: 30,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    paddingHorizontal: 10,
+    fontSize: 18,
+
+    fontFamily: MyTheme.fontRegular,
     color: MyTheme.black,
   },
+  boldText: {
+    fontFamily: MyTheme.fontBold,
+  },
   bodyText: {
-    textAlign: 'center',
-    fontSize: 20,
-    marginBottom: 30,
-    paddingHorizontal: 10,
-    color: MyTheme.black,
+    color: MyTheme.grey400,
+    fontFamily: MyTheme.fontRegular,
+  },
+  slideImg: {
+    borderRadius: 8,
+    resizeMode: 'cover',
+    width: '100%',
   },
   slide: {
     justifyContent: 'flex-start',
+    padding: 15,
+    gap: 10,
+    flexDirection: 'column-reverse',
   },
   paginationItem: {
     width: 15,
@@ -252,6 +334,17 @@ const styles = StyleSheet.create({
     marginTop: -30,
     marginHorizontal: 5,
     borderRadius: 100,
+  },
+  warpcastBtnCtn: {
+    width: '100%',
+    paddingHorizontal: 15,
+  },
+  warpcastBtn: {
+    width: '100%',
+  },
+  warpcastBtnText: {
+    fontFamily: MyTheme.fontRegular,
+    color: MyTheme.white,
   },
 });
 

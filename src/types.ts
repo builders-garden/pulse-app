@@ -1,3 +1,6 @@
+import {ReactNode} from 'react';
+import {ImageSourcePropType} from 'react-native';
+
 export type LinkPreview =
   | {
       url: string;
@@ -41,3 +44,10 @@ export type LinkPreview =
       }[];
       favicons: string[];
     };
+
+export type OnboardingSlide = {
+  title: ReactNode;
+  body: string;
+  image: ImageSourcePropType;
+  inverted?: boolean;
+};
