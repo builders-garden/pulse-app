@@ -10,7 +10,11 @@ import {
   View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import Carousel from 'react-native-reanimated-carousel';
+import {useSharedValue} from 'react-native-reanimated';
+import Carousel, {
+  ICarouselInstance,
+  Pagination,
+} from 'react-native-reanimated-carousel';
 import Toast from 'react-native-toast-message';
 import {SignerResponse} from '../../../api/auth/types';
 import {RequestStatus} from '../../../api/types';
@@ -121,18 +125,15 @@ function SignInScreen() {
     [height],
   );
 
-  const paginationItems = carouselData.map((_, index) => (
-    <View
-      key={index}
-      style={[
-        styles.paginationItem,
-        {
-          backgroundColor:
-            activeSlide === index ? '#636363' : 'rgba(99, 99, 99, 0.2)',
-        },
-      ]}
-    />
-  ));
+  const ref = React.useRef<ICarouselInstance>(null);
+  const progress = useSharedValue<number>(0);
+
+  const onPressPagination = (index: number) => {
+    ref.current?.scrollTo({
+      count: index - progress.value,
+      animated: true,
+    });
+  };
 
   async function FetchAuthorizationUrl() {
     try {
@@ -233,27 +234,39 @@ function SignInScreen() {
       <View style={styles.screenCtn}>
         <View style={{height}}>
           <Carousel
+            ref={ref}
             loop={false}
             width={width}
             height={height}
             data={carouselData}
             scrollAnimationDuration={500}
-            onProgressChange={(_, slideProgress) => {
-              const current = Math.floor(slideProgress);
-              // const current = Math.max(
-              //   0,
-              //   Math.min(carouselData.length - 1, Math.round(slideProgress)),
-              // );
-              if (current !== activeSlide) {
-                setActiveSlide(current);
-              }
-            }}
+            onProgressChange={progress}
             renderItem={renderItem}
           />
+
+          <Pagination.Basic
+            progress={progress}
+            data={carouselData}
+            dotStyle={{
+              backgroundColor: MyTheme.grey200,
+              height: 2,
+              width: width / carouselData.length - 18,
+            }}
+            activeDotStyle={{backgroundColor: MyTheme.primaryColor}}
+            containerStyle={{
+              gap: 5,
+              backgroundColor: MyTheme.white,
+              borderRadius: 2,
+              width: '100%',
+              padding: 4,
+            }}
+            onPress={onPressPagination}
+          />
         </View>
-        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+
+        {/* <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           {paginationItems}
-        </View>
+        </View> */}
         <MyFloatingButton icon onPress={OnSignInButtonClick} />
 
         <View style={styles.warpcastBtnCtn}>
