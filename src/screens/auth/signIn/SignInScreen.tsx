@@ -18,7 +18,6 @@ import Carousel, {
 import Toast from 'react-native-toast-message';
 import {SignerResponse} from '../../../api/auth/types';
 import {RequestStatus} from '../../../api/types';
-import MyFloatingButton from '../../../components/MyFloatingButton';
 import MyLoader from '../../../components/MyLoader';
 import MyModal from '../../../components/MyModal';
 import {AuthContext} from '../../../contexts/auth/Auth.context';
@@ -80,13 +79,12 @@ const carouselData: OnboardingSlide[] = [
 
 function SignInScreen() {
   const authContext = useContext(AuthContext);
-  const [activeSlide, setActiveSlide] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sendSignerStatus, setSendSignerStatus] =
     useState<RequestStatus>('idle');
 
   const width = Dimensions.get('window').width;
-  const height = Dimensions.get('window').height * 0.8;
+  const carouselHeight = Dimensions.get('screen').height * 0.8;
 
   const renderItem = useCallback(
     ({item}: {item: OnboardingSlide}) => {
@@ -95,7 +93,7 @@ function SignInScreen() {
           source={item.image}
           style={[
             {
-              height: height * 0.7,
+              height: carouselHeight * 0.7,
             },
             styles.slideImg,
           ]}
@@ -110,7 +108,13 @@ function SignInScreen() {
             },
           ]}>
           {!item.inverted && imgTag}
-          <View style={styles.slideTextsCtn}>
+          <View
+            style={[
+              styles.slideTextsCtn,
+              {
+                height: carouselHeight * 0.3 - 40,
+              },
+            ]}>
             <View style={styles.textBox}>
               <Text style={styles.titleText}>{item.title}</Text>
             </View>
@@ -122,7 +126,7 @@ function SignInScreen() {
         </View>
       );
     },
-    [height],
+    [carouselHeight],
   );
 
   const ref = React.useRef<ICarouselInstance>(null);
@@ -208,21 +212,6 @@ function SignInScreen() {
     }
   }
 
-  // Handle the sign in button click
-  async function OnSignInButtonClick() {
-    authContext.signIn({
-      fid: '409851',
-      token:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQwOTg1MSwiaWF0IjoxNzEzNzA3NzkyODc4LCJleHAiOjE3MTYyOTk3OTI4Nzh9.BoT-DK88H2jRyv32Se-wslFNhr1YYqyJ_QhZOwPNkBw',
-    });
-    // authContext.signIn({
-    //   fid: '262800',
-    //   token:
-    //     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjI2MjgwMCwiaWF0IjoxNzE1OTMzMzI0NTM0LCJleHAiOjE3MTY1MzgxMjQ1MzR9.t1hFsVaL62LGP_1CZZ1TECZvre8W7D3YekwWZEfE0i8',
-    // });
-    return;
-  }
-
   return (
     <SafeAreaView style={styles.safeContainer}>
       <MyModal open={isModalOpen}>
@@ -232,42 +221,40 @@ function SignInScreen() {
         </Text>
       </MyModal>
       <View style={styles.screenCtn}>
-        <View style={{height}}>
+        <View
+          style={{
+            height: carouselHeight,
+          }}>
           <Carousel
             ref={ref}
             loop={false}
             width={width}
-            height={height}
+            height={carouselHeight}
             data={carouselData}
             scrollAnimationDuration={500}
             onProgressChange={progress}
             renderItem={renderItem}
           />
-
-          <Pagination.Basic
-            progress={progress}
-            data={carouselData}
-            dotStyle={{
-              backgroundColor: MyTheme.grey200,
-              height: 2,
-              width: width / carouselData.length - 18,
-            }}
-            activeDotStyle={{backgroundColor: MyTheme.primaryColor}}
-            containerStyle={{
-              gap: 5,
-              backgroundColor: MyTheme.white,
-              borderRadius: 2,
-              width: '100%',
-              padding: 4,
-            }}
-            onPress={onPressPagination}
-          />
         </View>
+        <Pagination.Basic
+          progress={progress}
+          data={carouselData}
+          dotStyle={{
+            ...styles.paginationDot,
+            width: width / carouselData.length - 18,
+          }}
+          activeDotStyle={styles.paginationActiveDot}
+          containerStyle={{
+            ...styles.paginationCtn,
+            width: width - 30,
+          }}
+          onPress={onPressPagination}
+        />
 
         {/* <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           {paginationItems}
         </View> */}
-        <MyFloatingButton icon onPress={OnSignInButtonClick} />
+        {/* <MyFloatingButton icon onPress={OnSignInButtonClick} /> */}
 
         <View style={styles.warpcastBtnCtn}>
           <NeynarSigninButton
@@ -336,18 +323,24 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   slide: {
-    justifyContent: 'flex-start',
-    padding: 15,
+    paddingTop: 15,
+    paddingHorizontal: 15,
     gap: 10,
     flexDirection: 'column-reverse',
   },
-  paginationItem: {
-    width: 15,
-    height: 15,
-    marginTop: -30,
-    marginHorizontal: 5,
-    borderRadius: 100,
+  paginationCtn: {
+    padding: 4,
+    backgroundColor: MyTheme.white,
+    borderRadius: 2,
+    marginBottom: 10,
   },
+  paginationDot: {
+    backgroundColor: MyTheme.grey200,
+    height: 6,
+    borderWidth: 2,
+    borderColor: MyTheme.white,
+  },
+  paginationActiveDot: {backgroundColor: MyTheme.primaryColor},
   warpcastBtnCtn: {
     width: '100%',
     paddingHorizontal: 15,
