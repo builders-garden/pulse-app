@@ -11,8 +11,10 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import uuid from 'react-native-uuid';
 import DiagonalArrowImg from '../../assets/images/icons/diagonal_arrow.svg';
+import PlusImg from '../../assets/images/icons/plus.svg';
 import MyButtonNew from '../../components/MyButtonNew';
 import {RootStackScreenProps} from '../../routing/types';
+import {MyTheme} from '../../theme';
 import ChannelButton from './components/ChannelButton';
 import ThreadItem from './components/threadItem/ThreadItem';
 import {Thread} from './types';
@@ -77,6 +79,14 @@ function CreateThreadScreen({
     }
   }
 
+  async function onAddThreadPress() {
+    let newThreads = [...threads];
+    newThreads = insertThread(newThreads, newThreads.length);
+    // console.log(newThreads);
+    setThreads(newThreads);
+    setCurrentThreadIndex(newThreads.length - 1);
+  }
+
   function insertThread(threadsList: Thread[], index: number) {
     const newThreads = [...threadsList];
     const left = newThreads.slice(0, index);
@@ -126,7 +136,7 @@ function CreateThreadScreen({
       }
     } else if (threads[index].body.length === inputLimit) {
       if (e.nativeEvent.key === 'Enter') {
-        let newThreads = threads.slice();
+        let newThreads = [...threads];
         newThreads = insertThread(newThreads, index + 1);
         // console.log(newThreads);
         setThreads(newThreads);
@@ -145,14 +155,16 @@ function CreateThreadScreen({
   function onPublishPress() {}
 
   return (
-    <View style={styles.root}>
+    <View>
       {/* <Text>Selected index: {currentThreadIndex}</Text> */}
-      <View style={{padding: 15}}>
-        <ChannelButton placeholder="Choose a channel" onPress={() => {}} />
-      </View>
       <FlatList
         style={styles.threadsCtn}
         data={threads}
+        ListHeaderComponent={
+          <View style={{marginBottom: 20}}>
+            <ChannelButton placeholder="Choose a channel" onPress={() => {}} />
+          </View>
+        }
         renderItem={({item, index}) => (
           <ThreadItem
             key={item.id}
@@ -167,15 +179,34 @@ function CreateThreadScreen({
           />
         )}
         ItemSeparatorComponent={() => <View style={{height: 20}} />}
+        ListFooterComponent={
+          <MyButtonNew
+            style="secondary"
+            title="Add new cast"
+            iconLeft={
+              <PlusImg
+                width={14}
+                height={14}
+                color={MyTheme.white}
+                style={{marginRight: 5}}
+              />
+            }
+            customStyle={{alignSelf: 'center', marginBottom: 60, marginTop: 20}}
+            onPress={onAddThreadPress}
+          />
+        }
       />
+
       {/* <BottomBar onAddMediaPress={onAddMediaPress} onSendPress={() => {}} /> */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {flex: 1},
-  threadsCtn: {padding: 20},
+  threadsCtn: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
 });
 
 export default CreateThreadScreen;

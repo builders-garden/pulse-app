@@ -104,19 +104,11 @@ const styles = StyleSheet.create({
   placeholderText: {
     fontSize: 16,
     color: MyTheme.grey400,
+    fontFamily: MyTheme.fontRegular,
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: 'bold',
-  },
-  buttonTextPrimary: {
-    color: 'white',
-  },
-  buttonTextSecondary: {
-    color: 'black',
-  },
-  buttonTextTertiary: {
-    color: 'black',
+    fontFamily: MyTheme.fontBold,
   },
 });
 

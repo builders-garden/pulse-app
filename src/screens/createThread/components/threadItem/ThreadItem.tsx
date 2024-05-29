@@ -69,7 +69,7 @@ function ThreadItem({
         <TextInput
           ref={textInputRef}
           onFocus={onFocus}
-          placeholderTextColor={'lightgray'}
+          placeholderTextColor={MyTheme.grey200}
           multiline
           placeholder="Write something interesting"
           defaultValue={thread.body}
@@ -84,11 +84,13 @@ function ThreadItem({
         <BottomSection
           characterCount={thread.body.length}
           maxCharacters={maxLength}
-          maxMedia={3}
+          maxMedia={2}
           mediaCount={thread.images?.length || 0}
           onAddMediaPress={onAddMediaPress}
         />
-        <View style={styles.imagesCtn}>{imagesHtml}</View>
+        {thread.images && thread.images.length > 0 && (
+          <View style={styles.imagesCtn}>{imagesHtml}</View>
+        )}
       </View>
     </View>
   );

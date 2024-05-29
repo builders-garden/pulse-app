@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   buttonText: {
-    fontFamily: MyTheme.fontSemiBold,
+    fontFamily: MyTheme.fontRegular,
   },
   buttonTextSmall: {
     fontSize: 12,

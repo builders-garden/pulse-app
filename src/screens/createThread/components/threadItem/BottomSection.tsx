@@ -26,7 +26,9 @@ function BottomSection({
         onPress={onAddMediaPress}
         title={`Add media (${mediaCount}/${maxMedia})`}
         style="quaternary"
+        filling="clear"
         size="small"
+        customStyle={{marginRight: 10}}
       />
       <Text style={styles.counter}>
         {characterCount}/{maxCharacters}
@@ -38,12 +40,12 @@ function BottomSection({
 const styles = StyleSheet.create({
   bottomSection: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   counter: {
     fontSize: 12,
-    color: 'gray',
+    color: MyTheme.grey400,
   },
 });
 
