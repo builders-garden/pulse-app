@@ -20,6 +20,7 @@ export const MyTheme = {
   purpleOpacity: '#C03AFF22',
   warpcast: '#472B92',
   fontRegular: 'BeVietnamPro-Regular',
+  fontMedium: 'BeVietnamPro-Medium',
   fontBold: 'BeVietnamPro-Bold',
   fontLight: 'BeVietnamPro-Light',
   fontSemiBold: 'BeVietnamPro-SemiBold',

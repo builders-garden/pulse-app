@@ -1,5 +1,11 @@
 import axios from 'axios';
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {Comment, CommentResponse} from '../../api/cast/types';
 import {Profile, ProfileResponse} from '../../api/profile/types';
@@ -12,13 +18,16 @@ import MyPost from '../../components/post/MyPost';
 import MyTabs from '../../components/tabs/MyTabs';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {TransformFeedItem, TransformUserCast} from '../../libs/post';
-import {HomeTabScreenProps} from '../../routing/types';
+import {FeedStackScreenProps, HomeTabScreenProps} from '../../routing/types';
 import {ENDPOINT_PROFILE} from '../../variables';
 import UpperSection from './components/UpperSection';
 
 const HEADER_HEIGHT = 250;
 
-function ProfileScreen({route, navigation}: HomeTabScreenProps<'Profile'>) {
+function ProfileScreen({
+  route,
+  navigation,
+}: HomeTabScreenProps<'PersonalProfile'> | FeedStackScreenProps<'Profile'>) {
   const authContext = useContext(AuthContext);
   const [profileFetchStatus, setProfileFetchStatus] =
     useState<RequestStatus>('idle');
@@ -30,11 +39,22 @@ function ProfileScreen({route, navigation}: HomeTabScreenProps<'Profile'>) {
   const [userCastsFetchStatus, setUserCastsFetchStatus] = useState('idle');
   const [userCasts, setUserCasts] = useState<UserCast[]>([]);
 
+  const isLoggedUserProfile = useMemo(() => {
+    if (authContext.state?.fid) {
+      return false;
+    }
+    return authContext.state?.fid === route.params.userFid.toString();
+  }, [authContext.state?.fid, route.params.userFid]);
+
+  const isTabBarNavigation = useMemo(() => {
+    return route.name === 'PersonalProfile';
+  }, [route.name]);
+
   const fetchProfile = useCallback(async () => {
     if (authContext.state?.fid) {
       setProfileFetchStatus('loading');
       try {
-        const finalUrl = ENDPOINT_PROFILE + authContext.state.fid;
+        const finalUrl = ENDPOINT_PROFILE + route.params.userFid;
         console.log('fetching profile', finalUrl);
         const res = await axios.get<ProfileResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
@@ -48,7 +68,7 @@ function ProfileScreen({route, navigation}: HomeTabScreenProps<'Profile'>) {
         setProfileFetchStatus('error');
       }
     }
-  }, [authContext.state.token, authContext.state?.fid]);
+  }, [authContext.state.token, authContext.state?.fid, route.params.userFid]);
 
   const fetchComments = useCallback(async () => {
     if (profile?.fid) {
@@ -120,9 +140,38 @@ function ProfileScreen({route, navigation}: HomeTabScreenProps<'Profile'>) {
               marginTop: index === 0 ? 15 : 0,
             }}
             onContentBodyPress={() => {
-              navigation.navigate('ThreadDetail', {
-                threadHash: item.hash,
-              });
+              if (isTabBarNavigation) {
+                navigation.navigate('FeedRoot', {
+                  screen: 'ThreadDetail',
+                  params: {
+                    threadHash: item.hash,
+                  },
+                });
+              } else {
+                navigation.navigate('ThreadDetail', {
+                  threadHash: item.hash,
+                });
+              }
+            }}
+            onHeaderTitlePress={() => {
+              if (transformedItem.channel !== '') {
+                navigation.navigate('FeedRoot', {
+                  screen: 'Channel',
+                  params: {
+                    channelId: transformedItem.channel,
+                  },
+                });
+              }
+            }}
+            onHeaderImagePress={() => {
+              if (transformedItem.channel !== '') {
+                navigation.navigate('FeedRoot', {
+                  screen: 'Channel',
+                  params: {
+                    channelId: transformedItem.channel,
+                  },
+                });
+              }
             }}
           />
         );
@@ -228,7 +277,7 @@ function ProfileScreen({route, navigation}: HomeTabScreenProps<'Profile'>) {
       windowSize={5}
       ListHeaderComponent={
         <View style={styles.profileCtn}>
-          <UpperSection profile={profile} />
+          <UpperSection profile={profile} isLoggedUser={isLoggedUserProfile} />
           <View style={{padding: 15}}>
             <MyTabs
               tabs={['Threads', 'Comments', 'About']}

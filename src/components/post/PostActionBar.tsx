@@ -1,6 +1,5 @@
 import React from 'react';
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
-import BookmarkImg from '../../assets/images/icons/bookmark.svg';
 import CommentImg from '../../assets/images/icons/comment.svg';
 import HatImg from '../../assets/images/icons/hat.svg';
 import QuoteImg from '../../assets/images/icons/quote.svg';
@@ -21,7 +20,7 @@ type PostActionBarProps = {
   onQuotesPress?: () => void;
   onUpvotesPress?: () => void;
   onTipPress?: () => void;
-  onBookmarkPress?: () => void;
+  // onBookmarkPress?: () => void;
   onSharePress?: () => void;
 };
 
@@ -36,7 +35,7 @@ const PostActionBar = ({
   onQuotesPress,
   onUpvotesPress,
   onTipPress,
-  onBookmarkPress,
+  // onBookmarkPress,
   onSharePress,
 }: PostActionBarProps) => {
   return (
@@ -45,14 +44,14 @@ const PostActionBar = ({
         iconLeft={
           isUpvoted ? (
             <UpvoteFillImg
-              style={{marginRight: 3}}
+              style={styles.chipIcon}
               width={18}
               height={18}
               color={MyTheme.primaryColor}
             />
           ) : (
             <UpvoteImg
-              style={{marginRight: 3}}
+              style={styles.chipIcon}
               width={18}
               height={18}
               color={MyTheme.grey300}
@@ -66,13 +65,14 @@ const PostActionBar = ({
         onPress={() => {
           onUpvotesPress && onUpvotesPress();
         }}
-        customStyle={{marginRight: 5}}
+        customStyle={styles.leftChip}
+        textCustomStyle={styles.leftChipText}
       />
       <MyChipBase
         iconLeft={
           <CommentImg
             color={MyTheme.grey300}
-            style={{marginRight: 3}}
+            style={styles.chipIcon}
             width={18}
             height={18}
           />
@@ -84,21 +84,22 @@ const PostActionBar = ({
         onPress={() => {
           onCommentsPress && onCommentsPress();
         }}
-        customStyle={{marginRight: 5}}
+        customStyle={styles.leftChip}
+        textCustomStyle={styles.leftChipText}
       />
       <MyChipBase
         iconLeft={
           isRecasted ? (
             <QuoteImg
               color={MyTheme.primaryColor}
-              style={{marginRight: 3}}
+              style={styles.chipIcon}
               width={18}
               height={18}
             />
           ) : (
             <QuoteImg
               color={MyTheme.grey300}
-              style={{marginRight: 3}}
+              style={styles.chipIcon}
               width={18}
               height={18}
             />
@@ -111,14 +112,15 @@ const PostActionBar = ({
         onPress={() => {
           onQuotesPress && onQuotesPress();
         }}
-        customStyle={{marginRight: 5}}
+        customStyle={styles.leftChip}
+        textCustomStyle={styles.leftChipText}
       />
       <View style={styles.verticalDivider} />
       <MyChipBase
         iconLeft={
           <HatImg
             color={MyTheme.grey300}
-            style={{marginRight: 3}}
+            style={styles.chipIcon}
             width={18}
             height={18}
           />
@@ -130,22 +132,23 @@ const PostActionBar = ({
         onPress={() => {
           onTipPress && onTipPress();
         }}
-        customStyle={{marginLeft: 5}}
+        customStyle={styles.tipChip}
       />
-      <MyIconButtonBase
+      {/* <MyIconButtonBase
         onPress={() => {
           onBookmarkPress && onBookmarkPress();
         }}
         filling="clear"
         icon={<BookmarkImg width={18} height={18} color={MyTheme.grey300} />}
         customStyle={{marginLeft: 'auto', marginRight: 8}}
-      />
+      /> */}
       <MyIconButtonBase
         onPress={() => {
           onSharePress && onSharePress();
         }}
         filling="clear"
         icon={<ShareImg width={18} height={18} color={MyTheme.grey300} />}
+        customStyle={styles.shareBtn}
       />
     </View>
   );
@@ -159,6 +162,21 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 10,
     justifyContent: 'flex-start',
+  },
+  leftChip: {
+    marginRight: 5,
+  },
+  leftChipText: {
+    // width: 25,
+  },
+  tipChip: {
+    marginLeft: 5,
+  },
+  shareBtn: {
+    marginLeft: 'auto',
+  },
+  chipIcon: {
+    marginRight: 3,
   },
 });
 

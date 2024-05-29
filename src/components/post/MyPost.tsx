@@ -1,6 +1,13 @@
 import axios from 'axios';
 import React, {useCallback, useContext, useState} from 'react';
-import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
+import {
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  Text,
+  View,
+  ViewStyle,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {ReactionResponse} from '../../api/cast/types';
 import {AuthContext} from '../../contexts/auth/Auth.context';
@@ -25,6 +32,9 @@ type MyPostProps = {
   upvotesCount: number;
   customStyle?: StyleProp<ViewStyle>;
   onContentBodyPress?: () => void;
+  onHeaderTitlePress?: () => void;
+  onHeaderSubtitlePress?: () => void;
+  onHeaderImagePress?: () => void;
 };
 
 const MyPost = ({
@@ -42,6 +52,9 @@ const MyPost = ({
   upvotesCount,
   customStyle,
   onContentBodyPress,
+  onHeaderTitlePress,
+  onHeaderSubtitlePress,
+  onHeaderImagePress,
 }: MyPostProps) => {
   const authContext = useContext(AuthContext);
   const [isUpvoted, setIsUpvoted] = useState(0);
@@ -137,15 +150,33 @@ const MyPost = ({
   return (
     <View style={[styles.root, customStyle && customStyle]}>
       <View style={styles.header}>
-        <FastImage style={styles.headerImg} source={{uri: headerImg}} />
+        <Pressable
+          onPress={() => {
+            if (onHeaderImagePress) {
+              onHeaderImagePress();
+            }
+          }}>
+          <FastImage style={styles.headerImg} source={{uri: headerImg}} />
+        </Pressable>
         <View style={styles.headerTextCtn}>
-          <View style={{flexDirection: 'row'}}>
+          <Pressable
+            onPress={() => {
+              if (onHeaderTitlePress) {
+                onHeaderTitlePress();
+              }
+            }}
+            style={{flexDirection: 'row'}}>
             <Text style={styles.headerTitle}>{headerTitle}</Text>
             <Text style={styles.headerTime}> • {postTime}</Text>
-          </View>
+          </Pressable>
           <Text
             numberOfLines={1}
             ellipsizeMode="tail"
+            onPress={() => {
+              if (onHeaderSubtitlePress) {
+                onHeaderSubtitlePress();
+              }
+            }}
             style={styles.headerSubtitle}>
             {headerSubtitle}
           </Text>

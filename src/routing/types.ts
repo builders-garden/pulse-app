@@ -17,8 +17,8 @@ export type RootStackScreenProps<T extends keyof RootStackParamList> =
   NativeStackScreenProps<RootStackParamList, T>;
 
 export type TabParamList = {
-  Profile: {userFid: number};
-  DiscoverRoot: NavigatorScreenParams<DiscoverStackParamList>;
+  PersonalProfile: {userFid: string};
+  Discover: undefined;
   Notifications: undefined;
   FeedRoot: NavigatorScreenParams<FeedStackParamList>;
 };
@@ -30,6 +30,7 @@ export type HomeTabScreenProps<T extends keyof TabParamList> =
   >;
 
 export type FeedStackParamList = {
+  Profile: {userFid: string};
   Feed: undefined;
   ThreadDetail: {threadHash: string};
   Channel: {channelId: string; showDrawer?: boolean};
@@ -41,15 +42,15 @@ export type FeedStackScreenProps<T extends keyof FeedStackParamList> =
     NativeStackScreenProps<FeedStackParamList, T>,
     HomeTabScreenProps<'FeedRoot'>
   >;
-export type DiscoverStackParamList = {
-  Discover: undefined;
-  ThreadDetail: {threadHash: string};
-  Channel: {channelId: string; showDrawer?: boolean};
-  ChannelDetail: {channelId: string};
-};
+// export type DiscoverStackParamList = {
+//   Discover: undefined;
+//   ThreadDetail: {threadHash: string};
+//   Channel: {channelId: string; showDrawer?: boolean};
+//   ChannelDetail: {channelId: string};
+// };
 
-export type DiscoverStackScreenProps<T extends keyof DiscoverStackParamList> =
-  CompositeScreenProps<
-    NativeStackScreenProps<DiscoverStackParamList, T>,
-    HomeTabScreenProps<'DiscoverRoot'>
-  >;
+// export type DiscoverStackScreenProps<T extends keyof DiscoverStackParamList> =
+//   CompositeScreenProps<
+//     NativeStackScreenProps<DiscoverStackParamList, T>,
+//     HomeTabScreenProps<'Discover'>
+//   >;

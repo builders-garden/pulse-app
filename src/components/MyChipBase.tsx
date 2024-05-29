@@ -15,7 +15,7 @@ export interface MyChipBaseProps {
   title: string;
   style?: 'primary' | 'secondary' | 'tertiary';
   filling?: 'solid' | 'outline' | 'clear';
-  size?: 'small' | 'medium' | 'large';
+  size?: 'xsmall' | 'small' | 'medium' | 'large';
   disabled?: boolean;
   loading?: boolean;
   iconLeft?: ReactNode;
@@ -42,7 +42,10 @@ const MyChipBase = ({
 
   let btnSize = styles.chipMedium;
   let textSize = styles.chipTextMedium;
-  if (size === 'small') {
+  if (size === 'xsmall') {
+    btnSize = styles.chipXSmall;
+    textSize = styles.chipTextXSmall;
+  } else if (size === 'small') {
     btnSize = styles.chipSmall;
     textSize = styles.chipTextSmall;
   } else if (size === 'large') {
@@ -84,6 +87,10 @@ const styles = StyleSheet.create({
   },
   pressedChip: {
     opacity: 0.7,
+  },
+  chipXSmall: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
   },
   chipSmall: {
     paddingVertical: 4,
@@ -133,9 +140,13 @@ const styles = StyleSheet.create({
   chipText: {
     fontFamily: 'BeVietnamPro-Regular',
   },
+  chipTextXSmall: {
+    fontSize: 10,
+    fontFamily: MyTheme.fontMedium,
+  },
   chipTextSmall: {
     fontSize: 12,
-    fontFamily: 'BeVietnamPro-Bold',
+    fontFamily: MyTheme.fontMedium,
   },
   chipTextMedium: {
     fontSize: 16,

@@ -152,6 +152,33 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
               threadHash: item.hash,
             });
           }}
+          onHeaderTitlePress={() => {
+            if (transformedItem.channel !== '') {
+              navigation.navigate('Channel', {
+                channelId: transformedItem.channel,
+              });
+            } else {
+              navigation.navigate('Profile', {
+                userFid: item.author.fid.toString(),
+              });
+            }
+          }}
+          onHeaderSubtitlePress={() => {
+            navigation.navigate('Profile', {
+              userFid: item.author.fid.toString(),
+            });
+          }}
+          onHeaderImagePress={() => {
+            if (transformedItem.channel !== '') {
+              navigation.navigate('Channel', {
+                channelId: transformedItem.channel,
+              });
+            } else {
+              navigation.navigate('Profile', {
+                userFid: item.author.fid.toString(),
+              });
+            }
+          }}
         />
       );
     },

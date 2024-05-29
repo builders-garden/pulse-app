@@ -18,6 +18,7 @@ import Carousel, {
 import Toast from 'react-native-toast-message';
 import {SignerResponse} from '../../../api/auth/types';
 import {RequestStatus} from '../../../api/types';
+import MyFloatingButton from '../../../components/MyFloatingButton';
 import MyLoader from '../../../components/MyLoader';
 import MyModal from '../../../components/MyModal';
 import {AuthContext} from '../../../contexts/auth/Auth.context';
@@ -254,7 +255,7 @@ function SignInScreen() {
         {/* <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           {paginationItems}
         </View> */}
-        {/* <MyFloatingButton icon onPress={OnSignInButtonClick} /> */}
+        <MyFloatingButton icon onPress={OnSignInButtonClick} />
 
         <View style={styles.warpcastBtnCtn}>
           <NeynarSigninButton

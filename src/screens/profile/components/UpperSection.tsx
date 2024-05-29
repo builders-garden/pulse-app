@@ -9,9 +9,10 @@ import {MyTheme} from '../../../theme';
 
 interface UpperSectionProps {
   profile: Profile;
+  isLoggedUser: boolean;
 }
 
-function UpperSection({profile}: UpperSectionProps) {
+function UpperSection({profile, isLoggedUser}: UpperSectionProps) {
   return (
     <View style={styles.upperSection}>
       <View style={styles.profileInfo}>
@@ -44,12 +45,14 @@ function UpperSection({profile}: UpperSectionProps) {
         />
       </View>
 
-      <MyButtonNew
-        title="Follow"
-        onPress={() => {}}
-        style="primary"
-        customStyle={{marginTop: 15}}
-      />
+      {!isLoggedUser && (
+        <MyButtonNew
+          title="Follow"
+          onPress={() => {}}
+          style="primary"
+          customStyle={{marginTop: 15}}
+        />
+      )}
     </View>
   );
 }

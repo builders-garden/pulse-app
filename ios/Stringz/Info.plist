@@ -45,6 +45,7 @@
 		<string>BeVietnamPro-Bold.ttf</string>
 		<string>BeVietnamPro-Light.ttf</string>
 		<string>BeVietnamPro-SemiBold.ttf</string>
+		<string>BeVietnamPro-Medium.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

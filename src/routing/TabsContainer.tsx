@@ -9,10 +9,10 @@ import FeedImg from '../assets/images/icons/feed.svg';
 import RadarImg from '../assets/images/icons/radar.svg';
 import MyHeader from '../components/MyHeader';
 import {AuthContext} from '../contexts/auth/Auth.context';
+import DiscoverScreen from '../screens/discover/DiscoverScreen';
 import NotificationsScreen from '../screens/notifications/NotificationsScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
 import {MyTheme} from '../theme';
-import DiscoverStackContainer from './DiscoverStackContainer';
 import FeedStackContainer from './FeedStackContainer';
 import {TabParamList} from './types';
 
@@ -36,11 +36,11 @@ function TabsContainer() {
 
           if (route.name === 'FeedRoot') {
             icon = <FeedImg color={color} />;
-          } else if (route.name === 'DiscoverRoot') {
+          } else if (route.name === 'Discover') {
             icon = <RadarImg color={color} />;
           } else if (route.name === 'Notifications') {
             icon = <BellImg color={color} />;
-          } else if (route.name === 'Profile') {
+          } else if (route.name === 'PersonalProfile') {
             icon = (
               <FastImage
                 source={{uri: authContext.state.profile?.pfp_url}}
@@ -94,11 +94,17 @@ function TabsContainer() {
         }}
       />
       <Tab.Screen
-        name="DiscoverRoot"
+        name="Discover"
         options={{
-          headerShown: false,
+          title: '',
+          headerLeft: () => (
+            <MyHeader
+              title="Discover"
+              icon={<RadarImg color={MyTheme.primaryColor} />}
+            />
+          ),
         }}
-        component={DiscoverStackContainer}
+        component={DiscoverScreen}
       />
       <Tab.Screen
         name="Notifications"
@@ -115,10 +121,11 @@ function TabsContainer() {
         component={NotificationsScreen}
       />
       <Tab.Screen
-        name="Profile"
+        name="PersonalProfile"
         options={{
           headerShadowVisible: false,
         }}
+        initialParams={{userFid: authContext.state.fid}}
         component={ProfileScreen}
       />
     </Tab.Navigator>

@@ -6,6 +6,7 @@ import MyHeader from '../components/MyHeader';
 import ChannelScreen from '../screens/channel/ChannelScreen';
 import ChannelDetailScreen from '../screens/channelDetail/ChannelDetailScreen';
 import FeedScreen from '../screens/feed/FeedScreen';
+import ProfileScreen from '../screens/profile/ProfileScreen';
 import ThreadDetailScreen from '../screens/threadDetail/ThreadDetailScreen';
 import {MyTheme} from '../theme';
 import {FeedStackParamList} from './types';
@@ -51,6 +52,13 @@ function FeedStackContainer() {
         }}
       />
       <Stack.Screen name="ChannelDetail" component={ChannelDetailScreen} />
+      <Stack.Screen
+        name="Profile"
+        options={{
+          title: '',
+        }}
+        component={ProfileScreen}
+      />
     </Stack.Navigator>
   );
 }
