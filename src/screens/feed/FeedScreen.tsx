@@ -31,10 +31,10 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
       });
       console.log('got response', JSON.stringify(res.data));
       // TODO: da rimuovere, fix temporaneo per i cast che arrivano duplicati
-      const filtered = res.data.result.filter((value, index, self) => {
-        return index === self.findIndex(item => item.hash === value.hash);
-      });
-      setFeed(filtered);
+      // const filtered = res.data.result.filter((value, index, self) => {
+      //   return index === self.findIndex(item => item.hash === value.hash);
+      // });
+      setFeed(res.data.result);
       setCursor(res.data.cursor);
       setFeedFetchStatus('success');
     } catch (error) {

@@ -89,8 +89,7 @@ function ProfileScreen({
     if (profile?.fid) {
       setUserCastsFetchStatus('loading');
       try {
-        const finalUrl =
-          ENDPOINT_PROFILE + profile?.fid + '/replies-and-recasts?limit=10';
+        const finalUrl = ENDPOINT_PROFILE + profile?.fid + '/casts?limit=10';
         const res = await axios.get<UserCastsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });

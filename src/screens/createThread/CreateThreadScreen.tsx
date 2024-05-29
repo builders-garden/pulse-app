@@ -7,7 +7,7 @@ import {
   TextInputKeyPressEventData,
   View,
 } from 'react-native';
-import {launchImageLibrary} from 'react-native-image-picker';
+import {MediaType, launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import uuid from 'react-native-uuid';
 import DiagonalArrowImg from '../../assets/images/icons/diagonal_arrow.svg';
@@ -25,7 +25,7 @@ function CreateThreadScreen({
   navigation,
 }: RootStackScreenProps<'CreateThread'>) {
   const [threads, setThreads] = useState<Thread[]>([
-    {id: uuid.v4().toString(), body: '', images: [], video: '', links: []},
+    {id: uuid.v4().toString(), body: '', images: [], links: []},
   ]);
   const [currentThreadIndex, setCurrentThreadIndex] = useState(0);
   const inputRef = createRef<TextInput>();
@@ -57,26 +57,59 @@ function CreateThreadScreen({
     }
   }, [inputRef]);
 
-  async function onAddMediaPress() {
-    if (threads[currentThreadIndex].images.length < maxImagesCount) {
-      const res = await launchImageLibrary({mediaType: 'photo'});
-      const imageUri = res.assets?.[0]?.uri;
-      if (imageUri !== undefined && imageUri !== null) {
-        const newThreads = threads.slice();
-        newThreads[currentThreadIndex] = {
-          ...newThreads[currentThreadIndex],
-          images: [...newThreads[currentThreadIndex].images, imageUri],
-        };
-        setThreads(newThreads);
+  async function onAddMediaPress(threadIndex: number) {
+    if (
+      threads[threadIndex].images.length < maxImagesCount &&
+      !threads[threadIndex].video
+    ) {
+      let mediaType: MediaType = 'mixed';
+      if (threads[threadIndex].images.length > 0) {
+        mediaType = 'photo';
+      }
+      const res = await launchImageLibrary({
+        mediaType: mediaType,
+        selectionLimit: 1,
+        includeBase64: true,
+      });
+      console.log(res);
+      if (!res.didCancel) {
+        const isVideo = res.assets?.[0]?.type?.startsWith('video');
+        const mediaUri = res.assets?.[0]?.uri;
+        if (mediaUri !== undefined && mediaUri !== null) {
+          const newThreads = [...threads];
+          if (isVideo) {
+            newThreads[threadIndex] = {
+              ...newThreads[threadIndex],
+              video: mediaUri,
+            };
+          } else {
+            newThreads[threadIndex] = {
+              ...newThreads[threadIndex],
+              images: [...newThreads[threadIndex].images, mediaUri],
+            };
+          }
+          setThreads(newThreads);
+        }
       }
     } else {
       Toast.show({
         type: 'info',
-        text1: "You can't upload more than 2 images!",
+        text1: "You can't upload more than 2 images or 1 video!",
         text2: 'Create another thread to upload more images.',
         topOffset: 50,
       });
     }
+  }
+  async function onCancelMediaPress(threadIndex: number, mediaIndex: number) {
+    const newThreads = [...threads];
+    if (newThreads[threadIndex].video) {
+      delete newThreads[threadIndex].video;
+    } else {
+      newThreads[threadIndex].images = newThreads[threadIndex].images.filter(
+        (el, i) => i !== mediaIndex,
+      );
+    }
+    setThreads(newThreads);
   }
 
   async function onAddThreadPress() {
@@ -175,7 +208,12 @@ function CreateThreadScreen({
             onFocus={() => setCurrentThreadIndex(index)}
             onKeyPress={e => onKeyPress(e, index)}
             onChangeText={newText => onThreadChangeText(newText, index)}
-            onAddMediaPress={onAddMediaPress}
+            onAddMediaPress={() => {
+              onAddMediaPress(index);
+            }}
+            onCancelMediaPress={mediaIndex => {
+              onCancelMediaPress(index, mediaIndex);
+            }}
           />
         )}
         ItemSeparatorComponent={() => <View style={{height: 20}} />}

@@ -10,7 +10,6 @@ import {
 import FastImage from 'react-native-fast-image';
 import {Channel} from '../../../api/channel/types';
 import FollowCounter from '../../../components/FollowCounter';
-import MyButtonNew from '../../../components/MyButtonNew';
 import {MyTheme} from '../../../theme';
 
 interface HeaderProps {
@@ -48,12 +47,6 @@ function Header({channel, customStyle, onSeeMorePress}: HeaderProps) {
             />
           </View>
         </View>
-        <MyButtonNew
-          title="Join"
-          onPress={() => {}}
-          style="primary"
-          customStyle={{marginLeft: 'auto'}}
-        />
       </View>
       <Text style={styles.description}>{channel.description}</Text>
       <Pressable onPress={onSeeMorePress}>

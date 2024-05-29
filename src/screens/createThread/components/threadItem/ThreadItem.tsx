@@ -1,8 +1,6 @@
 import React, {RefObject} from 'react';
 import {
-  Image,
   NativeSyntheticEvent,
-  Pressable,
   StyleSheet,
   TextInput,
   TextInputKeyPressEventData,
@@ -13,6 +11,7 @@ import BorderLineImg from '../../../../assets/images/thread/border_line.svg';
 import {MyTheme} from '../../../../theme';
 import {Thread} from '../../types';
 import BottomSection from './BottomSection';
+import MediaBox from './MediaBox';
 
 type ThreadItemProps = {
   thread: Thread;
@@ -20,10 +19,10 @@ type ThreadItemProps = {
   active: boolean;
   maxLength: number;
   onChangeText: (text: string) => void;
-  onImagePress?: (index: number) => void;
   onKeyPress?: (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => void;
   onFocus: () => void;
   onAddMediaPress: () => void;
+  onCancelMediaPress: (index: number) => void;
 };
 
 function ThreadItem({
@@ -34,20 +33,19 @@ function ThreadItem({
   onChangeText,
   onKeyPress,
   onFocus,
-  onImagePress,
   onAddMediaPress,
+  onCancelMediaPress,
 }: ThreadItemProps) {
   const imagesHtml = thread.images
     ?.filter(el => el !== undefined && el !== null)
     .map((image, i) => (
-      <Pressable
-        key={i}
-        style={styles.imageBox}
-        onPress={() => {
-          onImagePress && onImagePress(i);
-        }}>
-        <Image style={styles.image} source={{uri: image}} />
-      </Pressable>
+      <MediaBox
+        key={image + '_' + i}
+        uri={image}
+        onCancelPress={() => {
+          onCancelMediaPress(i);
+        }}
+      />
     ));
 
   return (
@@ -91,6 +89,16 @@ function ThreadItem({
         {thread.images && thread.images.length > 0 && (
           <View style={styles.imagesCtn}>{imagesHtml}</View>
         )}
+
+        {thread.video && (
+          <MediaBox
+            isVideo
+            uri={thread.video}
+            onCancelPress={() => {
+              onCancelMediaPress(0);
+            }}
+          />
+        )}
       </View>
     </View>
   );
@@ -128,19 +136,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
     paddingTop: 20,
-  },
-  imageBox: {
-    flex: 1,
-    height: 200,
-  },
-  image: {
-    overflow: 'hidden',
-    resizeMode: 'cover',
-    borderWidth: 2,
-    borderColor: 'lightgray',
-    borderRadius: 8,
-    height: '100%',
-    width: '100%',
   },
 });
 

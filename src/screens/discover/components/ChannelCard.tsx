@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import FollowCounter from '../../../components/FollowCounter';
-import MyButtonNew from '../../../components/MyButtonNew';
 import {formatNumber} from '../../../libs/numbers';
 import {MyTheme} from '../../../theme';
 
@@ -77,11 +76,6 @@ const ChannelCard = ({
             )}
           </View>
         </View>
-        <MyButtonNew
-          customStyle={[styles.actionButton]}
-          onPress={onButtonPress}
-          title="Join"
-        />
       </View>
       <Text numberOfLines={2} ellipsizeMode="tail" style={[styles.body]}>
         {description}
