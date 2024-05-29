@@ -46,10 +46,6 @@ function ProfileScreen({
     return authContext.state?.fid === route.params.userFid.toString();
   }, [authContext.state?.fid, route.params.userFid]);
 
-  const isTabBarNavigation = useMemo(() => {
-    return route.name === 'PersonalProfile';
-  }, [route.name]);
-
   const fetchProfile = useCallback(async () => {
     if (authContext.state?.fid) {
       setProfileFetchStatus('loading');
@@ -108,6 +104,16 @@ function ProfileScreen({
     }
   }, [authContext.state.token, profile?.fid]);
 
+  const jumpToFeedRoot = useCallback(
+    (screen: 'Profile' | 'ThreadDetail' | 'Channel', params: any) => {
+      navigation.jumpTo('FeedRoot', {
+        screen,
+        params,
+      });
+    },
+    [navigation],
+  );
+
   const renderItem = useCallback(
     ({item, index}: {item: UserCast | Comment; index: number}) => {
       if (
@@ -140,36 +146,34 @@ function ProfileScreen({
               marginTop: index === 0 ? 15 : 0,
             }}
             onContentBodyPress={() => {
-              if (isTabBarNavigation) {
-                navigation.navigate('FeedRoot', {
-                  screen: 'ThreadDetail',
-                  params: {
-                    threadHash: item.hash,
-                  },
-                });
-              } else {
-                navigation.navigate('ThreadDetail', {
-                  threadHash: item.hash,
-                });
-              }
+              jumpToFeedRoot('ThreadDetail', {
+                threadHash: item.hash,
+              });
             }}
             onHeaderTitlePress={() => {
               if (transformedItem.channel !== '') {
-                navigation.navigate('FeedRoot', {
-                  screen: 'Channel',
-                  params: {
-                    channelId: transformedItem.channel,
-                  },
+                jumpToFeedRoot('Channel', {
+                  channelId: transformedItem.channel,
+                });
+              } else {
+                jumpToFeedRoot('Profile', {
+                  userFid: item.author.fid.toString(),
                 });
               }
             }}
+            onHeaderSubtitlePress={() => {
+              jumpToFeedRoot('Profile', {
+                userFid: item.author.fid.toString(),
+              });
+            }}
             onHeaderImagePress={() => {
               if (transformedItem.channel !== '') {
-                navigation.navigate('FeedRoot', {
-                  screen: 'Channel',
-                  params: {
-                    channelId: transformedItem.channel,
-                  },
+                jumpToFeedRoot('Channel', {
+                  channelId: transformedItem.channel,
+                });
+              } else {
+                jumpToFeedRoot('Profile', {
+                  userFid: item.author.fid.toString(),
                 });
               }
             }}
@@ -198,15 +202,42 @@ function ProfileScreen({
             ]}
             hideActionBar
             onContentBodyPress={() => {
-              navigation.navigate('ThreadDetail', {
+              jumpToFeedRoot('ThreadDetail', {
                 threadHash: item.hash,
               });
+            }}
+            onHeaderTitlePress={() => {
+              if (transformedItem.channel !== '') {
+                jumpToFeedRoot('Channel', {
+                  channelId: transformedItem.channel,
+                });
+              } else {
+                jumpToFeedRoot('Profile', {
+                  userFid: item.author.fid.toString(),
+                });
+              }
+            }}
+            onHeaderSubtitlePress={() => {
+              jumpToFeedRoot('Profile', {
+                userFid: item.author.fid.toString(),
+              });
+            }}
+            onHeaderImagePress={() => {
+              if (transformedItem.channel !== '') {
+                jumpToFeedRoot('Channel', {
+                  channelId: transformedItem.channel,
+                });
+              } else {
+                jumpToFeedRoot('Profile', {
+                  userFid: item.author.fid.toString(),
+                });
+              }
             }}
           />
         );
       }
     },
-    [selectedTab, navigation, userCastsFetchStatus, commentsFetchStatus],
+    [selectedTab, userCastsFetchStatus, commentsFetchStatus, jumpToFeedRoot],
   );
 
   useEffect(() => {

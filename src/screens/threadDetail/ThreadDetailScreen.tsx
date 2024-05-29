@@ -12,14 +12,14 @@ import MyComment from '../../components/comment/MyComment';
 import MyThread from '../../components/thread/MyThread';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {TransformCast} from '../../libs/post';
-import {RootStackScreenProps} from '../../routing/types';
+import {FeedStackScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
 import {ENDPOINT_CAST} from '../../variables';
 
 function ThreadDetailScreen({
   route,
   navigation,
-}: RootStackScreenProps<'ThreadDetail'>) {
+}: FeedStackScreenProps<'ThreadDetail'>) {
   const authContext = useContext(AuthContext);
   const [threadFetchStatus, setThreadFetchStatus] =
     useState<RequestStatus>('idle');
@@ -113,6 +113,33 @@ function ThreadDetailScreen({
                 marginLeft: 10,
               }}
               titleRight={transformedCast.postTime}
+              onTitlePress={() => {
+                if (transformedCast.channel !== '') {
+                  navigation.navigate('Channel', {
+                    channelId: transformedCast.channel,
+                  });
+                } else {
+                  navigation.navigate('Profile', {
+                    userFid: thread.casts[0].author.fid.toString(),
+                  });
+                }
+              }}
+              onSubtitlePress={() => {
+                navigation.navigate('Profile', {
+                  userFid: thread.casts[0].author.fid.toString(),
+                });
+              }}
+              onImagePress={() => {
+                if (transformedCast.channel !== '') {
+                  navigation.navigate('Channel', {
+                    channelId: transformedCast.channel,
+                  });
+                } else {
+                  navigation.navigate('Profile', {
+                    userFid: thread.casts[0].author.fid.toString(),
+                  });
+                }
+              }}
             />
             {threadsHtml}
           </View>
@@ -137,9 +164,36 @@ function ThreadDetailScreen({
                 borderTopRightRadius: 4,
               }}
               onContentBodyPress={() => {
-                navigation.push('ThreadDetail', {
+                navigation.navigate('ThreadDetail', {
                   threadHash: section.header.hash,
                 });
+              }}
+              onHeaderTitlePress={() => {
+                if (transformedCast.channel !== '') {
+                  navigation.navigate('Channel', {
+                    channelId: transformedCast.channel,
+                  });
+                } else {
+                  navigation.navigate('Profile', {
+                    userFid: section.header.author.fid.toString(),
+                  });
+                }
+              }}
+              onHeaderSubtitlePress={() => {
+                navigation.navigate('Profile', {
+                  userFid: section.header.author.fid.toString(),
+                });
+              }}
+              onHeaderImagePress={() => {
+                if (transformedCast.channel !== '') {
+                  navigation.navigate('Channel', {
+                    channelId: transformedCast.channel,
+                  });
+                } else {
+                  navigation.navigate('Profile', {
+                    userFid: section.header.author.fid.toString(),
+                  });
+                }
               }}
             />
           );
@@ -165,6 +219,33 @@ function ThreadDetailScreen({
                 navigation.push('ThreadDetail', {
                   threadHash: item.hash,
                 });
+              }}
+              onHeaderTitlePress={() => {
+                if (transformedComment.channel !== '') {
+                  navigation.navigate('Channel', {
+                    channelId: transformedComment.channel,
+                  });
+                } else {
+                  navigation.navigate('Profile', {
+                    userFid: item.author.fid.toString(),
+                  });
+                }
+              }}
+              onHeaderSubtitlePress={() => {
+                navigation.navigate('Profile', {
+                  userFid: item.author.fid.toString(),
+                });
+              }}
+              onHeaderImagePress={() => {
+                if (transformedComment.channel !== '') {
+                  navigation.navigate('Channel', {
+                    channelId: transformedComment.channel,
+                  });
+                } else {
+                  navigation.navigate('Profile', {
+                    userFid: item.author.fid.toString(),
+                  });
+                }
               }}
             />
           );

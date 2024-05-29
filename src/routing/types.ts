@@ -6,7 +6,6 @@ import {
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 export type RootStackParamList = {
-  ThreadDetail: {threadHash: string};
   Home: NavigatorScreenParams<TabParamList>;
   CreateThread: undefined;
   SignIn: undefined;

@@ -1,12 +1,13 @@
 import React from 'react';
 import {
-  Image,
+  Pressable,
   StyleProp,
   StyleSheet,
   Text,
   View,
   ViewStyle,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import BorderLineImg from '../../assets/images/thread/quote_border_line.svg';
 import {MyTheme} from '../../theme';
@@ -30,6 +31,9 @@ export type MyCommentProps = {
   commentCustomStyle?: StyleProp<ViewStyle>;
   rootCustomStyle?: StyleProp<ViewStyle>;
   onContentBodyPress?: () => void;
+  onHeaderTitlePress?: () => void;
+  onHeaderSubtitlePress?: () => void;
+  onHeaderImagePress?: () => void;
 };
 
 const MyComment = ({
@@ -48,6 +52,9 @@ const MyComment = ({
   commentCustomStyle,
   rootCustomStyle,
   onContentBodyPress,
+  onHeaderTitlePress,
+  onHeaderSubtitlePress,
+  onHeaderImagePress,
 }: MyCommentProps) => {
   const indentSize = 5;
 
@@ -66,15 +73,32 @@ const MyComment = ({
           commentCustomStyle,
         ]}>
         <View style={styles.header}>
-          <Image style={styles.headerImg} source={{uri: headerImg}} />
+          <Pressable
+            onPress={() => {
+              if (onHeaderImagePress) {
+                onHeaderImagePress();
+              }
+            }}>
+            <FastImage style={styles.headerImg} source={{uri: headerImg}} />
+          </Pressable>
           <View style={styles.headerTextCtn}>
             <Text
+              onPress={() => {
+                if (onHeaderTitlePress) {
+                  onHeaderTitlePress();
+                }
+              }}
               numberOfLines={1}
               ellipsizeMode="tail"
               style={styles.headerTitle}>
               {headerTitle}
             </Text>
             <Text
+              onPress={() => {
+                if (onHeaderSubtitlePress) {
+                  onHeaderSubtitlePress();
+                }
+              }}
               numberOfLines={1}
               ellipsizeMode="tail"
               style={styles.headerSubtitle}>

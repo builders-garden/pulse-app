@@ -1,5 +1,12 @@
 import React from 'react';
-import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
+import {
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  Text,
+  View,
+  ViewStyle,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {MyTheme} from '../theme';
 import MyIconButton from './MyIconButton';
@@ -10,6 +17,9 @@ interface UserInfoProps {
   subtitle: string;
   icon: string;
   customStyle?: StyleProp<ViewStyle>;
+  onTitlePress?: () => void;
+  onSubtitlePress?: () => void;
+  onImagePress?: () => void;
 }
 
 const UserInfo = ({
@@ -18,18 +28,39 @@ const UserInfo = ({
   subtitle,
   icon,
   customStyle,
+  onTitlePress,
+  onSubtitlePress,
+  onImagePress,
 }: UserInfoProps) => {
   return (
     <View style={[styles.header, customStyle && customStyle]}>
-      <FastImage style={styles.headerImg} source={{uri: icon}} />
+      <Pressable
+        onPress={() => {
+          if (onImagePress) {
+            onImagePress();
+          }
+        }}>
+        <FastImage style={styles.headerImg} source={{uri: icon}} />
+      </Pressable>
       <View style={styles.headerTextCtn}>
-        <View style={{flexDirection: 'row'}}>
+        <Pressable
+          onPress={() => {
+            if (onTitlePress) {
+              onTitlePress();
+            }
+          }}
+          style={{flexDirection: 'row'}}>
           <Text style={styles.headerTitle}>{title}</Text>
           <Text style={styles.headerTime}> • {titleRight}</Text>
-        </View>
+        </Pressable>
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
+          onPress={() => {
+            if (onSubtitlePress) {
+              onSubtitlePress();
+            }
+          }}
           style={styles.headerSubtitle}>
           {subtitle}
         </Text>

@@ -89,15 +89,17 @@ export function TransformFeedItem(item: FeedItem | Comment) {
 export function TransformCast(item: Cast | CastWithDepth | CastWithoutReplies) {
   let headerTitle = '';
   let headerSubtitle = '';
+  let channel: string = '';
   const content = item.text;
   if (
     item.root_parent_url &&
     item.root_parent_url.startsWith('https://warpcast.com/~/channel/')
   ) {
-    headerTitle = item.root_parent_url.replace(
-      'https://warpcast.com/~/channel',
+    channel = item.root_parent_url.replace(
+      'https://warpcast.com/~/channel/',
       '',
     );
+    headerTitle = '/' + channel;
     headerSubtitle = item.author.display_name + ' • @' + item.author.username;
   } else {
     headerTitle = item.author.display_name;
@@ -110,6 +112,7 @@ export function TransformCast(item: Cast | CastWithDepth | CastWithoutReplies) {
   );
 
   return {
+    channel,
     headerImg: item.author.pfp_url,
     postTime: postTime,
     headerTitle: headerTitle,
