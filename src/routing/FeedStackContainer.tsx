@@ -2,7 +2,8 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import ChatImg from '../assets/images/icons/chat.svg';
-import MyHeader from '../components/MyHeader';
+import MyHeaderLeft from '../components/header/MyHeaderLeft';
+import MyHeaderRight from '../components/header/MyHeaderRight';
 import ChannelScreen from '../screens/channel/ChannelScreen';
 import ChannelDetailScreen from '../screens/channelDetail/ChannelDetailScreen';
 import FeedScreen from '../screens/feed/FeedScreen';
@@ -29,11 +30,12 @@ function FeedStackContainer() {
         options={{
           title: '',
           headerLeft: () => (
-            <MyHeader
+            <MyHeaderLeft
               title="Following"
               icon={<ChatImg color={MyTheme.primaryColor} />}
             />
           ),
+          headerRight: () => <MyHeaderRight />,
         }}
         component={FeedScreen}
       />

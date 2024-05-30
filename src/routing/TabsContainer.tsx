@@ -7,7 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import BellImg from '../assets/images/icons/bell.svg';
 import FeedImg from '../assets/images/icons/feed.svg';
 import RadarImg from '../assets/images/icons/radar.svg';
-import MyHeader from '../components/MyHeader';
+import MyHeaderLeft from '../components/header/MyHeaderLeft';
 import {AuthContext} from '../contexts/auth/Auth.context';
 import DiscoverScreen from '../screens/discover/DiscoverScreen';
 import NotificationsScreen from '../screens/notifications/NotificationsScreen';
@@ -98,7 +98,7 @@ function TabsContainer() {
         options={{
           title: '',
           headerLeft: () => (
-            <MyHeader
+            <MyHeaderLeft
               title="Discover"
               icon={<RadarImg color={MyTheme.primaryColor} />}
             />
@@ -111,7 +111,7 @@ function TabsContainer() {
         options={{
           title: '',
           headerLeft: () => (
-            <MyHeader
+            <MyHeaderLeft
               title="Notifications"
               icon={<BellImg color={MyTheme.primaryColor} />}
             />

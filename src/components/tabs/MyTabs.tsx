@@ -1,14 +1,15 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {MyTheme} from '../../theme';
 import MyTabsItem from './MyTabsItem';
 
 interface MyTabsProps {
   tabs: string[];
   selectedTab: number;
+  customStyle?: StyleProp<ViewStyle>;
   onPress: (tab: number) => void;
 }
-const MyTabs = ({tabs, selectedTab, onPress}: MyTabsProps) => {
+const MyTabs = ({tabs, selectedTab, customStyle, onPress}: MyTabsProps) => {
   const tabsHtml = tabs.map((tab, index) => {
     return (
       <MyTabsItem
@@ -22,7 +23,9 @@ const MyTabs = ({tabs, selectedTab, onPress}: MyTabsProps) => {
     );
   });
 
-  return <View style={styles.tabsCtn}>{tabsHtml}</View>;
+  return (
+    <View style={[styles.tabsCtn, customStyle && customStyle]}>{tabsHtml}</View>
+  );
 };
 
 const styles = StyleSheet.create({

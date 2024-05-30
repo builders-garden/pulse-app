@@ -94,6 +94,7 @@ function ProfileScreen({
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
         console.log('got threads');
+        console.log(res.data.result);
         setUserCasts(res.data.result);
         setUserCastsFetchStatus('success');
       } catch (error) {

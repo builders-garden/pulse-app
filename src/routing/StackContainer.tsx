@@ -7,6 +7,7 @@ import {AuthContext} from '../contexts/auth/Auth.context';
 import {UserStatus} from '../contexts/auth/types';
 import SignInScreen from '../screens/auth/signIn/SignInScreen';
 import CreateThreadScreen from '../screens/createThread/CreateThreadScreen';
+import SearchScreen from '../screens/search/SearchScreen';
 import TabsContainer from './TabsContainer';
 import {RootStackParamList} from './types';
 
@@ -47,6 +48,17 @@ function StackContainer() {
             }}
             name="CreateThread"
             component={CreateThreadScreen}
+          />
+          <Stack.Screen
+            options={{
+              headerStyle: {backgroundColor: 'white'},
+              headerTintColor: 'black',
+              headerShadowVisible: false,
+              headerBackTitleVisible: false,
+              headerTitle: '',
+            }}
+            name="Search"
+            component={SearchScreen}
           />
         </>
       ) : (

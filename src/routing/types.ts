@@ -8,6 +8,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 export type RootStackParamList = {
   Home: NavigatorScreenParams<TabParamList>;
   CreateThread: undefined;
+  Search: undefined;
   SignIn: undefined;
   SignUp: undefined;
 };

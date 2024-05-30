@@ -20,6 +20,7 @@ type MyThreadProps = {
   quotesCount: number;
   upvotesCount: number;
   customStyle?: StyleProp<ViewStyle>;
+  rootCustomStyle?: StyleProp<ViewStyle>;
   onContentBodyPress?: () => void;
 };
 
@@ -33,6 +34,7 @@ const MyThread = ({
   quotesCount,
   upvotesCount,
   customStyle,
+  rootCustomStyle,
   onContentBodyPress,
 }: MyThreadProps) => {
   const authContext = useContext(AuthContext);
@@ -127,7 +129,7 @@ const MyThread = ({
   }, [authContext.state.token, postHash, isRecasted, recasted]);
 
   return (
-    <View style={{flexDirection: 'row'}}>
+    <View style={[{flexDirection: 'row'}, rootCustomStyle && rootCustomStyle]}>
       <View style={{alignItems: 'flex-end'}}>
         <BorderLineImg color={MyTheme.primaryColor} />
         <LinearGradient

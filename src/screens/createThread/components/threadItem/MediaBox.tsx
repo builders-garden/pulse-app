@@ -16,7 +16,7 @@ function MediaBox({isVideo, uri, onCancelPress}: MediaBoxProps) {
     <Pressable style={styles.mediaBox}>
       <MyIconButtonBase
         customStyle={styles.closeBtn}
-        icon={<CloseImg />}
+        icon={<CloseImg color={MyTheme.black} />}
         onPress={onCancelPress}
       />
       {isVideo ? (

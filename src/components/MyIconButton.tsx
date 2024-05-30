@@ -11,6 +11,7 @@ const MyIconButton = ({
   disabled,
   style = 'primary',
   filling = 'solid',
+  shape = 'round',
   icon,
   iconSize = 32,
   customStyle,
@@ -19,6 +20,7 @@ const MyIconButton = ({
   return (
     <MyIconButtonBase
       onPress={onPress}
+      shape={shape}
       disabled={disabled}
       style={style}
       filling={filling}

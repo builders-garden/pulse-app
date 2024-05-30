@@ -86,6 +86,9 @@ function ThreadDetailScreen({
         upvotesCount={transformedCast.upvotesCount}
         commentsCount={transformedCast.commentsCount}
         quotesCount={transformedCast.quotesCount}
+        rootCustomStyle={{
+          marginTop: index === 0 ? 0 : 15,
+        }}
       />
     );
   });
