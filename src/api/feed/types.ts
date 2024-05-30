@@ -1,3 +1,4 @@
+import {Channel} from '../channel/types';
 import {Profile} from '../profile/types';
 
 export type FeedResponse = {
@@ -32,6 +33,7 @@ export type FeedItem = {
     recasted: boolean;
   };
   frames?: Frame[];
+  channel?: Channel;
 };
 
 export type Embed = {

@@ -6,8 +6,8 @@ import {
   ChannelActivity,
   MostFollowedChannel,
   MostFollowedChannelsResponse,
-  MostRecentChannel,
-  MostRecentChannelsResponse,
+  NewChannel,
+  NewChannelsResponse,
   TrendingChannelsResponse,
 } from '../../api/channel/types';
 import {RequestStatus} from '../../api/types';
@@ -37,11 +37,9 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
   const [topChannelsFetchStatus, setTopChannelsFetchStatus] =
     useState<RequestStatus>('idle');
   const [topChannels, setTopChannels] = useState<MostFollowedChannel[][]>([]);
-  const [mostRecentChannelsFetchStatus, setMostRecentChannelsFetchStatus] =
+  const [newChannelsFetchStatus, setNewChannelsFetchStatus] =
     useState<RequestStatus>('idle');
-  const [mostRecentChannels, setMostRecentChannels] = useState<
-    MostRecentChannel[][]
-  >([]);
+  const [newChannels, setNewChannels] = useState<NewChannel[][]>([]);
   const [trendingPostsFetchStatus, setTrendingPostsFetchStatus] =
     useState<RequestStatus>('idle');
   const [trendingPosts, setTrendingPosts] = useState<TrendingCastResult[]>([]);
@@ -96,22 +94,20 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
       setTopChannelsFetchStatus('error');
     }
   }, [authContext.state.token]);
-  const fetchMostRecentChannels = useCallback(async () => {
-    setMostRecentChannelsFetchStatus('loading');
+  const fetchNewChannels = useCallback(async () => {
+    setNewChannelsFetchStatus('loading');
     try {
       console.log('fetching most recent channels...');
       const finalUrl = ENDPOINT_MOST_RECENT_CHANNELS + '?limit=9';
-      const res = await axios.get<MostRecentChannelsResponse>(finalUrl, {
+      const res = await axios.get<NewChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
-      const transformed = TransformArrayTo3x3<MostRecentChannel>(
-        res.data.result,
-      );
-      setMostRecentChannels(transformed);
-      setMostRecentChannelsFetchStatus('success');
+      const transformed = TransformArrayTo3x3<NewChannel>(res.data.result);
+      setNewChannels(transformed);
+      setNewChannelsFetchStatus('success');
     } catch (error) {
       console.error(error);
-      setMostRecentChannelsFetchStatus('error');
+      setNewChannelsFetchStatus('error');
     }
   }, [authContext.state.token]);
 
@@ -126,8 +122,8 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
     fetchTrendingPosts();
   }, [fetchTrendingPosts, authContext]);
   useEffect(() => {
-    fetchMostRecentChannels();
-  }, [fetchMostRecentChannels, authContext]);
+    fetchNewChannels();
+  }, [fetchNewChannels, authContext]);
 
   // RENDER FUNCTIONS
   const renderForYouItem = useCallback(
@@ -220,8 +216,8 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
     ),
     [topChannels, navigation],
   );
-  const renderMostRecentChannelItem = useCallback(
-    ({item, index}: {item: MostRecentChannel[]; index: number}) => (
+  const renderNewChannelItem = useCallback(
+    ({item, index}: {item: NewChannel[]; index: number}) => (
       <View
         style={{
           marginLeft: index == 0 ? 20 : 10,
@@ -259,7 +255,7 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
     channelsForYouFetchStatus === 'loading' ||
     trendingPostsFetchStatus === 'loading' ||
     topChannelsFetchStatus === 'loading' ||
-    mostRecentChannelsFetchStatus === 'loading'
+    newChannelsFetchStatus === 'loading'
   ) {
     return (
       <View style={styles.loadingCtn}>
@@ -270,7 +266,7 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
     channelsForYouFetchStatus === 'error' ||
     trendingPostsFetchStatus === 'error' ||
     topChannelsFetchStatus === 'error' ||
-    mostRecentChannelsFetchStatus === 'error'
+    newChannelsFetchStatus === 'error'
   ) {
     return (
       <View style={styles.errorCtn}>
@@ -284,8 +280,8 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
               fetchTrendingPosts();
             } else if (topChannelsFetchStatus === 'error') {
               fetchTopChannels();
-            } else if (mostRecentChannelsFetchStatus === 'error') {
-              fetchMostRecentChannels();
+            } else if (newChannelsFetchStatus === 'error') {
+              fetchNewChannels();
             }
           }}
         />
@@ -338,8 +334,8 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
           <Text style={styles.sectionLabel}>New channels</Text>
           <FlatList
             horizontal
-            data={mostRecentChannels}
-            renderItem={renderMostRecentChannelItem}
+            data={newChannels}
+            renderItem={renderNewChannelItem}
           />
         </View>
       </ScrollView>

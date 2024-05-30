@@ -10,6 +10,9 @@ export type MostFollowedChannelsResponse = {
 export type MostRecentChannelsResponse = {
   result: MostRecentChannel[];
 };
+export type NewChannelsResponse = {
+  result: NewChannel[];
+};
 export type ChannelsResponse = {
   result: {
     channels: Channel[];
@@ -41,6 +44,10 @@ export type Channel = {
   parent_url: string;
   lead: Profile;
   hosts: Profile[];
+  moderator?: any;
+  viewer_context?: {
+    following: boolean;
+  };
 };
 
 export type MostFollowedChannel = {
@@ -51,4 +58,7 @@ export type MostFollowedChannel = {
   url: string;
 };
 
+export type NewChannel = Omit<MostFollowedChannel, 'followerCount'> & {
+  createdAtTimestamp: string;
+};
 export type MostRecentChannel = Channel;

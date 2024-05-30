@@ -48,24 +48,22 @@ export function TransformUserCast(item: UserCast) {
     quotesCount: item.reactions.recasts_count,
   };
 }
+// TODO: Implementare TransformComment e separare le due funzioni
 export function TransformFeedItem(item: FeedItem | Comment) {
   let headerTitle = '';
   let headerSubtitle = '';
+  let headerImg = '';
   let channel: string = '';
   const content = item.text;
-  if (
-    item.root_parent_url &&
-    item.root_parent_url.startsWith('https://warpcast.com/~/channel/')
-  ) {
-    channel = item.root_parent_url.replace(
-      'https://warpcast.com/~/channel/',
-      '',
-    );
+  if (item.channel) {
+    channel = item.channel.id;
     headerTitle = '/' + channel;
     headerSubtitle = item.author.display_name + ' • @' + item.author.username;
+    headerImg = item.channel.image_url;
   } else {
     headerTitle = item.author.display_name;
     headerSubtitle = '@' + item.author.username;
+    headerImg = item.author.pfp_url;
   }
 
   const postTime = formatDate(new Date(item.timestamp));
@@ -75,7 +73,7 @@ export function TransformFeedItem(item: FeedItem | Comment) {
 
   return {
     channel,
-    headerImg: item.author.pfp_url,
+    headerImg,
     postTime: postTime,
     headerTitle: headerTitle,
     headerSubtitle: headerSubtitle,
