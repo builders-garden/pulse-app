@@ -40,7 +40,7 @@ function ProfileScreen({
   const [userCasts, setUserCasts] = useState<UserCast[]>([]);
 
   const isLoggedUserProfile = useMemo(() => {
-    if (authContext.state?.fid) {
+    if (!authContext.state?.fid) {
       return false;
     }
     return authContext.state?.fid === route.params.userFid.toString();

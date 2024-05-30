@@ -32,7 +32,7 @@ import {MyTheme} from '../../theme';
 import {
   ENDPOINT_CHANNELS,
   ENDPOINT_FAVORITE_CHANNELS,
-  ENDPOINT_MOST_RECENT_CHANNELS,
+  ENDPOINT_PROFILE,
 } from '../../variables';
 import MyButton from '../MyButton';
 import MyLoader from '../MyLoader';
@@ -90,18 +90,19 @@ const MyDrawer = ({
     console.log('fetching recents');
     setRecentChannelsFetchStatus('loading');
     try {
-      const finalUrl = ENDPOINT_MOST_RECENT_CHANNELS + '?limit=4';
+      const finalUrl =
+        ENDPOINT_PROFILE + authContext.state.fid + '/active-channels';
       const res = await axios.get<MostRecentChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
-      console.log('got response');
+      console.log('recent channels', res.data.result);
       setRecentChannels(res.data.result);
       setRecentChannelsFetchStatus('success');
     } catch (error) {
       console.error(error);
       setRecentChannelsFetchStatus('error');
     }
-  }, [authContext.state.token]);
+  }, [authContext.state.token, authContext.state.fid]);
   const fetchAllChannels = useCallback(async () => {
     console.log('fetching all');
     setAllChannelsFetchStatus('loading');

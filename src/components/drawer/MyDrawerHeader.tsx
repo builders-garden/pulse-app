@@ -1,9 +1,12 @@
 import {StackActions, useNavigation} from '@react-navigation/native';
 import React, {PropsWithChildren} from 'react';
-import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {ChannelActivity, MostRecentChannel} from '../../api/channel/types';
 import ChatImg from '../../assets/images/icons/chat.svg';
 import {MyTheme} from '../../theme';
+import MyChipBase from '../MyChipBase';
+import MyDrawerSectionChannel from './MyDrawerSectionChannel';
 interface MyDrawerHeaderProps {
   favoriteChannels: ChannelActivity[];
   recentChannels: MostRecentChannel[];
@@ -30,65 +33,61 @@ const MyDrawerHeader = ({
       </Pressable>
       <View style={styles.section}>
         <Text style={styles.headingText}>Favorites</Text>
-        <View style={styles.sectionItemsCtn}>
+        <View style={styles.favoriteSectionItemsCtn}>
           {/* Replace with your actual images */}
           {favoriteChannels.map(item => (
-            <Pressable
-              onPress={() => {
-                onPressItem && onPressItem();
-                navigation.dispatch(
-                  StackActions.replace('Channel', {
-                    channelId: item.channel.id,
-                    showDrawer: true,
-                  }),
-                );
-                // navigation.navigate('Channel', {
-                //   channelId: item.channel.id,
-                // });
-              }}
-              key={item.channel.id}>
-              <View style={styles.sectionItem}>
-                <Image
-                  source={{uri: item.channel.image_url}}
-                  style={styles.sectionItemImg}
-                />
-                <Text style={styles.sectionItemText} numberOfLines={2}>
-                  {item.channel.name}
-                </Text>
-              </View>
-            </Pressable>
+            <MyDrawerSectionChannel
+              channelId={item.channel.id}
+              channelName={item.channel.name}
+              channelImageUrl={item.channel.image_url}
+              onPressItem={onPressItem}
+            />
           ))}
         </View>
       </View>
       <View style={styles.section}>
         <Text style={styles.headingText}>Recent</Text>
-        <View style={styles.sectionItemsCtn}>
+        <View style={styles.recentSectionItemsCtn}>
           {/* Replace with your actual images */}
           {recentChannels.map(item => (
-            <Pressable
+            <MyChipBase
+              key={item.id}
+              title={`/${item.id}`}
+              size="small"
+              iconLeft={
+                <FastImage
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 3,
+                    marginRight: 5,
+                  }}
+                  source={{uri: item.image_url}}
+                />
+              }
+              style="tertiary"
+              customStyle={{
+                borderRadius: 4,
+                paddingVertical: 5,
+                paddingHorizontal: 5,
+              }}
+              textCustomStyle={{color: MyTheme.grey500}}
               onPress={() => {
                 onPressItem && onPressItem();
                 navigation.dispatch(
                   StackActions.replace('Channel', {
-                    channelId: item.channelId,
+                    channelId: item.id,
                     showDrawer: true,
                   }),
                 );
-                // navigation.navigate('Channel', {
-                //   channelId: item.channel.id,
-                // });
               }}
-              key={item.channelId}>
-              <View style={styles.sectionItem}>
-                <Image
-                  source={{uri: item.imageUrl}}
-                  style={styles.sectionItemImg}
-                />
-                <Text style={styles.sectionItemText} numberOfLines={2}>
-                  {item.name}
-                </Text>
-              </View>
-            </Pressable>
+            />
+            // <MyDrawerSectionChannel
+            //   channelId={item.id}
+            //   channelName={item.name}
+            //   channelImageUrl={item.image_url}
+            //   onPressItem={onPressItem}
+            // />
           ))}
         </View>
       </View>
@@ -126,21 +125,16 @@ const styles = StyleSheet.create({
     fontFamily: MyTheme.fontBold,
     marginBottom: 10,
   },
-  sectionItemsCtn: {
+  favoriteSectionItemsCtn: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'flex-start',
+    flexWrap: 'wrap',
   },
-  sectionItem: {
-    alignItems: 'center',
-  },
-  sectionItemImg: {width: 30, height: 30, borderRadius: 3},
-  sectionItemText: {
-    fontFamily: MyTheme.fontRegular,
-    fontSize: 12,
-    marginTop: 5,
-    width: 55,
-    color: MyTheme.black,
-    textAlign: 'center',
+  recentSectionItemsCtn: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    gap: 6,
   },
 });
 

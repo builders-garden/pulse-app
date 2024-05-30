@@ -51,6 +51,4 @@ export type MostFollowedChannel = {
   url: string;
 };
 
-export type MostRecentChannel = Omit<MostFollowedChannel, 'followerCount'> & {
-  createdAtTimestamp: string;
-};
+export type MostRecentChannel = Channel;
