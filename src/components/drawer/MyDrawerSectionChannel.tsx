@@ -1,4 +1,3 @@
-import {StackActions, useNavigation} from '@react-navigation/native';
 import React, {PropsWithChildren} from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {MyTheme} from '../../theme';
@@ -15,21 +14,11 @@ const MyDrawerSectionChannel = ({
   channelImageUrl,
   onPressItem,
 }: PropsWithChildren<MyDrawerSectionChannelProps>) => {
-  const navigation = useNavigation<any>();
   return (
     <Pressable
       style={styles.sectionChannelRoot}
       onPress={() => {
         onPressItem && onPressItem();
-        navigation.dispatch(
-          StackActions.replace('Channel', {
-            channelId: channelId,
-            showDrawer: true,
-          }),
-        );
-        // navigation.navigate('Channel', {
-        //   channelId: item.channel.id,
-        // });
       }}
       key={channelId}>
       <View style={styles.sectionChannel}>

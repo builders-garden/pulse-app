@@ -1,4 +1,4 @@
-import {StackActions, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import React, {
   PropsWithChildren,
@@ -186,12 +186,21 @@ const MyDrawer = ({
         <Pressable
           onPress={() => {
             onPressItem && onPressItem();
-            navigation.dispatch(
-              StackActions.replace('Channel', {
-                channelId: item.id,
-                showDrawer: true,
-              }),
-            );
+            navigation.reset({
+              index: 0,
+              routes: [
+                {
+                  name: 'FeedRoot',
+                  params: {
+                    screen: 'Channel',
+                    params: {
+                      channelId: item.id,
+                      showDrawer: true,
+                    },
+                  },
+                },
+              ],
+            });
           }}
           key={item.id}>
           <View style={styles.sectionItemHorizontal}>

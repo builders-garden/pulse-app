@@ -1,4 +1,4 @@
-import {StackActions, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import React, {PropsWithChildren} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
@@ -24,7 +24,17 @@ const MyDrawerHeader = ({
       <Pressable
         onPress={() => {
           onPressItem && onPressItem();
-          navigation.dispatch(StackActions.replace('Feed'));
+          navigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: 'FeedRoot',
+                params: {
+                  screen: 'Feed',
+                },
+              },
+            ],
+          });
         }}>
         <View style={styles.followingBox}>
           <ChatImg width={24} height={24} color={MyTheme.primaryLight} />
@@ -37,10 +47,28 @@ const MyDrawerHeader = ({
           {/* Replace with your actual images */}
           {favoriteChannels.map(item => (
             <MyDrawerSectionChannel
+              key={item.channel.id}
               channelId={item.channel.id}
               channelName={item.channel.name}
               channelImageUrl={item.channel.image_url}
-              onPressItem={onPressItem}
+              onPressItem={() => {
+                onPressItem && onPressItem();
+                navigation.reset({
+                  index: 0,
+                  routes: [
+                    {
+                      name: 'FeedRoot',
+                      params: {
+                        screen: 'Channel',
+                        params: {
+                          channelId: item.channel.id,
+                          showDrawer: true,
+                        },
+                      },
+                    },
+                  ],
+                });
+              }}
             />
           ))}
         </View>
@@ -56,38 +84,32 @@ const MyDrawerHeader = ({
               size="small"
               iconLeft={
                 <FastImage
-                  style={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: 3,
-                    marginRight: 5,
-                  }}
+                  style={styles.channelChipImg}
                   source={{uri: item.image_url}}
                 />
               }
               style="tertiary"
-              customStyle={{
-                borderRadius: 4,
-                paddingVertical: 5,
-                paddingHorizontal: 5,
-              }}
+              customStyle={styles.channelChip}
               textCustomStyle={{color: MyTheme.grey500}}
               onPress={() => {
                 onPressItem && onPressItem();
-                navigation.dispatch(
-                  StackActions.replace('Channel', {
-                    channelId: item.id,
-                    showDrawer: true,
-                  }),
-                );
+                navigation.reset({
+                  index: 0,
+                  routes: [
+                    {
+                      name: 'FeedRoot',
+                      params: {
+                        screen: 'Channel',
+                        params: {
+                          channelId: item.id,
+                          showDrawer: true,
+                        },
+                      },
+                    },
+                  ],
+                });
               }}
             />
-            // <MyDrawerSectionChannel
-            //   channelId={item.id}
-            //   channelName={item.name}
-            //   channelImageUrl={item.image_url}
-            //   onPressItem={onPressItem}
-            // />
           ))}
         </View>
       </View>
@@ -103,7 +125,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 15,
   },
-
   followingBox: {
     backgroundColor: MyTheme.primaryLightOpacity,
     borderRadius: 4,
@@ -135,6 +156,17 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     flexWrap: 'wrap',
     gap: 6,
+  },
+  channelChip: {
+    borderRadius: 4,
+    paddingVertical: 5,
+    paddingHorizontal: 5,
+  },
+  channelChipImg: {
+    width: 20,
+    height: 20,
+    borderRadius: 3,
+    marginRight: 5,
   },
 });
 
