@@ -73,7 +73,7 @@ function AuthProvider({children}: PropsWithChildren) {
 
   async function fetchProfile(token: string, fid: string) {
     try {
-      const finalUrl = ENDPOINT_PROFILE + fid;
+      const finalUrl = ENDPOINT_PROFILE + '/' + fid;
       const res = await axios.get<ProfileResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${token}`},
       });

@@ -1,6 +1,10 @@
 export type ProfileResponse = {
   result: Profile;
 };
+export type ProfileSearchResponse = {
+  result: Profile[];
+  cursor: string;
+};
 
 export type Profile = {
   object: string;

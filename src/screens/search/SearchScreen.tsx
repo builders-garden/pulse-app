@@ -1,21 +1,182 @@
-import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import axios from 'axios';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  useWindowDimensions,
+} from 'react-native';
+import {Channel, ChannelsResponse} from '../../api/channel/types';
+import {Profile, ProfileSearchResponse} from '../../api/profile/types';
+import {RequestStatus} from '../../api/types';
+import BackImg from '../../assets/images/icons/back.svg';
+import MyButton from '../../components/MyButton';
+import MyIconButtonBase from '../../components/MyIconButtonBase';
+import MyPlaceholderLoader from '../../components/MyPlaceholderLoader';
 import MySearchField from '../../components/inputs/MySearchField';
 import MyTabs from '../../components/tabs/MyTabs';
+import {AuthContext} from '../../contexts/auth/Auth.context';
 import {RootStackScreenProps} from '../../routing/types';
+import {MyTheme} from '../../theme';
+import {ENDPOINT_CHANNELS, ENDPOINT_PROFILE} from '../../variables';
+import ChannelLine from './components/ChannelLine';
+import ProfileLine from './components/ProfileLine';
 
 function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
+  const authContext = useContext(AuthContext);
   const [selectedTab, setSelectedTab] = useState(0);
+  const [searchText, setSearchText] = useState('');
+  const [profilesSearchFetchStatus, setProfilesSearchFetchStatus] =
+    useState<RequestStatus>('idle');
+  const [channelsSearchFetchStatus, setChannelsSearchFetchStatus] =
+    useState<RequestStatus>('idle');
+  const [searchedProfiles, setSearchedProfiles] = useState<Profile[]>([]);
+  const [searchedChannels, setSearchedChannels] = useState<Channel[]>([]);
+  const [profilesCursor, setProfilesCursor] = useState<string>();
+  const [channelsCursor, setChannelsCursor] = useState<string>();
+  const {width} = useWindowDimensions();
+
+  const drawHeaderLeft = useCallback(
+    () => (
+      <MyIconButtonBase
+        filling="clear"
+        icon={<BackImg />}
+        onPress={() => navigation.goBack()}
+      />
+    ),
+    [navigation],
+  );
+
+  const drawHeaderRight = useCallback(
+    () => (
+      <MySearchField
+        width={width * 0.7}
+        value={searchText}
+        onCancelPress={() => {
+          setSearchText('');
+        }}
+        onChangeText={setSearchText}
+      />
+    ),
+    [width, searchText],
+  );
+
+  const handleSearchUser = useCallback(async () => {
+    if (authContext.state?.fid) {
+      setProfilesSearchFetchStatus('loading');
+      try {
+        const finalUrl = ENDPOINT_PROFILE + '?q=' + searchText;
+        console.log('searching profiles', finalUrl);
+        const res = await axios.get<ProfileSearchResponse>(finalUrl, {
+          headers: {Authorization: `Bearer ${authContext.state.token}`},
+        });
+        console.log('got response', res.data.result);
+        // console.log('got response');
+        setSearchedProfiles(res.data.result);
+        setProfilesCursor(res.data.cursor);
+        setProfilesSearchFetchStatus('success');
+      } catch (error) {
+        console.error(error);
+        setProfilesSearchFetchStatus('error');
+      }
+    }
+  }, [authContext, searchText]);
+  const handleSearchChannel = useCallback(async () => {
+    if (authContext.state?.fid) {
+      setChannelsSearchFetchStatus('loading');
+      try {
+        const finalUrl = ENDPOINT_CHANNELS + '?limit=10&idOrName=' + searchText;
+        console.log('searching profiles', finalUrl);
+        const res = await axios.get<ChannelsResponse>(finalUrl, {
+          headers: {Authorization: `Bearer ${authContext.state.token}`},
+        });
+        console.log('got response', res.data.result);
+        // console.log('got response');
+        setSearchedChannels(res.data.result.channels);
+        // TODO: serve cursor dal BE
+        // setChannelsCursor(res.data.result.next.cursor);
+        setChannelsSearchFetchStatus('success');
+      } catch (error) {
+        console.error(error);
+        setChannelsSearchFetchStatus('error');
+      }
+    }
+  }, [authContext, searchText]);
 
   useEffect(() => {
     navigation.setOptions({
-      headerLeft: () => (
-        <View>
-          <MySearchField width={200} />
-        </View>
-      ),
+      headerLeft: drawHeaderLeft,
+      headerRight: drawHeaderRight,
     });
-  }, [navigation]);
+  }, [navigation, drawHeaderLeft, drawHeaderRight]);
+
+  useEffect(() => {
+    if (searchText.length > 0) {
+      if (selectedTab === 0) {
+        handleSearchUser();
+      } else {
+        handleSearchChannel();
+      }
+    }
+  }, [searchText, selectedTab, handleSearchUser, handleSearchChannel]);
+
+  const renderItem = useCallback(
+    ({item}: {item: Profile | Channel}) => {
+      if (selectedTab === 0) {
+        const casted = item as Profile;
+        return (
+          <ProfileLine
+            profile={casted}
+            onPress={() => {
+              // navigation.reset({
+              //   index: 0,
+              //   routes: [
+              //     {
+              //       name: 'Home',
+              //       params: {
+              //         screen: 'FeedRoot',
+              //         params: {
+              //           screen: 'Profile',
+              //           params: {userFid: item.fid.toString()},
+              //         },
+              //       },
+              //     },
+              //   ],
+              // });
+              navigation.navigate('Home', {
+                screen: 'FeedRoot',
+                params: {
+                  screen: 'Profile',
+                  params: {userFid: casted.fid.toString()},
+                },
+              });
+            }}
+          />
+        );
+      } else {
+        const casted = item as Channel;
+        return (
+          <ChannelLine
+            channel={casted}
+            onPress={() => {
+              navigation.navigate('Home', {
+                screen: 'FeedRoot',
+                params: {
+                  screen: 'Channel',
+                  params: {
+                    channelId: casted.id,
+                    showDrawer: true,
+                  },
+                },
+              });
+            }}
+          />
+        );
+      }
+    },
+    [navigation, selectedTab],
+  );
 
   return (
     <View>
@@ -24,8 +185,60 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
         selectedTab={selectedTab}
         onPress={setSelectedTab}
       />
+      {(profilesSearchFetchStatus === 'success' && selectedTab === 0) ||
+      (channelsSearchFetchStatus === 'success' && selectedTab === 1) ? (
+        <FlatList
+          style={{paddingHorizontal: 15, paddingTop: 15}}
+          data={selectedTab === 0 ? searchedProfiles : searchedChannels}
+          windowSize={14}
+          onEndReachedThreshold={1}
+          ItemSeparatorComponent={() => <View style={{height: 15}} />}
+          renderItem={renderItem}
+        />
+      ) : (profilesSearchFetchStatus === 'loading' && selectedTab === 0) ||
+        (channelsSearchFetchStatus === 'loading' && selectedTab === 1) ? (
+        <View style={{width: '100%', padding: 20}}>
+          <MyPlaceholderLoader customStyle={{marginBottom: 20}} />
+          <MyPlaceholderLoader />
+        </View>
+      ) : (profilesSearchFetchStatus === 'error' && selectedTab === 0) ||
+        (channelsSearchFetchStatus === 'error' && selectedTab === 1) ? (
+        <View style={styles.infoCtn}>
+          <Text style={styles.infoText}>Error while fetching items</Text>
+          <MyButton
+            customStyle={{marginTop: 20}}
+            title="Retry"
+            width={'auto'}
+            onPress={() => {
+              if (profilesSearchFetchStatus === 'error') {
+                handleSearchUser();
+              } else {
+                handleSearchChannel();
+              }
+            }}
+          />
+        </View>
+      ) : (
+        <View style={styles.infoCtn}>
+          <Text style={styles.infoText}>
+            Type something to search {selectedTab === 0 ? 'users' : 'channels'}
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  infoCtn: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 100,
+  },
+  infoText: {
+    fontFamily: MyTheme.fontRegular,
+    color: MyTheme.grey300,
+  },
+});
 
 export default SearchScreen;

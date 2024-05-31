@@ -15,6 +15,7 @@ interface MyInputFieldProps {
   placeholder?: string;
   width?: DimensionValue;
   customStyle?: StyleProp<ViewStyle>;
+  value?: string;
   onChangeText?: (text: string) => void;
   onFocus?: () => void;
 }
@@ -25,6 +26,7 @@ const MyInputField = ({
   placeholder,
   width,
   customStyle,
+  value,
   onChangeText,
   onFocus,
 }: MyInputFieldProps) => {
@@ -32,10 +34,8 @@ const MyInputField = ({
     <View style={[styles.root, customStyle && customStyle, {width}]}>
       {leftNode && leftNode}
       <TextInput
-        style={{
-          flex: 1,
-          paddingHorizontal: 10,
-        }}
+        value={value}
+        style={styles.input}
         placeholder={placeholder}
         onChangeText={text => {
           if (onChangeText) {
@@ -58,9 +58,14 @@ const styles = StyleSheet.create({
     backgroundColor: MyTheme.grey100,
     borderRadius: 3,
     padding: 10,
-    margin: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  input: {
+    fontFamily: MyTheme.fontRegular,
+    paddingHorizontal: 10,
+    flex: 1,
+    color: MyTheme.black,
   },
 });
 

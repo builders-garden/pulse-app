@@ -50,7 +50,7 @@ function ProfileScreen({
     if (authContext.state?.fid) {
       setProfileFetchStatus('loading');
       try {
-        const finalUrl = ENDPOINT_PROFILE + route.params.userFid;
+        const finalUrl = ENDPOINT_PROFILE + '/' + route.params.userFid;
         console.log('fetching profile', finalUrl);
         const res = await axios.get<ProfileResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
@@ -71,7 +71,10 @@ function ProfileScreen({
       setCommentsFetchStatus('loading');
       try {
         const finalUrl =
-          ENDPOINT_PROFILE + profile?.fid + '/replies-and-recasts?limit=10';
+          ENDPOINT_PROFILE +
+          '/' +
+          profile?.fid +
+          '/replies-and-recasts?limit=10';
         const res = await axios.get<CommentResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
@@ -89,7 +92,8 @@ function ProfileScreen({
     if (profile?.fid) {
       setUserCastsFetchStatus('loading');
       try {
-        const finalUrl = ENDPOINT_PROFILE + profile?.fid + '/casts?limit=10';
+        const finalUrl =
+          ENDPOINT_PROFILE + '/' + profile?.fid + '/casts?limit=10';
         const res = await axios.get<UserCastsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });

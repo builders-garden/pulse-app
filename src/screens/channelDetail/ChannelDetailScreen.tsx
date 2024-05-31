@@ -11,15 +11,13 @@ import {Channel, ChannelResponse} from '../../api/channel/types';
 import {RequestStatus} from '../../api/types';
 import MyLoader from '../../components/MyLoader';
 import {AuthContext} from '../../contexts/auth/Auth.context';
-import {ChannelStackScreenProps} from '../../routing/types';
+import {FeedStackScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
 import {ENDPOINT_CHANNELS} from '../../variables';
 import Header from './components/Header';
 import ProfileLine from './components/ProfileLine';
 
-function ChannelDetailScreen({
-  route,
-}: ChannelStackScreenProps<'ChannelDetail'>) {
+function ChannelDetailScreen({route}: FeedStackScreenProps<'ChannelDetail'>) {
   const authContext = useContext(AuthContext);
   const [channelFetchStatus, setChannelFetchStatus] =
     useState<RequestStatus>('idle');

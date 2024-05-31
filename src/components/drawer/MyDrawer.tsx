@@ -91,7 +91,7 @@ const MyDrawer = ({
     setRecentChannelsFetchStatus('loading');
     try {
       const finalUrl =
-        ENDPOINT_PROFILE + authContext.state.fid + '/active-channels';
+        ENDPOINT_PROFILE + '/' + authContext.state.fid + '/active-channels';
       const res = await axios.get<MostRecentChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
