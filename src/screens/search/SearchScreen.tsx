@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, {CancelToken} from 'axios';
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {
   FlatList,
@@ -62,47 +62,60 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
     [width, searchText],
   );
 
-  const handleSearchUser = useCallback(async () => {
-    if (authContext.state?.fid) {
-      setProfilesSearchFetchStatus('loading');
-      try {
-        const finalUrl = ENDPOINT_PROFILE + '?q=' + searchText;
-        console.log('searching profiles', finalUrl);
-        const res = await axios.get<ProfileSearchResponse>(finalUrl, {
-          headers: {Authorization: `Bearer ${authContext.state.token}`},
-        });
-        console.log('got response', res.data.result);
-        // console.log('got response');
-        setSearchedProfiles(res.data.result);
-        setProfilesCursor(res.data.cursor);
-        setProfilesSearchFetchStatus('success');
-      } catch (error) {
-        console.error(error);
-        setProfilesSearchFetchStatus('error');
+  const handleSearchUser = useCallback(
+    async (cancelToken: CancelToken | undefined = undefined) => {
+      if (authContext.state?.fid) {
+        setProfilesSearchFetchStatus('loading');
+        try {
+          const finalUrl = ENDPOINT_PROFILE + '?q=' + searchText;
+          console.log('searching profiles', finalUrl);
+          const res = await axios.get<ProfileSearchResponse>(finalUrl, {
+            headers: {Authorization: `Bearer ${authContext.state.token}`},
+            cancelToken: cancelToken,
+          });
+          console.log('got response', res.data.result);
+          // console.log('got response');
+          setSearchedProfiles(res.data.result);
+          setProfilesCursor(res.data.cursor);
+          setProfilesSearchFetchStatus('success');
+        } catch (error) {
+          if (!axios.isCancel(error)) {
+            console.error(error);
+            setProfilesSearchFetchStatus('error');
+          }
+        }
       }
-    }
-  }, [authContext, searchText]);
-  const handleSearchChannel = useCallback(async () => {
-    if (authContext.state?.fid) {
-      setChannelsSearchFetchStatus('loading');
-      try {
-        const finalUrl = ENDPOINT_CHANNELS + '?limit=10&idOrName=' + searchText;
-        console.log('searching profiles', finalUrl);
-        const res = await axios.get<ChannelsResponse>(finalUrl, {
-          headers: {Authorization: `Bearer ${authContext.state.token}`},
-        });
-        console.log('got response', res.data.result);
-        // console.log('got response');
-        setSearchedChannels(res.data.result.channels);
-        // TODO: serve cursor dal BE
-        // setChannelsCursor(res.data.result.next.cursor);
-        setChannelsSearchFetchStatus('success');
-      } catch (error) {
-        console.error(error);
-        setChannelsSearchFetchStatus('error');
+    },
+    [authContext, searchText],
+  );
+  const handleSearchChannel = useCallback(
+    async (cancelToken: CancelToken | undefined = undefined) => {
+      if (authContext.state?.fid) {
+        setChannelsSearchFetchStatus('loading');
+        try {
+          const finalUrl =
+            ENDPOINT_CHANNELS + '?limit=10&idOrName=' + searchText;
+          console.log('searching profiles', finalUrl);
+          const res = await axios.get<ChannelsResponse>(finalUrl, {
+            headers: {Authorization: `Bearer ${authContext.state.token}`},
+            cancelToken: cancelToken,
+          });
+          console.log('got response', res.data.result);
+          // console.log('got response');
+          setSearchedChannels(res.data.result.channels);
+          // TODO: serve cursor dal BE
+          // setChannelsCursor(res.data.result.next.cursor);
+          setChannelsSearchFetchStatus('success');
+        } catch (error) {
+          if (!axios.isCancel(error)) {
+            console.error(error);
+            setChannelsSearchFetchStatus('error');
+          }
+        }
       }
-    }
-  }, [authContext, searchText]);
+    },
+    [authContext, searchText],
+  );
 
   useEffect(() => {
     navigation.setOptions({
@@ -113,11 +126,23 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
 
   useEffect(() => {
     if (searchText.length > 0) {
-      if (selectedTab === 0) {
-        handleSearchUser();
-      } else {
-        handleSearchChannel();
-      }
+      const source = axios.CancelToken.source();
+      const timeout = setTimeout(() => {
+        if (selectedTab === 0) {
+          handleSearchUser(source.token);
+        } else {
+          handleSearchChannel(source.token);
+        }
+      }, 500);
+      return () => {
+        clearTimeout(timeout);
+        source.cancel();
+      };
+    } else {
+      setSearchedProfiles([]);
+      setSearchedChannels([]);
+      setProfilesSearchFetchStatus('idle');
+      setChannelsSearchFetchStatus('idle');
     }
   }, [searchText, selectedTab, handleSearchUser, handleSearchChannel]);
 
