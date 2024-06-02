@@ -48,7 +48,9 @@ function ProfileLine({profile, onPress}: ProfileLineProps) {
           size="small"
         />
       </View>
-      <Text style={styles.bio}>{profile.profile.bio.text}</Text>
+      <Text style={styles.bio} numberOfLines={2} ellipsizeMode="tail">
+        {profile.profile.bio.text}
+      </Text>
     </Pressable>
   );
 }

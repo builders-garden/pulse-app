@@ -35,7 +35,9 @@ function ChannelLine({channel, onPress}: ChannelLineProps) {
       </View>
       <View style={styles.countersCtn}></View>
       {channel.description && (
-        <Text style={styles.bio}>{channel.description}</Text>
+        <Text style={styles.bio} numberOfLines={2} ellipsizeMode="tail">
+          {channel.description}
+        </Text>
       )}
     </Pressable>
   );

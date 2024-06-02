@@ -7,12 +7,14 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import {Channel, ChannelsResponse} from '../../api/channel/types';
 import {Profile, ProfileSearchResponse} from '../../api/profile/types';
 import {RequestStatus} from '../../api/types';
 import BackImg from '../../assets/images/icons/back.svg';
 import MyButton from '../../components/MyButton';
 import MyIconButtonBase from '../../components/MyIconButtonBase';
+import MyLoader from '../../components/MyLoader';
 import MyPlaceholderLoader from '../../components/MyPlaceholderLoader';
 import MySearchField from '../../components/inputs/MySearchField';
 import MyTabs from '../../components/tabs/MyTabs';
@@ -31,10 +33,22 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
     useState<RequestStatus>('idle');
   const [channelsSearchFetchStatus, setChannelsSearchFetchStatus] =
     useState<RequestStatus>('idle');
+  const [newProfilesSearchFetchStatus, setNewProfilesSearchFetchStatus] =
+    useState<RequestStatus>('idle');
+  const [newChannelsSearchFetchStatus, setNewChannelsSearchFetchStatus] =
+    useState<RequestStatus>('idle');
   const [searchedProfiles, setSearchedProfiles] = useState<Profile[]>([]);
   const [searchedChannels, setSearchedChannels] = useState<Channel[]>([]);
   const [profilesCursor, setProfilesCursor] = useState<string>();
   const [channelsCursor, setChannelsCursor] = useState<string>();
+  const [lastSearches, setLastSearches] = useState<{
+    profiles: string;
+    channels: string;
+  }>({
+    profiles: '',
+    channels: '',
+  });
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const {width} = useWindowDimensions();
 
   const drawHeaderLeft = useCallback(
@@ -64,7 +78,7 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
 
   const handleSearchUser = useCallback(
     async (cancelToken: CancelToken | undefined = undefined) => {
-      if (authContext.state?.fid) {
+      if (authContext.state?.fid && searchText !== lastSearches.profiles) {
         setProfilesSearchFetchStatus('loading');
         try {
           const finalUrl = ENDPOINT_PROFILE + '?q=' + searchText;
@@ -75,6 +89,7 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
           });
           console.log('got response', res.data.result);
           // console.log('got response');
+          setLastSearches({...lastSearches, profiles: searchText});
           setSearchedProfiles(res.data.result);
           setProfilesCursor(res.data.cursor);
           setProfilesSearchFetchStatus('success');
@@ -86,11 +101,11 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
         }
       }
     },
-    [authContext, searchText],
+    [authContext, searchText, lastSearches],
   );
   const handleSearchChannel = useCallback(
     async (cancelToken: CancelToken | undefined = undefined) => {
-      if (authContext.state?.fid) {
+      if (authContext.state?.fid && searchText !== lastSearches.channels) {
         setChannelsSearchFetchStatus('loading');
         try {
           const finalUrl =
@@ -102,6 +117,7 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
           });
           console.log('got response', res.data.result);
           // console.log('got response');
+          setLastSearches({...lastSearches, channels: searchText});
           setSearchedChannels(res.data.result.channels);
           // TODO: serve cursor dal BE
           // setChannelsCursor(res.data.result.next.cursor);
@@ -114,17 +130,10 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
         }
       }
     },
-    [authContext, searchText],
+    [authContext, searchText, lastSearches],
   );
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerLeft: drawHeaderLeft,
-      headerRight: drawHeaderRight,
-    });
-  }, [navigation, drawHeaderLeft, drawHeaderRight]);
-
-  useEffect(() => {
+  const handleSearch = useCallback(() => {
     if (searchText.length > 0) {
       const source = axios.CancelToken.source();
       const timeout = setTimeout(() => {
@@ -145,6 +154,91 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
       setChannelsSearchFetchStatus('idle');
     }
   }, [searchText, selectedTab, handleSearchUser, handleSearchChannel]);
+
+  const fetchNewProfiles = useCallback(async () => {
+    if (newProfilesSearchFetchStatus !== 'loading' && profilesCursor) {
+      try {
+        setNewProfilesSearchFetchStatus('loading');
+        const finalUrl =
+          ENDPOINT_PROFILE + '?q=' + searchText + '&cursor=' + profilesCursor;
+        const res = await axios.get<ProfileSearchResponse>(finalUrl, {
+          headers: {Authorization: `Bearer ${authContext.state.token}`},
+        });
+
+        // console.log('got response');
+        setSearchedProfiles([...searchedProfiles, ...res.data.result]);
+        setProfilesCursor(res.data.cursor);
+        setNewProfilesSearchFetchStatus('success');
+      } catch (error) {
+        console.error(error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error fetching new items',
+        });
+        setNewProfilesSearchFetchStatus('error');
+      }
+    }
+  }, [
+    authContext.state.token,
+    searchText,
+    profilesCursor,
+    searchedProfiles,
+    newProfilesSearchFetchStatus,
+  ]);
+  const fetchNewChannels = useCallback(async () => {
+    console.log('fetching new channels');
+    if (newChannelsSearchFetchStatus !== 'loading' && channelsCursor) {
+      try {
+        setNewChannelsSearchFetchStatus('loading');
+        const finalUrl =
+          ENDPOINT_PROFILE + '?q=' + searchText + '&cursor=' + channelsCursor;
+        const res = await axios.get<ChannelsResponse>(finalUrl, {
+          headers: {Authorization: `Bearer ${authContext.state.token}`},
+        });
+
+        // console.log('got response');
+        setSearchedChannels([...searchedChannels, ...res.data.result.channels]);
+        setChannelsCursor(res.data.result.next.cursor);
+        setNewChannelsSearchFetchStatus('success');
+      } catch (error) {
+        console.error(error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error fetching new items',
+        });
+        setNewChannelsSearchFetchStatus('error');
+      }
+    }
+  }, [
+    authContext.state.token,
+    searchText,
+    channelsCursor,
+    searchedChannels,
+    newChannelsSearchFetchStatus,
+  ]);
+
+  const refresh = useCallback(async () => {
+    setIsRefreshing(true);
+    if (selectedTab === 0) {
+      setLastSearches({...lastSearches, profiles: ''});
+      handleSearch();
+    } else {
+      setLastSearches({...lastSearches, channels: ''});
+      handleSearch();
+    }
+    setIsRefreshing(false);
+  }, [handleSearch, selectedTab, lastSearches]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: drawHeaderLeft,
+      headerRight: drawHeaderRight,
+    });
+  }, [navigation, drawHeaderLeft, drawHeaderRight]);
+
+  useEffect(() => {
+    handleSearch();
+  }, [handleSearch]);
 
   const renderItem = useCallback(
     ({item}: {item: Profile | Channel}) => {
@@ -210,13 +304,32 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
         selectedTab={selectedTab}
         onPress={setSelectedTab}
       />
-      {(profilesSearchFetchStatus === 'success' && selectedTab === 0) ||
-      (channelsSearchFetchStatus === 'success' && selectedTab === 1) ? (
+      {(searchedProfiles.length > 0 && selectedTab === 0) ||
+      (searchedChannels.length > 0 && selectedTab === 1) ? (
         <FlatList
           style={{paddingHorizontal: 15, paddingTop: 15}}
           data={selectedTab === 0 ? searchedProfiles : searchedChannels}
           windowSize={14}
           onEndReachedThreshold={1}
+          onRefresh={refresh}
+          onEndReached={selectedTab === 0 ? fetchNewProfiles : fetchNewChannels}
+          refreshing={isRefreshing}
+          ListFooterComponent={
+            newProfilesSearchFetchStatus === 'loading' ||
+            newChannelsSearchFetchStatus === 'loading' ? (
+              <View
+                style={{
+                  width: '100%',
+                  padding: 20,
+                  marginBottom: 60,
+                  alignItems: 'center',
+                }}>
+                <MyLoader />
+              </View>
+            ) : (
+              <View style={{height: 100}} />
+            )
+          }
           ItemSeparatorComponent={() => <View style={{height: 15}} />}
           renderItem={renderItem}
         />
