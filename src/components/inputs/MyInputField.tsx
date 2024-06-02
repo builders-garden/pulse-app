@@ -18,6 +18,7 @@ interface MyInputFieldProps {
   value?: string;
   onChangeText?: (text: string) => void;
   onFocus?: () => void;
+  onBlur?: () => void;
 }
 
 const MyInputField = ({
@@ -29,6 +30,7 @@ const MyInputField = ({
   value,
   onChangeText,
   onFocus,
+  onBlur,
 }: MyInputFieldProps) => {
   return (
     <View style={[styles.root, customStyle && customStyle, {width}]}>
@@ -45,6 +47,11 @@ const MyInputField = ({
         onFocus={() => {
           if (onFocus) {
             onFocus();
+          }
+        }}
+        onBlur={() => {
+          if (onBlur) {
+            onBlur();
           }
         }}
       />

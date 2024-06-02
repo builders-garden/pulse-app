@@ -6,8 +6,8 @@ import {MyTheme} from '../../theme';
 import MyIconButtonBase from '../MyIconButtonBase';
 
 interface MyHeaderLeftProps {
-  title: string;
-  icon: ReactNode;
+  title?: string;
+  icon?: ReactNode;
 }
 
 const MyHeaderLeft = ({title, icon}: MyHeaderLeftProps) => {
@@ -23,8 +23,8 @@ const MyHeaderLeft = ({title, icon}: MyHeaderLeftProps) => {
         }}
         icon={<MenuLinesImg color={MyTheme.black} />}
       />
-      <View style={styles.headerIcon}>{icon}</View>
-      <Text style={styles.headerTitle}>{title}</Text>
+      {icon && <View style={styles.headerIcon}>{icon}</View>}
+      {title && <Text style={styles.headerTitle}>{title}</Text>}
     </View>
   );
 };

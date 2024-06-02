@@ -67,6 +67,7 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
       <MySearchField
         width={width * 0.7}
         value={searchText}
+        dismissKeyboardOnCancel
         onCancelPress={() => {
           setSearchText('');
         }}

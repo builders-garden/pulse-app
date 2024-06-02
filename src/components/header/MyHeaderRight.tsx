@@ -1,18 +1,20 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {View} from 'react-native';
+import {StyleProp, View, ViewStyle} from 'react-native';
 import SearchImg from '../../assets/images/icons/search.svg';
 import {MyTheme} from '../../theme';
 import MyIconButtonBase from '../MyIconButtonBase';
 
-interface MyHeaderRightProps {}
+interface MyHeaderRightProps {
+  customStyle?: StyleProp<ViewStyle>;
+}
 
-const MyHeaderRight = ({}: MyHeaderRightProps) => {
+const MyHeaderRight = ({customStyle}: MyHeaderRightProps) => {
   // TODO: Implement navigation types
   const navigation = useNavigation<any>();
 
   return (
-    <View>
+    <View style={customStyle}>
       <MyIconButtonBase
         style="tertiary"
         shape="square"

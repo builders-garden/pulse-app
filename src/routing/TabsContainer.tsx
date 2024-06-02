@@ -8,6 +8,7 @@ import BellImg from '../assets/images/icons/bell.svg';
 import FeedImg from '../assets/images/icons/feed.svg';
 import RadarImg from '../assets/images/icons/radar.svg';
 import MyHeaderLeft from '../components/header/MyHeaderLeft';
+import MyHeaderRight from '../components/header/MyHeaderRight';
 import {AuthContext} from '../contexts/auth/Auth.context';
 import DiscoverScreen from '../screens/discover/DiscoverScreen';
 import NotificationsScreen from '../screens/notifications/NotificationsScreen';
@@ -123,7 +124,30 @@ function TabsContainer() {
       <Tab.Screen
         name="PersonalProfile"
         options={{
+          title: '',
           headerShadowVisible: false,
+          headerLeft: () => (
+            <MyHeaderLeft
+            // icon={
+            //   <FastImage
+            //     source={{uri: authContext.state.profile?.pfp_url}}
+            //     style={{
+            //       width: 25,
+            //       height: 25,
+            //       borderRadius: 5,
+            //       zIndex: 1,
+            //     }}
+            //   />
+            // }
+            />
+          ),
+          headerRight: () => (
+            <MyHeaderRight
+              customStyle={{
+                marginRight: 16,
+              }}
+            />
+          ),
         }}
         initialParams={{userFid: authContext.state.fid}}
         component={ProfileScreen}
