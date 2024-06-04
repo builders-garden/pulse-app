@@ -215,7 +215,7 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
           <MyFloatingButton
             icon={<PenImg width={25} height={25} color="white" />}
             onPress={() => {
-              navigation.navigate('CreateThread');
+              navigation.navigate('CreateThread', {channel: channel});
             }}
           />
           <FlatList

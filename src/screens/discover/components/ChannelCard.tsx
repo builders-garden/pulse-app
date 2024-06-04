@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   },
   body: {
     fontFamily: MyTheme.fontRegular,
-    color: MyTheme.grey500,
+    color: MyTheme.grey600,
     width: '100%',
   },
   actionButton: {

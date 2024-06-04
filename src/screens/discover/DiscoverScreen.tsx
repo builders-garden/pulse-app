@@ -282,7 +282,7 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
       <MyFloatingButton
         icon={<PenImg width={25} height={25} color="white" />}
         onPress={() => {
-          navigation.navigate('CreateThread');
+          navigation.navigate('CreateThread', {});
         }}
       />
       <ScrollView style={styles.root}>

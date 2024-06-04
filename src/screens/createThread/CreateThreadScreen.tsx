@@ -1,3 +1,9 @@
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetFlatList,
+} from '@gorhom/bottom-sheet';
+import axios from 'axios';
 import React, {
   createRef,
   useCallback,
@@ -8,14 +14,18 @@ import React, {
 import {
   FlatList,
   NativeSyntheticEvent,
+  Pressable,
   StyleSheet,
+  Text,
   TextInput,
   TextInputKeyPressEventData,
   View,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import {MediaType, launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import uuid from 'react-native-uuid';
+import {Channel, ChannelsResponse} from '../../api/channel/types';
 import {RequestStatus} from '../../api/types';
 import DiagonalArrowImg from '../../assets/images/icons/diagonal_arrow.svg';
 import PlusImg from '../../assets/images/icons/plus.svg';
@@ -23,6 +33,7 @@ import MyButtonNew from '../../components/buttons/MyButtonNew';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {RootStackScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
+import {ENDPOINT_CAST, ENDPOINT_CHANNELS} from '../../variables';
 import ChannelButton from './components/ChannelButton';
 import ThreadItem from './components/threadItem/ThreadItem';
 import {Thread} from './types';
@@ -31,14 +42,28 @@ const inputLimit = 20;
 
 function CreateThreadScreen({
   navigation,
+  route,
 }: RootStackScreenProps<'CreateThread'>) {
   const authContext = useContext(AuthContext);
+  const [selectedChannel, setSelectedChannel] = useState<Channel | undefined>(
+    route.params.channel ? route.params.channel : undefined,
+  );
   const [publishStatus, setPublishStatus] = useState<RequestStatus>('idle');
+  const [allChannels, setAllChannels] = useState<Channel[]>([]);
+  const [allChannelsFetchStatus, setAllChannelsFetchStatus] =
+    useState<RequestStatus>('idle');
   const [threads, setThreads] = useState<Thread[]>([
     {id: uuid.v4().toString(), body: '', images: [], links: []},
   ]);
   const [currentThreadIndex, setCurrentThreadIndex] = useState(0);
   const inputRef = createRef<TextInput>();
+  // ref
+  const bottomSheetRef = createRef<BottomSheet>();
+
+  // callbacks
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log('handleSheetChanges', index);
+  }, []);
 
   const renderHeader = useCallback(
     () => (
@@ -54,6 +79,58 @@ function CreateThreadScreen({
     ),
     [],
   );
+
+  const renderChannelItem = useCallback(
+    ({item, index}: {item: Channel; index: number}) => {
+      return (
+        <Pressable
+          onPress={() => {
+            setSelectedChannel(item);
+            bottomSheetRef.current?.close();
+          }}
+          key={item.id}
+          style={{marginTop: index === 0 ? 0 : 20}}>
+          <View style={styles.sectionItemHorizontal}>
+            <FastImage
+              source={{uri: item.image_url}}
+              style={styles.sectionItemImg}
+            />
+            <Text style={styles.sectionItemHorizontalText} numberOfLines={2}>
+              {item.name}
+            </Text>
+          </View>
+        </Pressable>
+      );
+    },
+    [bottomSheetRef],
+  );
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop {...props} disappearsOnIndex={-1} />
+    ),
+    [],
+  );
+
+  const fetchAllChannels = useCallback(async () => {
+    console.log('fetching all');
+    setAllChannelsFetchStatus('loading');
+    try {
+      const finalUrl = ENDPOINT_CHANNELS + '?limit=15';
+      const res = await axios.get<ChannelsResponse>(finalUrl, {
+        headers: {Authorization: `Bearer ${authContext.state.token}`},
+      });
+      console.log('got response');
+      setAllChannels(res.data.result.channels);
+      setAllChannelsFetchStatus('success');
+    } catch (error) {
+      console.error(error);
+      setAllChannelsFetchStatus('error');
+    }
+  }, [authContext.state.token]);
+
+  useEffect(() => {
+    fetchAllChannels();
+  }, [fetchAllChannels]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -195,39 +272,66 @@ function CreateThreadScreen({
     }
   }
 
-  // const publish = useCallback(async () => {
-  //   setPublishStatus('loading');
-  //   // route.params.channelId
-  //   try {
-  //     console.log('fetching channel...');
-  //     const res = await axios.post<ChannelResponse>(
-  //       ENDPOINT_CAST,
-  //       {
-  //         text: 'test text',
-  //         embeds: ,
-  //       },
-  //       {
-  //         headers: {Authorization: `Bearer ${authContext.state.token}`},
-  //       },
-  //     );
-  //     setPublishStatus('success');
-  //   } catch (error) {
-  //     console.error(error);
-  //     setPublishStatus('error');
-  //   }
-  // }, [authContext.state.token]);
+  const publish = useCallback(async () => {
+    setPublishStatus('loading');
+    // route.params.channelId
+    try {
+      console.log('publishing thread...');
+      const data = new FormData();
+      data.append('name', 'avatar');
+      data.append('fileData', {
+        uri: threads[0].video,
+        name: 'upload.mp4',
+      });
 
-  function onPublishPress() {}
+      try {
+        const response = await axios.post(
+          ENDPOINT_CAST,
+          data,
+
+          {
+            headers: {Authorization: `Bearer ${authContext.state.token}`},
+          },
+        );
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+
+      // const res = await axios.post(
+      //   ENDPOINT_CAST,
+      //   {
+      //     text: 'test text',
+      //   },
+      //   {
+      //     headers: {Authorization: `Bearer ${authContext.state.token}`},
+      //   },
+      // );
+      setPublishStatus('success');
+    } catch (error) {
+      console.error(error);
+      setPublishStatus('error');
+    }
+  }, [authContext.state.token, threads]);
+
+  function onPublishPress() {
+    // publish();
+  }
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       {/* <Text>Selected index: {currentThreadIndex}</Text> */}
       <FlatList
         style={styles.threadsCtn}
         data={threads}
         ListHeaderComponent={
           <View style={{marginBottom: 20}}>
-            <ChannelButton placeholder="Choose a channel" onPress={() => {}} />
+            <ChannelButton
+              channel={selectedChannel}
+              onPress={() => {
+                bottomSheetRef.current?.snapToIndex(0);
+              }}
+            />
           </View>
         }
         renderItem={({item, index}) => (
@@ -266,7 +370,19 @@ function CreateThreadScreen({
           />
         }
       />
-
+      <BottomSheet
+        snapPoints={['60%']}
+        index={-1}
+        backdropComponent={renderBackdrop}
+        enablePanDownToClose
+        ref={bottomSheetRef}
+        onChange={handleSheetChanges}>
+        <BottomSheetFlatList
+          data={allChannels}
+          renderItem={renderChannelItem}
+          ListFooterComponent={<View style={{height: 40}} />}
+        />
+      </BottomSheet>
       {/* <BottomBar onAddMediaPress={onAddMediaPress} onSendPress={() => {}} /> */}
     </View>
   );
@@ -276,6 +392,23 @@ const styles = StyleSheet.create({
   threadsCtn: {
     paddingHorizontal: 20,
     paddingTop: 20,
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  sectionItemHorizontal: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+  },
+  sectionItemImg: {width: 30, height: 30, borderRadius: 3},
+  sectionItemHorizontalText: {
+    fontFamily: MyTheme.fontRegular,
+    flex: 1,
+    fontSize: 13,
+    marginLeft: 5,
+    color: MyTheme.black,
   },
 });
 

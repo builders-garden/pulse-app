@@ -9,14 +9,12 @@ import {
   ViewStyle,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
+import {Channel} from '../../../api/channel/types';
 import ArrowDownImg from '../../../assets/images/icons/arrow_down.svg';
 import {MyTheme} from '../../../theme';
 
 interface ChannelButtonProps {
-  placeholder: string;
-  title?: string;
-  subtitle?: string;
-  icon?: string;
+  channel?: Channel;
   disabled?: boolean;
   loading?: boolean;
   customStyle?: StyleProp<ViewStyle>;
@@ -24,12 +22,9 @@ interface ChannelButtonProps {
 }
 
 const ChannelButton = ({
-  placeholder,
-  title,
-  subtitle,
+  channel,
   disabled,
   loading,
-  icon,
   customStyle,
   onPress,
 }: ChannelButtonProps) => {
@@ -43,29 +38,26 @@ const ChannelButton = ({
         disabled && styles.disabledBtn,
         customStyle && customStyle,
       ]}>
-      {icon ? (
-        <FastImage style={styles.icon} source={{uri: icon}} />
+      {channel ? (
+        <>
+          <FastImage style={styles.icon} source={{uri: channel.image_url}} />
+          <View style={styles.textCtn}>
+            <Text style={styles.buttonText}>{channel.name}</Text>
+            <Text style={styles.subtitle}>/{channel.id}</Text>
+          </View>
+        </>
       ) : (
-        <View style={styles.placeholderIcon} />
-      )}
-      {title ? (
-        <View>
-          <Text style={styles.buttonText}>{title}</Text>
-          {subtitle && (
-            <Text style={{color: MyTheme.grey400, fontSize: 12}}>
-              {subtitle}
-            </Text>
-          )}
-        </View>
-      ) : (
-        <Text style={styles.placeholderText}>{placeholder}</Text>
+        <>
+          <View style={styles.placeholderIcon} />
+          <Text style={styles.placeholderText}>Choose a channel</Text>
+        </>
       )}
 
       <View style={styles.rightSection}>
         {loading ? (
           <ActivityIndicator color="white" />
         ) : (
-          <ArrowDownImg style={styles.rightArrow} />
+          <ArrowDownImg width={25} height={25} />
         )}
       </View>
     </Pressable>
@@ -86,8 +78,13 @@ const styles = StyleSheet.create({
   rightSection: {
     marginLeft: 'auto',
   },
-  rightArrow: {width: 25, height: 25},
-  icon: {width: 25, height: 25, marginRight: 10},
+  textCtn: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  subtitle: {color: MyTheme.grey400, fontSize: 13, marginLeft: 8},
+  icon: {width: 25, height: 25, marginRight: 10, borderRadius: 2},
   placeholderIcon: {
     width: 25,
     height: 25,
@@ -107,7 +104,6 @@ const styles = StyleSheet.create({
     fontFamily: MyTheme.fontRegular,
   },
   buttonText: {
-    fontSize: 16,
     fontFamily: MyTheme.fontBold,
   },
 });

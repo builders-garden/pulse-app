@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
   },
   contentBody: {
     marginBottom: 20,
+    color: MyTheme.grey600,
   },
   contentImage: {
     // aspectRatio: 16 / 9,

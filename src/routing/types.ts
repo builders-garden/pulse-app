@@ -4,10 +4,11 @@ import {
   NavigatorScreenParams,
 } from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {Channel} from '../api/channel/types';
 
 export type RootStackParamList = {
   Home: NavigatorScreenParams<TabParamList>;
-  CreateThread: undefined;
+  CreateThread: {channel?: Channel};
   Search: undefined;
   SignIn: undefined;
   SignUp: undefined;

@@ -140,7 +140,7 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
           <MyFloatingButton
             icon={<PenImg width={25} height={25} color="white" />}
             onPress={() => {
-              navigation.navigate('CreateThread');
+              navigation.navigate('CreateThread', {});
             }}
           />
           <FlatList
