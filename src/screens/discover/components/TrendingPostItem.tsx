@@ -1,76 +1,70 @@
 import React from 'react';
 import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import MyButtonNew from '../../../components/MyButtonNew';
+import {TrendingCastResult} from '../../../api/cast/types';
+import FollowButton from '../../../components/buttons/FollowButton';
+import {formatDate} from '../../../libs/date';
 import {MyTheme} from '../../../theme';
 import TrendingPostActionBar from './TrendingPostActionBar';
 
 type TrendingPostItemProps = {
-  headerImg: string;
-  headerTitle: string;
-  postTime: string;
-  headerSubtitle: string;
-  content: string;
-  image?: string;
-  commentsCount: number;
-  quotesCount: number;
-  upvotesCount: number;
+  trendingCast: TrendingCastResult;
   customStyle?: StyleProp<ViewStyle>;
   onContentBodyPress?: () => void;
   onButtonPress?: () => void;
 };
 
 const TrendingPostItem = ({
-  headerImg,
-  postTime,
-  headerTitle,
-  headerSubtitle,
-  content,
-  image,
-  commentsCount,
-  quotesCount,
-  upvotesCount,
+  trendingCast,
   customStyle,
   onContentBodyPress,
 }: TrendingPostItemProps) => {
+  const castedDate = new Date(trendingCast.cast.castedAtTimestamp);
+  const formattedDate = formatDate(castedDate);
+
   return (
-    <View style={[styles.root, customStyle]}>
+    <View style={customStyle}>
       <View style={styles.ctn}>
-        <View style={styles.header}>
-          <FastImage source={{uri: headerImg}} style={styles.headerImg} />
-          <View style={styles.headerTextCtn}>
-            <Text numberOfLines={1} style={styles.headerTitle}>
-              {headerTitle}
-            </Text>
-            <View style={styles.headerSubtitleCtn}>
-              <Text numberOfLines={1} style={styles.headerSubtitle}>
-                /{headerSubtitle} • {postTime}
+        <View>
+          <View style={styles.header}>
+            <FastImage
+              source={{uri: trendingCast.cast.castedBy.profileImage}}
+              style={styles.headerImg}
+            />
+            <View style={styles.headerTextCtn}>
+              <Text numberOfLines={1} style={styles.headerTitle}>
+                {trendingCast.cast.castedBy.profileDisplayName}
               </Text>
+              <View style={styles.headerSubtitleCtn}>
+                <Text numberOfLines={1} style={styles.headerSubtitle}>
+                  /{trendingCast.cast.castedBy.profileHandle} • {formattedDate}
+                </Text>
+              </View>
             </View>
+            <FollowButton
+              customStyle={[styles.actionButton]}
+              fid={trendingCast.fid}
+              followingInitialValue={false} // TODO: ask API
+            />
           </View>
-          <MyButtonNew
-            customStyle={[styles.actionButton]}
-            onPress={() => {}}
-            title="Follow"
-          />
-        </View>
-        <View style={styles.contentCtn}>
-          <Text
-            numberOfLines={3}
-            ellipsizeMode="tail"
-            onPress={() => {
-              if (onContentBodyPress) {
-                onContentBodyPress();
-              }
-            }}
-            style={styles.contentBody}>
-            {content}
-          </Text>
+          <View style={styles.contentCtn}>
+            <Text
+              numberOfLines={3}
+              ellipsizeMode="tail"
+              onPress={() => {
+                if (onContentBodyPress) {
+                  onContentBodyPress();
+                }
+              }}
+              style={styles.contentBody}>
+              {trendingCast.cast.text}
+            </Text>
+          </View>
         </View>
         <TrendingPostActionBar
-          commentsCount={commentsCount}
-          quotesCount={quotesCount}
-          upvotesCount={upvotesCount}
+          commentsCount={trendingCast.cast.numberOfReplies}
+          quotesCount={trendingCast.cast.numberOfRecasts}
+          upvotesCount={trendingCast.cast.numberOfLikes}
         />
       </View>
     </View>
@@ -84,6 +78,8 @@ const styles = StyleSheet.create({
     width: 300,
     borderRadius: 4,
     backgroundColor: MyTheme.white,
+    flex: 1,
+    justifyContent: 'space-between',
   },
   header: {
     flexDirection: 'row',

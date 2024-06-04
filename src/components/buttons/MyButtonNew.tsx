@@ -8,7 +8,7 @@ import {
   TextStyle,
   ViewStyle,
 } from 'react-native';
-import {MyTheme} from '../theme';
+import {MyTheme} from '../../theme';
 
 export interface MyButtonNewProps {
   onPress: () => void;
@@ -86,19 +86,21 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   buttonSmall: {
-    paddingVertical: 4,
-    paddingHorizontal: 8,
+    paddingVertical: 2,
+    paddingHorizontal: 6,
   },
   buttonMedium: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingVertical: 6,
+    paddingHorizontal: 14,
   },
   buttonLarge: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    paddingVertical: 10,
+    paddingHorizontal: 22,
   },
   buttonPrimarySolid: {
     backgroundColor: MyTheme.primaryColor,
+    borderColor: MyTheme.primaryColor,
+    borderWidth: 2,
   },
   buttonPrimaryOutline: {
     borderColor: MyTheme.primaryColor,
@@ -109,6 +111,8 @@ const styles = StyleSheet.create({
   },
   buttonSecondarySolid: {
     backgroundColor: MyTheme.grey300,
+    borderColor: MyTheme.grey300,
+    borderWidth: 2,
   },
   buttonSecondaryOutline: {
     borderColor: MyTheme.grey300,
@@ -119,6 +123,8 @@ const styles = StyleSheet.create({
   },
   buttonTertiarySolid: {
     backgroundColor: MyTheme.grey100,
+    borderColor: MyTheme.grey100,
+    borderWidth: 2,
   },
   buttonTertiaryOutline: {
     borderColor: MyTheme.grey100,
@@ -129,6 +135,8 @@ const styles = StyleSheet.create({
   },
   buttonQuaternarySolid: {
     backgroundColor: MyTheme.grey100,
+    borderColor: MyTheme.grey100,
+    borderWidth: 2,
   },
   buttonQuaternaryOutline: {
     borderColor: MyTheme.grey100,

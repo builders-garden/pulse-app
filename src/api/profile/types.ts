@@ -6,6 +6,13 @@ export type ProfileSearchResponse = {
   cursor: string;
 };
 
+export type ProfileFollowResponse = {
+  result: {
+    success: boolean;
+    details: ProfileFollowDetail[];
+  };
+};
+
 export type Profile = {
   object: string;
   fid: number;
@@ -33,4 +40,9 @@ export type Profile = {
     following: boolean;
     followed_by: boolean;
   };
+};
+
+export type ProfileFollowDetail = {
+  success: boolean;
+  target_fid: number;
 };

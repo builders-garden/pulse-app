@@ -3,7 +3,7 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {Profile} from '../../../api/profile/types';
 import FollowCounter from '../../../components/FollowCounter';
-import MyButtonNew from '../../../components/MyButtonNew';
+import FollowButton from '../../../components/buttons/FollowButton';
 import {MyTheme} from '../../../theme';
 
 interface ProfileLineProps {
@@ -25,13 +25,14 @@ function ProfileLine({profile, onPress}: ProfileLineProps) {
             <Text style={styles.subtitle}>@{profile.username}</Text>
           </View>
         </View>
-        <MyButtonNew
-          title="Follow"
-          onPress={() => {}}
-          style="quaternary"
-          size="medium"
-          customStyle={{marginLeft: 'auto'}}
-        />
+        {profile.viewer_context && (
+          <FollowButton
+            followingInitialValue={profile.viewer_context?.following}
+            customStyle={{marginLeft: 'auto'}}
+            variant="secondary"
+            fid={profile.fid}
+          />
+        )}
       </View>
       <View style={styles.countersCtn}>
         <FollowCounter

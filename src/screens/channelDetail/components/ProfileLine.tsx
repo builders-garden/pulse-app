@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {Profile} from '../../../api/profile/types';
-import MyButtonNew from '../../../components/MyButtonNew';
+import MyButtonNew from '../../../components/buttons/MyButtonNew';
 import {MyTheme} from '../../../theme';
 
 interface ProfileLineProps {

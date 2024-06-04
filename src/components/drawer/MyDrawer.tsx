@@ -34,8 +34,8 @@ import {
   ENDPOINT_FAVORITE_CHANNELS,
   ENDPOINT_PROFILE,
 } from '../../variables';
-import MyButton from '../MyButton';
 import MyLoader from '../MyLoader';
+import MyButton from '../buttons/MyButton';
 import MyDrawerHeader from './MyDrawerHeader';
 interface MyDrawerProps {
   isOpen: boolean;

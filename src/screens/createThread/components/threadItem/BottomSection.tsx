@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import PlusImg from '../../../../assets/images/icons/plus.svg';
-import MyButtonNew from '../../../../components/MyButtonNew';
+import MyButtonNew from '../../../../components/buttons/MyButtonNew';
 import {MyTheme} from '../../../../theme';
 
 type BottomSectionProps = {

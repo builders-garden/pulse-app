@@ -4,7 +4,7 @@ import FastImage from 'react-native-fast-image';
 import {Profile} from '../../../api/profile/types';
 import FidImg from '../../../assets/images/icons/fid.svg';
 import FollowCounter from '../../../components/FollowCounter';
-import MyButtonNew from '../../../components/MyButtonNew';
+import FollowButton from '../../../components/buttons/FollowButton';
 import {MyTheme} from '../../../theme';
 
 interface UpperSectionProps {
@@ -45,11 +45,10 @@ function UpperSection({profile, isLoggedUser}: UpperSectionProps) {
         />
       </View>
 
-      {!isLoggedUser && (
-        <MyButtonNew
-          title="Follow"
-          onPress={() => {}}
-          style="primary"
+      {!isLoggedUser && profile.viewer_context && (
+        <FollowButton
+          followingInitialValue={profile.viewer_context?.following}
+          fid={profile.fid}
           customStyle={{marginTop: 15}}
         />
       )}

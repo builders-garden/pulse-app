@@ -2,7 +2,7 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useContext} from 'react';
 import DiagonalArrowImg from '../assets/images/icons/diagonal_arrow.svg';
-import MyButtonNew from '../components/MyButtonNew';
+import MyButtonNew from '../components/buttons/MyButtonNew';
 import {AuthContext} from '../contexts/auth/Auth.context';
 import {UserStatus} from '../contexts/auth/types';
 import SignInScreen from '../screens/auth/signIn/SignInScreen';

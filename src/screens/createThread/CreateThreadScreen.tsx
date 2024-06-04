@@ -1,4 +1,10 @@
-import React, {createRef, useCallback, useEffect, useState} from 'react';
+import React, {
+  createRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import {
   FlatList,
   NativeSyntheticEvent,
@@ -10,9 +16,11 @@ import {
 import {MediaType, launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import uuid from 'react-native-uuid';
+import {RequestStatus} from '../../api/types';
 import DiagonalArrowImg from '../../assets/images/icons/diagonal_arrow.svg';
 import PlusImg from '../../assets/images/icons/plus.svg';
-import MyButtonNew from '../../components/MyButtonNew';
+import MyButtonNew from '../../components/buttons/MyButtonNew';
+import {AuthContext} from '../../contexts/auth/Auth.context';
 import {RootStackScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
 import ChannelButton from './components/ChannelButton';
@@ -24,6 +32,8 @@ const inputLimit = 20;
 function CreateThreadScreen({
   navigation,
 }: RootStackScreenProps<'CreateThread'>) {
+  const authContext = useContext(AuthContext);
+  const [publishStatus, setPublishStatus] = useState<RequestStatus>('idle');
   const [threads, setThreads] = useState<Thread[]>([
     {id: uuid.v4().toString(), body: '', images: [], links: []},
   ]);
@@ -184,6 +194,28 @@ function CreateThreadScreen({
       }
     }
   }
+
+  // const publish = useCallback(async () => {
+  //   setPublishStatus('loading');
+  //   // route.params.channelId
+  //   try {
+  //     console.log('fetching channel...');
+  //     const res = await axios.post<ChannelResponse>(
+  //       ENDPOINT_CAST,
+  //       {
+  //         text: 'test text',
+  //         embeds: ,
+  //       },
+  //       {
+  //         headers: {Authorization: `Bearer ${authContext.state.token}`},
+  //       },
+  //     );
+  //     setPublishStatus('success');
+  //   } catch (error) {
+  //     console.error(error);
+  //     setPublishStatus('error');
+  //   }
+  // }, [authContext.state.token]);
 
   function onPublishPress() {}
 

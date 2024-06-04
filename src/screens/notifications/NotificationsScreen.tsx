@@ -13,8 +13,8 @@ import {
   NotificationsResponse,
 } from '../../api/notifications/types';
 import {RequestStatus} from '../../api/types';
-import MyButton from '../../components/MyButton';
 import MyLoader from '../../components/MyLoader';
+import MyButton from '../../components/buttons/MyButton';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {SeparateNotificationsByTime} from '../../libs/notifications';
 import {MyTheme} from '../../theme';

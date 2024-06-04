@@ -12,12 +12,11 @@ import {
 } from '../../api/channel/types';
 import {RequestStatus} from '../../api/types';
 import PenImg from '../../assets/images/icons/pen.svg';
-import MyButton from '../../components/MyButton';
 import MyFloatingButton from '../../components/MyFloatingButton';
 import MyLoader from '../../components/MyLoader';
+import MyButton from '../../components/buttons/MyButton';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {TransformArrayTo3x3} from '../../libs/arrays';
-import {formatDate} from '../../libs/date';
 import {HomeTabScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
 import {
@@ -68,7 +67,7 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
       const res = await axios.get<TrendingCastsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
-      console.log(res.data.result);
+      console.log('trending cast', JSON.stringify(res.data.result));
       setTrendingPosts(res.data.result);
       setTrendingPostsFetchStatus('success');
     } catch (error) {
@@ -151,20 +150,9 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
   );
   const renderTrendingPostItem = useCallback(
     ({item, index}: {item: TrendingCastResult; index: number}) => {
-      console.log(item.cast.castedAtTimestamp);
-      const castedDate = new Date(item.cast.castedAtTimestamp);
-      const formattedDate = formatDate(castedDate);
       return (
         <TrendingPostItem
-          headerTitle={item.cast.castedBy.profileDisplayName}
-          headerSubtitle={item.cast.castedBy.profileHandle}
-          headerImg={item.cast.castedBy.profileImage}
-          content={item.cast.text}
-          image={item.cast.embeds?.[0]?.url}
-          upvotesCount={item.cast.numberOfLikes}
-          commentsCount={item.cast.numberOfReplies}
-          quotesCount={item.cast.numberOfRecasts}
-          postTime={formattedDate}
+          trendingCast={item}
           customStyle={{
             marginLeft: index == 0 ? 20 : 10,
             marginRight: index == trendingPosts.length - 1 ? 20 : 0,
