@@ -37,7 +37,7 @@ function CreateCommentScreen({
   });
   const inputRef = createRef<TextInput>();
 
-  const renderHeader = useCallback(
+  const renderHeaderRight = useCallback(
     () => (
       <MyButtonNew
         style="primary"
@@ -45,17 +45,17 @@ function CreateCommentScreen({
         onPress={() => {
           onPublishPress();
         }}
-        title="Publish"
-        customStyle={{marginBottom: 20}}
+        title="Send"
       />
     ),
     [],
   );
+
   useEffect(() => {
     navigation.setOptions({
-      headerRight: renderHeader,
+      headerRight: renderHeaderRight,
     });
-  }, [navigation, renderHeader]);
+  }, [navigation, renderHeaderRight]);
 
   async function onAddMediaPress() {
     if (thread.images.length < maxImagesCount && !thread.video) {

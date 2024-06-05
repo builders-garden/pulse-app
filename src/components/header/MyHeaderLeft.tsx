@@ -1,5 +1,5 @@
 import React, {ReactNode, useContext} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
 import MenuLinesImg from '../../assets/images/icons/menu_lines.svg';
 import {DrawerContext} from '../../contexts/drawer/Drawer.context';
 import {MyTheme} from '../../theme';
@@ -8,16 +8,16 @@ import MyIconButtonBase from '../MyIconButtonBase';
 interface MyHeaderLeftProps {
   title?: string;
   icon?: ReactNode;
+  customStyle?: StyleProp<ViewStyle>;
 }
 
-const MyHeaderLeft = ({title, icon}: MyHeaderLeftProps) => {
+const MyHeaderLeft = ({title, icon, customStyle}: MyHeaderLeftProps) => {
   const drawerContext = useContext(DrawerContext);
   return (
-    <View style={styles.headerRoot}>
+    <View style={[styles.headerRoot, customStyle && customStyle]}>
       <MyIconButtonBase
         style="secondary"
         filling="clear"
-        customStyle={{marginLeft: 15}}
         onPress={() => {
           drawerContext.show();
         }}

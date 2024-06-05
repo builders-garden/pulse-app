@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   chipText: {
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: MyTheme.fontRegular,
   },
   chipTextXSmall: {
     fontSize: 10,

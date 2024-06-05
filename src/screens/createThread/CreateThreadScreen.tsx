@@ -1,20 +1,20 @@
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
-  BottomSheetFlatList,
+  BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
-import axios from 'axios';
+import axios, {CancelToken} from 'axios';
 import React, {
   createRef,
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 import {
   FlatList,
   NativeSyntheticEvent,
-  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -25,17 +25,29 @@ import FastImage from 'react-native-fast-image';
 import {MediaType, launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import uuid from 'react-native-uuid';
-import {Channel, ChannelsResponse} from '../../api/channel/types';
+import {
+  Channel,
+  ChannelsResponse,
+  MostRecentChannelsResponse,
+} from '../../api/channel/types';
 import {RequestStatus} from '../../api/types';
 import DiagonalArrowImg from '../../assets/images/icons/diagonal_arrow.svg';
 import PlusImg from '../../assets/images/icons/plus.svg';
+import MyChipBase from '../../components/MyChipBase';
+import MyLoader from '../../components/MyLoader';
+import MyButton from '../../components/buttons/MyButton';
 import MyButtonNew from '../../components/buttons/MyButtonNew';
+import MySearchField from '../../components/inputs/MySearchField';
 import ThreadItem from '../../components/threadItem/ThreadItem';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {RootStackScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
 import {Thread} from '../../types';
-import {ENDPOINT_CAST, ENDPOINT_CHANNELS} from '../../variables';
+import {
+  ENDPOINT_CAST,
+  ENDPOINT_CHANNELS,
+  ENDPOINT_PROFILE,
+} from '../../variables';
 import ChannelButton from './components/ChannelButton';
 const maxImagesCount = 2;
 const inputLimit = 320;
@@ -49,7 +61,11 @@ function CreateThreadScreen({
     route.params.channel ? route.params.channel : undefined,
   );
   const [publishStatus, setPublishStatus] = useState<RequestStatus>('idle');
+  const [searchText, setSearchText] = useState('');
   const [allChannels, setAllChannels] = useState<Channel[]>([]);
+  const [recentChannels, setRecentChannels] = useState<Channel[]>([]);
+  const [recentChannelsFetchStatus, setRecentChannelsFetchStatus] =
+    useState<RequestStatus>('idle');
   const [allChannelsFetchStatus, setAllChannelsFetchStatus] =
     useState<RequestStatus>('idle');
   const [threads, setThreads] = useState<Thread[]>([
@@ -57,7 +73,6 @@ function CreateThreadScreen({
   ]);
   const [currentThreadIndex, setCurrentThreadIndex] = useState(0);
   const inputRef = createRef<TextInput>();
-  // ref
   const bottomSheetRef = createRef<BottomSheet>();
 
   // callbacks
@@ -65,7 +80,7 @@ function CreateThreadScreen({
     console.log('handleSheetChanges', index);
   }, []);
 
-  const renderHeader = useCallback(
+  const renderHeaderRight = useCallback(
     () => (
       <MyButtonNew
         style="primary"
@@ -74,36 +89,11 @@ function CreateThreadScreen({
           onPublishPress();
         }}
         title="Publish"
-        customStyle={{marginBottom: 20}}
       />
     ),
     [],
   );
 
-  const renderChannelItem = useCallback(
-    ({item, index}: {item: Channel; index: number}) => {
-      return (
-        <Pressable
-          onPress={() => {
-            setSelectedChannel(item);
-            bottomSheetRef.current?.close();
-          }}
-          key={item.id}
-          style={{marginTop: index === 0 ? 0 : 20}}>
-          <View style={styles.sectionItemHorizontal}>
-            <FastImage
-              source={{uri: item.image_url}}
-              style={styles.sectionItemImg}
-            />
-            <Text style={styles.sectionItemHorizontalText} numberOfLines={2}>
-              {item.name}
-            </Text>
-          </View>
-        </Pressable>
-      );
-    },
-    [bottomSheetRef],
-  );
   const renderBackdrop = useCallback(
     (props: BottomSheetBackdropProps) => (
       <BottomSheetBackdrop {...props} disappearsOnIndex={-1} />
@@ -111,38 +101,139 @@ function CreateThreadScreen({
     [],
   );
 
-  const fetchAllChannels = useCallback(async () => {
-    console.log('fetching all');
-    setAllChannelsFetchStatus('loading');
+  const renderedChannelChips = useMemo(
+    () =>
+      allChannels.map((item: Channel) => {
+        return (
+          <MyChipBase
+            key={item.id}
+            title={`/${item.id}`}
+            size="small"
+            iconLeft={
+              <FastImage
+                style={styles.channelChipImg}
+                source={{uri: item.image_url}}
+              />
+            }
+            style="tertiary"
+            customStyle={styles.channelChip}
+            textCustomStyle={{color: MyTheme.grey500}}
+            onPress={() => {
+              setSelectedChannel(item);
+              bottomSheetRef.current?.close();
+            }}
+          />
+        );
+      }),
+    [allChannels, bottomSheetRef],
+  );
+  const renderedRecentChips = useMemo(
+    () =>
+      recentChannels.map((item: Channel) => {
+        return (
+          <MyChipBase
+            key={item.id}
+            title={`/${item.id}`}
+            size="small"
+            iconLeft={
+              <FastImage
+                style={styles.channelChipImg}
+                source={{uri: item.image_url}}
+              />
+            }
+            style="tertiary"
+            customStyle={styles.channelChip}
+            textCustomStyle={{color: MyTheme.grey500}}
+            onPress={() => {
+              setSelectedChannel(item);
+              bottomSheetRef.current?.close();
+            }}
+          />
+        );
+      }),
+    [recentChannels, bottomSheetRef],
+  );
+
+  const handleSearchChannel = useCallback(
+    async (cancelToken: CancelToken | undefined = undefined) => {
+      if (authContext.state?.fid) {
+        setAllChannelsFetchStatus('loading');
+        try {
+          const finalUrl =
+            ENDPOINT_CHANNELS + '?limit=10&idOrName=' + searchText;
+          console.log('searching profiles', finalUrl);
+          const res = await axios.get<ChannelsResponse>(finalUrl, {
+            headers: {Authorization: `Bearer ${authContext.state.token}`},
+            cancelToken: cancelToken,
+          });
+          console.log('got response', res.data.result);
+          // console.log('got response');
+          setAllChannels(res.data.result.channels.slice(0, 50));
+          setAllChannelsFetchStatus('success');
+        } catch (error) {
+          if (!axios.isCancel(error)) {
+            console.error(error);
+            setAllChannelsFetchStatus('error');
+          }
+        }
+      }
+    },
+    [authContext, searchText],
+  );
+
+  const handleSearch = useCallback(() => {
+    if (searchText.length > 0) {
+      const source = axios.CancelToken.source();
+      const timeout = setTimeout(() => {
+        handleSearchChannel(source.token);
+      }, 500);
+      return () => {
+        console.log('cancelling request');
+        clearTimeout(timeout);
+        source.cancel();
+      };
+    } else {
+      setAllChannels([]);
+      setAllChannelsFetchStatus('idle');
+    }
+  }, [searchText, handleSearchChannel]);
+
+  const fetchRecentChannels = useCallback(async () => {
+    console.log('fetching recents');
+    setRecentChannelsFetchStatus('loading');
     try {
-      const finalUrl = ENDPOINT_CHANNELS + '?limit=15';
-      const res = await axios.get<ChannelsResponse>(finalUrl, {
+      const finalUrl =
+        ENDPOINT_PROFILE + '/' + authContext.state.fid + '/active-channels';
+      const res = await axios.get<MostRecentChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
-      console.log('got response');
-      setAllChannels(res.data.result.channels);
-      setAllChannelsFetchStatus('success');
+      setRecentChannels(res.data.result.slice(0, 10));
+      setRecentChannelsFetchStatus('success');
     } catch (error) {
       console.error(error);
-      setAllChannelsFetchStatus('error');
+      setRecentChannelsFetchStatus('error');
     }
-  }, [authContext.state.token]);
+  }, [authContext.state.token, authContext.state.fid]);
 
   useEffect(() => {
-    fetchAllChannels();
-  }, [fetchAllChannels]);
+    fetchRecentChannels();
+  }, [fetchRecentChannels]);
+  useEffect(() => {
+    handleSearch();
+  }, [handleSearch]);
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: renderHeader,
+      headerRight: renderHeaderRight,
     });
-  }, [navigation, renderHeader]);
+  }, [navigation, renderHeaderRight]);
 
-  useEffect(() => {
-    if (inputRef.current !== null) {
-      inputRef.current?.focus();
-    }
-  }, [inputRef]);
+  // useEffect(() => {
+  //   console.log('change ref', inputRef.current);
+  //   if (inputRef.current !== null) {
+  //     inputRef.current?.focus();
+  //   }
+  // }, [inputRef]);
 
   async function onAddMediaPress(threadIndex: number) {
     if (
@@ -371,19 +462,72 @@ function CreateThreadScreen({
         }
       />
       <BottomSheet
-        snapPoints={['60%']}
+        snapPoints={['80%']}
         index={-1}
         backdropComponent={renderBackdrop}
         enablePanDownToClose
         ref={bottomSheetRef}
         onChange={handleSheetChanges}>
-        <BottomSheetFlatList
-          data={allChannels}
-          renderItem={renderChannelItem}
-          ListFooterComponent={<View style={{height: 40}} />}
-        />
+        <BottomSheetScrollView style={styles.bottomSheetContent}>
+          <View style={styles.bottomSheetHeaderCtn}>
+            <Text style={styles.bottomSheetHeaderText}>Choose a channel</Text>
+            <MySearchField
+              value={searchText}
+              dismissKeyboardOnCancel
+              onCancelPress={() => {
+                setSearchText('');
+              }}
+              onChangeText={setSearchText}
+            />
+          </View>
+          {allChannelsFetchStatus === 'success' ? (
+            <>
+              {allChannels.length > 0 ? (
+                <View style={styles.channelsCtn}>{renderedChannelChips}</View>
+              ) : (
+                <View style={styles.infoCtn}>
+                  <Text style={styles.infoText}>No channels</Text>
+                </View>
+              )}
+            </>
+          ) : allChannelsFetchStatus === 'loading' ? (
+            <View
+              style={{
+                width: '100%',
+                padding: 20,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <MyLoader />
+            </View>
+          ) : allChannelsFetchStatus === 'error' ? (
+            <View
+              style={{
+                width: '100%',
+                padding: 20,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text style={styles.infoText}>Error while fetching items</Text>
+              <MyButton
+                customStyle={{marginTop: 20}}
+                title="Retry"
+                width={'auto'}
+                onPress={() => {
+                  handleSearchChannel();
+                }}
+              />
+            </View>
+          ) : (
+            <>
+              <View>
+                <Text style={styles.bottomSheetSubHeaderText}>RECENT</Text>
+                <View style={styles.channelsCtn}>{renderedRecentChips}</View>
+              </View>
+            </>
+          )}
+        </BottomSheetScrollView>
       </BottomSheet>
-      {/* <BottomBar onAddMediaPress={onAddMediaPress} onSendPress={() => {}} /> */}
     </View>
   );
 }
@@ -409,6 +553,52 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginLeft: 5,
     color: MyTheme.black,
+  },
+  bottomSheetContent: {},
+  bottomSheetHeaderCtn: {
+    paddingHorizontal: 20,
+    marginTop: 15,
+    marginBottom: 30,
+  },
+  bottomSheetHeaderText: {
+    color: MyTheme.black,
+    marginBottom: 20,
+    fontSize: 16,
+    fontFamily: MyTheme.fontRegular,
+  },
+  bottomSheetSubHeaderText: {
+    color: MyTheme.grey400,
+    paddingHorizontal: 20,
+    marginBottom: 20,
+    fontFamily: MyTheme.fontSemiBold,
+  },
+  channelsCtn: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    gap: 6,
+    paddingHorizontal: 20,
+    marginBottom: 40,
+  },
+  channelChip: {
+    borderRadius: 4,
+    paddingVertical: 5,
+    paddingHorizontal: 5,
+  },
+  channelChipImg: {
+    width: 20,
+    height: 20,
+    borderRadius: 3,
+    marginRight: 5,
+  },
+  infoCtn: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 100,
+  },
+  infoText: {
+    fontFamily: MyTheme.fontRegular,
+    color: MyTheme.grey300,
   },
 });
 

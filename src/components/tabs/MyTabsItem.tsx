@@ -30,14 +30,14 @@ const styles = StyleSheet.create({
   },
   activeTabText: {
     color: MyTheme.primaryColor,
-    fontFamily: 'BeVietnamPro-Bold',
+    fontFamily: MyTheme.fontBold,
   },
   inactiveTabText: {
     color: MyTheme.grey400,
   },
   tabItemText: {
     fontSize: 16,
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: MyTheme.fontRegular,
   },
   activeTabIndicator: {
     width: 30,

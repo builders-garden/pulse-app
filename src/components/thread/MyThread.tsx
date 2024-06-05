@@ -201,7 +201,8 @@ const styles = StyleSheet.create({
   },
   contentBody: {
     marginBottom: 20,
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: MyTheme.fontRegular,
+    color: MyTheme.grey600,
   },
   contentImage: {
     // aspectRatio: 16 / 9,

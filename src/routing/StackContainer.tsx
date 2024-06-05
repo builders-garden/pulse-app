@@ -3,6 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useContext} from 'react';
 import DiagonalArrowImg from '../assets/images/icons/diagonal_arrow.svg';
 import MyButtonNew from '../components/buttons/MyButtonNew';
+import MyHeaderLeftSimple from '../components/header/MyHeaderLeftSimple';
 import {AuthContext} from '../contexts/auth/Auth.context';
 import {UserStatus} from '../contexts/auth/types';
 import SignInScreen from '../screens/auth/signIn/SignInScreen';
@@ -30,43 +31,63 @@ function StackContainer() {
           />
 
           <Stack.Screen
-            options={{
-              headerStyle: {backgroundColor: 'white'},
-              headerTintColor: 'black',
-              headerShadowVisible: false,
-              headerBackImageSource: require('../assets/images/icons/close.png'),
-              headerBackTitleVisible: false,
-              headerTitle: '',
-              headerRight: () => (
-                <MyButtonNew
-                  style="primary"
-                  iconRight={<DiagonalArrowImg style={{marginLeft: 3}} />}
-                  onPress={() => {}}
-                  title="Publish"
-                  customStyle={{marginBottom: 10}}
-                />
-              ),
+            options={({navigation}) => {
+              return {
+                headerStyle: {backgroundColor: 'white'},
+                headerTintColor: 'black',
+                headerShadowVisible: false,
+                headerBackTitleVisible: false,
+                headerTitle: '',
+                headerRight: () => (
+                  <MyButtonNew
+                    style="primary"
+                    iconRight={<DiagonalArrowImg style={{marginLeft: 3}} />}
+                    onPress={() => {}}
+                    title="Publish"
+                    customStyle={{marginBottom: 10}}
+                  />
+                ),
+                headerLeft: () => (
+                  <MyHeaderLeftSimple
+                    title="New thread"
+                    useCloseIcon
+                    onIconPress={() => {
+                      navigation.goBack();
+                    }}
+                  />
+                ),
+              };
             }}
             name="CreateThread"
             component={CreateThreadScreen}
           />
           <Stack.Screen
-            options={{
-              headerStyle: {backgroundColor: 'white'},
-              headerTintColor: 'black',
-              headerShadowVisible: false,
-              headerBackImageSource: require('../assets/images/icons/close.png'),
-              headerBackTitleVisible: false,
-              headerTitle: '',
-              headerRight: () => (
-                <MyButtonNew
-                  style="primary"
-                  iconRight={<DiagonalArrowImg style={{marginLeft: 3}} />}
-                  onPress={() => {}}
-                  title="Publish"
-                  customStyle={{marginBottom: 10}}
-                />
-              ),
+            options={({navigation}) => {
+              return {
+                headerStyle: {backgroundColor: 'white'},
+                headerTintColor: 'black',
+                headerShadowVisible: false,
+                headerBackTitleVisible: false,
+                headerTitle: '',
+                headerRight: () => (
+                  <MyButtonNew
+                    style="primary"
+                    iconRight={<DiagonalArrowImg style={{marginLeft: 3}} />}
+                    onPress={() => {}}
+                    title="Publish"
+                    customStyle={{marginBottom: 10}}
+                  />
+                ),
+                headerLeft: () => (
+                  <MyHeaderLeftSimple
+                    title="Reply"
+                    useCloseIcon
+                    onIconPress={() => {
+                      navigation.goBack();
+                    }}
+                  />
+                ),
+              };
             }}
             name="CreateComment"
             component={CreateCommentScreen}

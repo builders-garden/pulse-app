@@ -1,8 +1,15 @@
 import axios from 'axios';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {SectionList, Text, View} from 'react-native';
 import {
   CastConversationResponse,
+  CastWithDepth,
   ConversationSectionList,
 } from '../../api/cast/types';
 import {RequestStatus} from '../../api/types';
@@ -49,13 +56,109 @@ function ThreadDetailScreen({
     fetchCast();
   }, [authContext, route.params.threadHash]);
 
+  const threadsHtml = useMemo(
+    () =>
+      thread
+        ? thread.casts.map((item, index) => {
+            const transformedCast = TransformCast(item);
+            return (
+              <MyThread
+                key={index}
+                content={transformedCast.content}
+                image={transformedCast.image}
+                postHash={item.hash}
+                recasted={item.viewer_context.recasted}
+                upvoted={item.viewer_context.liked}
+                upvotesCount={transformedCast.upvotesCount}
+                commentsCount={transformedCast.commentsCount}
+                quotesCount={transformedCast.quotesCount}
+                rootCustomStyle={{
+                  marginTop: index === 0 ? 0 : 15,
+                }}
+              />
+            );
+          })
+        : [],
+    [thread],
+  );
+
+  const renderComment = useCallback(
+    ({item, index}: {item: CastWithDepth; index: number}) => {
+      const transformedComment = TransformCast(item);
+      return (
+        <MyComment
+          key={index}
+          headerImg={transformedComment.headerImg}
+          postTime={transformedComment.postTime}
+          headerTitle={transformedComment.headerTitle}
+          headerSubtitle={transformedComment.headerSubtitle}
+          indentLevel={item.depth}
+          content={transformedComment.content}
+          image={transformedComment.image}
+          upvotesCount={transformedComment.upvotesCount}
+          quotesCount={transformedComment.quotesCount}
+          rootCustomStyle={{
+            marginLeft: 10,
+          }}
+          onContentBodyPress={() => {
+            navigation.push('ThreadDetail', {
+              threadHash: item.hash,
+            });
+          }}
+          onHeaderTitlePress={() => {
+            if (transformedComment.channel !== '') {
+              navigation.navigate('Channel', {
+                channelId: transformedComment.channel,
+              });
+            } else {
+              navigation.navigate('Profile', {
+                userFid: item.author.fid.toString(),
+              });
+            }
+          }}
+          onHeaderSubtitlePress={() => {
+            navigation.navigate('Profile', {
+              userFid: item.author.fid.toString(),
+            });
+          }}
+          onHeaderImagePress={() => {
+            if (transformedComment.channel !== '') {
+              navigation.navigate('Channel', {
+                channelId: transformedComment.channel,
+              });
+            } else {
+              navigation.navigate('Profile', {
+                userFid: item.author.fid.toString(),
+              });
+            }
+          }}
+          onReplyPress={() => {
+            navigation.navigate('CreateComment', {
+              cast: item,
+            });
+          }}
+        />
+      );
+    },
+    [navigation],
+  );
+
+  const transformedCast = useMemo(
+    () => (thread ? TransformCast(thread.casts[0]) : undefined),
+    [thread],
+  );
+
   if (threadFetchStatus === 'loading') {
     return (
       <View style={{width: '100%', padding: 20}}>
         <MyPlaceholderLoader customStyle={{marginBottom: 20}} />
       </View>
     );
-  } else if (thread == null || thread === undefined) {
+  } else if (
+    thread == null ||
+    thread === undefined ||
+    transformedCast === undefined
+  ) {
     return (
       <View
         style={{
@@ -73,27 +176,6 @@ function ThreadDetailScreen({
     );
   }
 
-  const threadsHtml = thread.casts.map((item, index) => {
-    const transformedCast = TransformCast(item);
-    return (
-      <MyThread
-        key={index}
-        content={transformedCast.content}
-        image={transformedCast.image}
-        postHash={item.hash}
-        recasted={item.viewer_context.recasted}
-        upvoted={item.viewer_context.liked}
-        upvotesCount={transformedCast.upvotesCount}
-        commentsCount={transformedCast.commentsCount}
-        quotesCount={transformedCast.quotesCount}
-        rootCustomStyle={{
-          marginTop: index === 0 ? 0 : 15,
-        }}
-      />
-    );
-  });
-
-  const transformedCast = TransformCast(thread.casts[0]);
   return (
     <View>
       <SectionList
@@ -198,61 +280,15 @@ function ThreadDetailScreen({
                   });
                 }
               }}
-            />
-          );
-        }}
-        renderItem={({item, index}) => {
-          const transformedComment = TransformCast(item);
-          return (
-            <MyComment
-              key={index}
-              headerImg={transformedComment.headerImg}
-              postTime={transformedComment.postTime}
-              headerTitle={transformedComment.headerTitle}
-              headerSubtitle={transformedComment.headerSubtitle}
-              indentLevel={item.depth}
-              content={transformedComment.content}
-              image={transformedComment.image}
-              upvotesCount={transformedComment.upvotesCount}
-              quotesCount={transformedComment.quotesCount}
-              rootCustomStyle={{
-                marginLeft: 10,
-              }}
-              onContentBodyPress={() => {
-                navigation.push('ThreadDetail', {
-                  threadHash: item.hash,
+              onReplyPress={() => {
+                navigation.navigate('CreateComment', {
+                  cast: section.header,
                 });
-              }}
-              onHeaderTitlePress={() => {
-                if (transformedComment.channel !== '') {
-                  navigation.navigate('Channel', {
-                    channelId: transformedComment.channel,
-                  });
-                } else {
-                  navigation.navigate('Profile', {
-                    userFid: item.author.fid.toString(),
-                  });
-                }
-              }}
-              onHeaderSubtitlePress={() => {
-                navigation.navigate('Profile', {
-                  userFid: item.author.fid.toString(),
-                });
-              }}
-              onHeaderImagePress={() => {
-                if (transformedComment.channel !== '') {
-                  navigation.navigate('Channel', {
-                    channelId: transformedComment.channel,
-                  });
-                } else {
-                  navigation.navigate('Profile', {
-                    userFid: item.author.fid.toString(),
-                  });
-                }
               }}
             />
           );
         }}
+        renderItem={renderComment}
         stickySectionHeadersEnabled={false}
         renderSectionFooter={() => (
           <View

@@ -150,6 +150,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontFamily: MyTheme.fontRegular,
+    includeFontPadding: false,
   },
   buttonTextSmall: {
     fontSize: 12,

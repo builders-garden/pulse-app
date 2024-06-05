@@ -42,8 +42,12 @@ const ChannelButton = ({
         <>
           <FastImage style={styles.icon} source={{uri: channel.image_url}} />
           <View style={styles.textCtn}>
-            <Text style={styles.buttonText}>{channel.name}</Text>
-            <Text style={styles.subtitle}>/{channel.id}</Text>
+            <Text style={styles.buttonText} numberOfLines={1}>
+              {channel.name}
+            </Text>
+            <Text style={styles.subtitle} numberOfLines={1}>
+              /{channel.id}
+            </Text>
           </View>
         </>
       ) : (
@@ -82,8 +86,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    flex: 1,
   },
-  subtitle: {color: MyTheme.grey400, fontSize: 13, marginLeft: 8},
+  subtitle: {
+    color: MyTheme.grey400,
+    fontSize: 13,
+    marginLeft: 8,
+    maxWidth: '50%',
+  },
   icon: {width: 25, height: 25, marginRight: 10, borderRadius: 2},
   placeholderIcon: {
     width: 25,
@@ -105,6 +115,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontFamily: MyTheme.fontBold,
+    maxWidth: '50%',
   },
 });
 

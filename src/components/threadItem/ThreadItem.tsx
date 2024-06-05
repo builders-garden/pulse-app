@@ -126,13 +126,11 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
     borderBottomRightRadius: 8,
   },
-  counter: {
-    fontSize: 12,
-    color: 'gray',
-  },
   inputField: {
     fontSize: 16,
     paddingVertical: 10,
+    fontFamily: MyTheme.fontRegular,
+    color: MyTheme.grey600,
   },
   imagesCtn: {
     flexDirection: 'row',

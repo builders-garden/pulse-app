@@ -101,6 +101,9 @@ function TabsContainer() {
           headerLeft: () => (
             <MyHeaderLeft
               title="Discover"
+              customStyle={{
+                paddingLeft: 14,
+              }}
               icon={<RadarImg color={MyTheme.primaryColor} />}
             />
           ),
@@ -114,6 +117,9 @@ function TabsContainer() {
           headerLeft: () => (
             <MyHeaderLeft
               title="Notifications"
+              customStyle={{
+                paddingLeft: 14,
+              }}
               icon={<BellImg color={MyTheme.primaryColor} />}
             />
           ),
@@ -128,17 +134,20 @@ function TabsContainer() {
           headerShadowVisible: false,
           headerLeft: () => (
             <MyHeaderLeft
-            // icon={
-            //   <FastImage
-            //     source={{uri: authContext.state.profile?.pfp_url}}
-            //     style={{
-            //       width: 25,
-            //       height: 25,
-            //       borderRadius: 5,
-            //       zIndex: 1,
-            //     }}
-            //   />
-            // }
+              customStyle={{
+                paddingLeft: 14,
+              }}
+              // icon={
+              //   <FastImage
+              //     source={{uri: authContext.state.profile?.pfp_url}}
+              //     style={{
+              //       width: 25,
+              //       height: 25,
+              //       borderRadius: 5,
+              //       zIndex: 1,
+              //     }}
+              //   />
+              // }
             />
           ),
           headerRight: () => (

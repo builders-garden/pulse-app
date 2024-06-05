@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
   counter: {
     fontSize: 12,
     color: MyTheme.grey400,
+    fontFamily: MyTheme.fontRegular,
   },
 });
 

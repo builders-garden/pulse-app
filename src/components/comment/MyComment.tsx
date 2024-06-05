@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   Pressable,
   StyleProp,
@@ -34,6 +34,7 @@ export type MyCommentProps = {
   onHeaderTitlePress?: () => void;
   onHeaderSubtitlePress?: () => void;
   onHeaderImagePress?: () => void;
+  onReplyPress?: () => void;
 };
 
 const MyComment = ({
@@ -55,12 +56,17 @@ const MyComment = ({
   onHeaderTitlePress,
   onHeaderSubtitlePress,
   onHeaderImagePress,
+  onReplyPress,
 }: MyCommentProps) => {
   const indentSize = 5;
 
-  const indentsHtml = Array.from({length: indentLevel}).map((_, i) => (
-    <View key={i} style={[styles.indent, {width: `${indentSize}%`}]} />
-  ));
+  const indentsHtml = useMemo(
+    () =>
+      Array.from({length: indentLevel}).map((_, i) => (
+        <View key={i} style={[styles.indent, {width: `${indentSize}%`}]} />
+      )),
+    [indentLevel],
+  );
 
   return (
     <View style={[styles.root, rootCustomStyle]}>
@@ -177,6 +183,9 @@ const MyComment = ({
           <CommentActionBar
             quotesCount={quotesCount}
             upvotesCount={upvotesCount}
+            onReplyPress={() => {
+              onReplyPress && onReplyPress();
+            }}
           />
         )}
       </View>
