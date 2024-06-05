@@ -1,14 +1,16 @@
 import React, {RefObject} from 'react';
 import {
   NativeSyntheticEvent,
+  StyleProp,
   StyleSheet,
   TextInput,
   TextInputKeyPressEventData,
   View,
+  ViewStyle,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import BorderLineImg from '../../../../assets/images/thread/border_line.svg';
-import {MyTheme} from '../../../../theme';
+import BorderLineImg from '../../assets/images/thread/border_line.svg';
+import {MyTheme} from '../../theme';
 import {Thread} from '../../types';
 import BottomSection from './BottomSection';
 import MediaBox from './MediaBox';
@@ -18,9 +20,10 @@ type ThreadItemProps = {
   textInputRef?: RefObject<TextInput>;
   active: boolean;
   maxLength: number;
+  customStyle?: StyleProp<ViewStyle>;
   onChangeText: (text: string) => void;
   onKeyPress?: (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => void;
-  onFocus: () => void;
+  onFocus?: () => void;
   onAddMediaPress: () => void;
   onCancelMediaPress: (index: number) => void;
 };
@@ -30,6 +33,7 @@ function ThreadItem({
   active,
   textInputRef = undefined,
   maxLength,
+  customStyle,
   onChangeText,
   onKeyPress,
   onFocus,
@@ -49,7 +53,7 @@ function ThreadItem({
     ));
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, customStyle && customStyle]}>
       <View style={{alignItems: 'flex-end'}}>
         <BorderLineImg
           color={active ? MyTheme.primaryColor : MyTheme.grey300}
@@ -66,7 +70,9 @@ function ThreadItem({
       <View style={styles.contentCtn}>
         <TextInput
           ref={textInputRef}
-          onFocus={onFocus}
+          onFocus={() => {
+            onFocus && onFocus();
+          }}
           placeholderTextColor={MyTheme.grey200}
           multiline
           placeholder="Write something interesting"
@@ -78,13 +84,6 @@ function ThreadItem({
           onKeyPress={e => {
             onKeyPress && onKeyPress(e);
           }}
-        />
-        <BottomSection
-          characterCount={thread.body.length}
-          maxCharacters={maxLength}
-          maxMedia={2}
-          mediaCount={thread.images?.length || 0}
-          onAddMediaPress={onAddMediaPress}
         />
         {thread.images && thread.images.length > 0 && (
           <View style={styles.imagesCtn}>{imagesHtml}</View>
@@ -99,6 +98,13 @@ function ThreadItem({
             }}
           />
         )}
+        <BottomSection
+          characterCount={thread.body.length}
+          maxCharacters={maxLength}
+          maxMedia={2}
+          mediaCount={thread.images?.length || 0}
+          onAddMediaPress={onAddMediaPress}
+        />
       </View>
     </View>
   );
@@ -119,10 +125,6 @@ const styles = StyleSheet.create({
     padding: 15,
     borderTopRightRadius: 8,
     borderBottomRightRadius: 8,
-  },
-  bottomSection: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
   },
   counter: {
     fontSize: 12,

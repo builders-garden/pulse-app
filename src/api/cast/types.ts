@@ -1,4 +1,5 @@
 import {FeedItem, Reaction} from '../feed/types';
+import {Author} from '../user/types';
 
 export type CastConversationResponse = {
   result: ConversationSectionList;
@@ -14,6 +15,13 @@ export type ReactionResponse = {
   result: {
     success: boolean;
   };
+};
+
+export type EssentialCast = {
+  hash: string;
+  text: string;
+  timestamp: string;
+  author: Author;
 };
 
 export type Cast = Omit<FeedItem, 'reactions'> & {

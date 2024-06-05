@@ -35,6 +35,7 @@ type MyPostProps = {
   onHeaderTitlePress?: () => void;
   onHeaderSubtitlePress?: () => void;
   onHeaderImagePress?: () => void;
+  onCommentPress?: () => void;
 };
 
 const MyPost = ({
@@ -55,6 +56,7 @@ const MyPost = ({
   onHeaderTitlePress,
   onHeaderSubtitlePress,
   onHeaderImagePress,
+  onCommentPress,
 }: MyPostProps) => {
   const authContext = useContext(AuthContext);
   const [isUpvoted, setIsUpvoted] = useState(0);
@@ -220,6 +222,7 @@ const MyPost = ({
         onQuotesPress={() => {
           toggleRecast();
         }}
+        onCommentsPress={onCommentPress}
       />
     </View>
   );

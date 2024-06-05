@@ -6,6 +6,7 @@ import MyButtonNew from '../components/buttons/MyButtonNew';
 import {AuthContext} from '../contexts/auth/Auth.context';
 import {UserStatus} from '../contexts/auth/types';
 import SignInScreen from '../screens/auth/signIn/SignInScreen';
+import CreateCommentScreen from '../screens/createComment/CreateCommentScreen';
 import CreateThreadScreen from '../screens/createThread/CreateThreadScreen';
 import SearchScreen from '../screens/search/SearchScreen';
 import TabsContainer from './TabsContainer';
@@ -48,6 +49,27 @@ function StackContainer() {
             }}
             name="CreateThread"
             component={CreateThreadScreen}
+          />
+          <Stack.Screen
+            options={{
+              headerStyle: {backgroundColor: 'white'},
+              headerTintColor: 'black',
+              headerShadowVisible: false,
+              headerBackImageSource: require('../assets/images/icons/close.png'),
+              headerBackTitleVisible: false,
+              headerTitle: '',
+              headerRight: () => (
+                <MyButtonNew
+                  style="primary"
+                  iconRight={<DiagonalArrowImg style={{marginLeft: 3}} />}
+                  onPress={() => {}}
+                  title="Publish"
+                  customStyle={{marginBottom: 10}}
+                />
+              ),
+            }}
+            name="CreateComment"
+            component={CreateCommentScreen}
           />
           <Stack.Screen
             options={{

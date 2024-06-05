@@ -179,6 +179,11 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
               });
             }
           }}
+          onCommentPress={() => {
+            navigation.navigate('CreateComment', {
+              cast: item,
+            });
+          }}
         />
       );
     },

@@ -5,10 +5,10 @@ export type UserCastsResponse = {
 
 export type UserCast = {
   hash: string;
+  thread_hash: string;
   parent_hash: null | string;
   parent_url: null;
   root_parent_url: null | string;
-  thread_hash: string;
   parent_author: {
     fid: number | null;
   };

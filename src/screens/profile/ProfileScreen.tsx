@@ -181,6 +181,11 @@ function ProfileScreen({
                 });
               }
             }}
+            onCommentPress={() => {
+              navigation.push('CreateComment', {
+                cast: item,
+              });
+            }}
           />
         );
       } else {
@@ -241,7 +246,13 @@ function ProfileScreen({
         );
       }
     },
-    [selectedTab, userCastsFetchStatus, commentsFetchStatus, jumpToFeedRoot],
+    [
+      selectedTab,
+      userCastsFetchStatus,
+      commentsFetchStatus,
+      jumpToFeedRoot,
+      navigation,
+    ],
   );
 
   useEffect(() => {

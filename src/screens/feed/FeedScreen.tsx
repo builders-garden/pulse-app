@@ -127,6 +127,11 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
               });
             }
           }}
+          onCommentPress={() => {
+            navigation.navigate('CreateComment', {
+              cast: item,
+            });
+          }}
         />
       );
     },

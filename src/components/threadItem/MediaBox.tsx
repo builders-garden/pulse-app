@@ -1,9 +1,9 @@
 import React from 'react';
 import {Image, Pressable, StyleSheet} from 'react-native';
 import Video from 'react-native-video';
-import CloseImg from '../../../../assets/images/icons/close.svg';
-import MyIconButtonBase from '../../../../components/MyIconButtonBase';
-import {MyTheme} from '../../../../theme';
+import CloseImg from '../../assets/images/icons/close.svg';
+import {MyTheme} from '../../theme';
+import MyIconButtonBase from '../MyIconButtonBase';
 
 type MediaBoxProps = {
   isVideo?: boolean;

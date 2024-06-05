@@ -30,15 +30,15 @@ import {RequestStatus} from '../../api/types';
 import DiagonalArrowImg from '../../assets/images/icons/diagonal_arrow.svg';
 import PlusImg from '../../assets/images/icons/plus.svg';
 import MyButtonNew from '../../components/buttons/MyButtonNew';
+import ThreadItem from '../../components/threadItem/ThreadItem';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {RootStackScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
+import {Thread} from '../../types';
 import {ENDPOINT_CAST, ENDPOINT_CHANNELS} from '../../variables';
 import ChannelButton from './components/ChannelButton';
-import ThreadItem from './components/threadItem/ThreadItem';
-import {Thread} from './types';
 const maxImagesCount = 2;
-const inputLimit = 20;
+const inputLimit = 320;
 
 function CreateThreadScreen({
   navigation,

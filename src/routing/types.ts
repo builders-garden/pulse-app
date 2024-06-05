@@ -4,11 +4,13 @@ import {
   NavigatorScreenParams,
 } from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {EssentialCast} from '../api/cast/types';
 import {Channel} from '../api/channel/types';
 
 export type RootStackParamList = {
   Home: NavigatorScreenParams<TabParamList>;
   CreateThread: {channel?: Channel};
+  CreateComment: {cast: EssentialCast};
   Search: undefined;
   SignIn: undefined;
   SignUp: undefined;
