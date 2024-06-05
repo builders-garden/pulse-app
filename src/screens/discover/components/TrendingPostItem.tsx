@@ -2,7 +2,6 @@ import React from 'react';
 import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {TrendingCastResult} from '../../../api/cast/types';
-import FollowButton from '../../../components/buttons/FollowButton';
 import {formatDate} from '../../../libs/date';
 import {MyTheme} from '../../../theme';
 import TrendingPostActionBar from './TrendingPostActionBar';
@@ -41,11 +40,11 @@ const TrendingPostItem = ({
                 </Text>
               </View>
             </View>
-            <FollowButton
+            {/* <FollowButton
               customStyle={[styles.actionButton]}
               fid={trendingCast.fid}
               followingInitialValue={false} // TODO: ask API
-            />
+            /> */}
           </View>
           <View style={styles.contentCtn}>
             <Text

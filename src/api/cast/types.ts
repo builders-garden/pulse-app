@@ -10,6 +10,7 @@ export type CommentResponse = {
 };
 export type TrendingCastsResponse = {
   result: TrendingCastResult[];
+  cursor: string;
 };
 export type ReactionResponse = {
   result: {

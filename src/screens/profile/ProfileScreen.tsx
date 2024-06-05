@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
-import {Comment, CommentResponse} from '../../api/cast/types';
+import Toast from 'react-native-toast-message';
 import {Profile, ProfileResponse} from '../../api/profile/types';
 import {RequestStatus} from '../../api/types';
 import {UserCast, UserCastsResponse} from '../../api/user/types';
@@ -17,7 +17,7 @@ import MyComment from '../../components/comment/MyComment';
 import MyPost from '../../components/post/MyPost';
 import MyTabs from '../../components/tabs/MyTabs';
 import {AuthContext} from '../../contexts/auth/Auth.context';
-import {TransformFeedItem, TransformUserCast} from '../../libs/post';
+import {TransformUserCast} from '../../libs/post';
 import {FeedStackScreenProps, HomeTabScreenProps} from '../../routing/types';
 import {ENDPOINT_PROFILE} from '../../variables';
 import UpperSection from './components/UpperSection';
@@ -35,9 +35,14 @@ function ProfileScreen({
 
   const [selectedTab, setSelectedTab] = useState(0);
   const [commentsFetchStatus, setCommentsFetchStatus] = useState('idle');
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [newCommentsFetchStatus, setNewCommentsFetchStatus] = useState('idle');
+  const [comments, setComments] = useState<UserCast[]>([]);
   const [userCastsFetchStatus, setUserCastsFetchStatus] = useState('idle');
+  const [newUserCastsFetchStatus, setNewUserCastsFetchStatus] =
+    useState('idle');
   const [userCasts, setUserCasts] = useState<UserCast[]>([]);
+  const [userCastsCursor, setUserCastsCursor] = useState<string>();
+  const [commentsCursor, setCommentsCursor] = useState<string>();
 
   const isLoggedUserProfile = useMemo(() => {
     if (!authContext.state?.fid) {
@@ -71,15 +76,13 @@ function ProfileScreen({
       setCommentsFetchStatus('loading');
       try {
         const finalUrl =
-          ENDPOINT_PROFILE +
-          '/' +
-          profile?.fid +
-          '/replies-and-recasts?limit=10';
-        const res = await axios.get<CommentResponse>(finalUrl, {
+          ENDPOINT_PROFILE + '/' + profile?.fid + '/replies?limit=15';
+        const res = await axios.get<UserCastsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
         console.log('got comments');
         setComments(res.data.result);
+        setCommentsCursor(res.data.cursor);
         setCommentsFetchStatus('success');
       } catch (error) {
         console.error(error);
@@ -88,18 +91,19 @@ function ProfileScreen({
     }
   }, [authContext.state.token, profile?.fid]);
 
-  const fetchThreads = useCallback(async () => {
+  const fetchUserCasts = useCallback(async () => {
     if (profile?.fid) {
       setUserCastsFetchStatus('loading');
       try {
         const finalUrl =
-          ENDPOINT_PROFILE + '/' + profile?.fid + '/casts?limit=10';
+          ENDPOINT_PROFILE + '/' + profile?.fid + '/tmp-casts?limit=15';
         const res = await axios.get<UserCastsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
         console.log('got threads');
         console.log(res.data.result);
         setUserCasts(res.data.result);
+        setUserCastsCursor(res.data.cursor);
         setUserCastsFetchStatus('success');
       } catch (error) {
         console.error(error);
@@ -107,6 +111,74 @@ function ProfileScreen({
       }
     }
   }, [authContext.state.token, profile?.fid]);
+
+  const fetchNewComments = useCallback(async () => {
+    if (newCommentsFetchStatus !== 'loading' && commentsCursor) {
+      try {
+        setNewCommentsFetchStatus('loading');
+        console.log('fetching new threads');
+
+        const finalUrl =
+          ENDPOINT_PROFILE +
+          '/' +
+          profile?.fid +
+          '/replies?limit=15&cursor=' +
+          commentsCursor;
+        const res = await axios.get<UserCastsResponse>(finalUrl, {
+          headers: {Authorization: `Bearer ${authContext.state.token}`},
+        });
+        setComments([...comments, ...res.data.result]);
+        setCommentsCursor(res.data.cursor);
+        setNewCommentsFetchStatus('success');
+      } catch (error) {
+        console.error(error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error fetching new items',
+        });
+        setNewCommentsFetchStatus('error');
+      }
+    }
+  }, [
+    authContext.state.token,
+    profile?.fid,
+    commentsCursor,
+    comments,
+    newCommentsFetchStatus,
+  ]);
+  const fetchNewUserCasts = useCallback(async () => {
+    if (newUserCastsFetchStatus !== 'loading' && userCastsCursor) {
+      try {
+        setNewUserCastsFetchStatus('loading');
+        console.log('fetching new threads');
+        const finalUrl =
+          ENDPOINT_PROFILE +
+          '/' +
+          profile?.fid +
+          '/tmp-casts?limit=15&cursor=' +
+          userCastsCursor;
+        const res = await axios.get<UserCastsResponse>(finalUrl, {
+          headers: {Authorization: `Bearer ${authContext.state.token}`},
+        });
+        setUserCasts([...userCasts, ...res.data.result]);
+        setUserCastsCursor(res.data.cursor);
+        setNewUserCastsFetchStatus('success');
+      } catch (error) {
+        console.error(error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error fetching new items',
+        });
+        setNewUserCastsFetchStatus('error');
+      }
+    }
+  }, [
+    authContext.state.token,
+    userCastsCursor,
+    userCasts,
+    newUserCastsFetchStatus,
+    profile?.fid,
+  ]);
 
   const jumpToFeedRoot = useCallback(
     (screen: 'Profile' | 'ThreadDetail' | 'Channel', params: any) => {
@@ -119,15 +191,16 @@ function ProfileScreen({
   );
 
   const renderItem = useCallback(
-    ({item, index}: {item: UserCast | Comment; index: number}) => {
+    ({item, index}: {item: UserCast; index: number}) => {
       if (
         userCastsFetchStatus !== 'success' ||
-        commentsFetchStatus !== 'success'
+        commentsFetchStatus !== 'success' ||
+        !profile
       ) {
         return null;
       }
       if (selectedTab === 0) {
-        const transformedItem = TransformUserCast(item as UserCast);
+        const transformedItem = TransformUserCast(item, profile);
 
         return (
           <MyPost
@@ -161,13 +234,13 @@ function ProfileScreen({
                 });
               } else {
                 jumpToFeedRoot('Profile', {
-                  userFid: item.author.fid.toString(),
+                  userFid: profile.fid.toString(),
                 });
               }
             }}
             onHeaderSubtitlePress={() => {
               jumpToFeedRoot('Profile', {
-                userFid: item.author.fid.toString(),
+                userFid: profile.fid.toString(),
               });
             }}
             onHeaderImagePress={() => {
@@ -177,19 +250,24 @@ function ProfileScreen({
                 });
               } else {
                 jumpToFeedRoot('Profile', {
-                  userFid: item.author.fid.toString(),
+                  userFid: profile.fid.toString(),
                 });
               }
             }}
             onCommentPress={() => {
               navigation.push('CreateComment', {
-                cast: item,
+                cast: {
+                  author: profile,
+                  text: transformedItem.content,
+                  hash: item.hash,
+                  timestamp: item.castedAtTimestamp,
+                },
               });
             }}
           />
         );
       } else {
-        const transformedItem = TransformFeedItem(item as Comment);
+        const transformedItem = TransformUserCast(item, profile);
 
         return (
           <MyComment
@@ -198,8 +276,8 @@ function ProfileScreen({
             headerTitle={transformedItem.headerTitle}
             headerSubtitle={transformedItem.headerSubtitle}
             content={transformedItem.content}
-            quote="test quote text"
-            quoteTitle="@handle"
+            quote={item.parentCast?.text}
+            quoteTitle={'@' + item.parentCast?.castedBy.profileHandle}
             image={transformedItem.image}
             upvotesCount={transformedItem.upvotesCount}
             quotesCount={transformedItem.quotesCount}
@@ -222,13 +300,13 @@ function ProfileScreen({
                 });
               } else {
                 jumpToFeedRoot('Profile', {
-                  userFid: item.author.fid.toString(),
+                  userFid: profile.fid.toString(),
                 });
               }
             }}
             onHeaderSubtitlePress={() => {
               jumpToFeedRoot('Profile', {
-                userFid: item.author.fid.toString(),
+                userFid: profile.fid.toString(),
               });
             }}
             onHeaderImagePress={() => {
@@ -238,7 +316,7 @@ function ProfileScreen({
                 });
               } else {
                 jumpToFeedRoot('Profile', {
-                  userFid: item.author.fid.toString(),
+                  userFid: profile.fid.toString(),
                 });
               }
             }}
@@ -250,8 +328,9 @@ function ProfileScreen({
       selectedTab,
       userCastsFetchStatus,
       commentsFetchStatus,
-      jumpToFeedRoot,
+      profile,
       navigation,
+      jumpToFeedRoot,
     ],
   );
 
@@ -266,9 +345,9 @@ function ProfileScreen({
   }, [profile, fetchComments]);
   useEffect(() => {
     if (profile) {
-      fetchThreads();
+      fetchUserCasts();
     }
-  }, [profile, fetchThreads]);
+  }, [profile, fetchUserCasts]);
 
   if (profileFetchStatus === 'loading') {
     return (
@@ -307,7 +386,7 @@ function ProfileScreen({
   //         width={'auto'}
   //         onPress={() => {
   //           if (userCastsFetchStatus === 'error') {
-  //             fetchThreads();
+  //             fetchUserCasts();
   //           } else {
   //             fetchComments();
   //           }
@@ -320,7 +399,15 @@ function ProfileScreen({
   return (
     <FlatList
       data={selectedTab === 0 ? userCasts : comments}
-      windowSize={5}
+      windowSize={10}
+      onEndReachedThreshold={1}
+      onEndReached={selectedTab === 0 ? fetchNewUserCasts : fetchNewComments}
+      onRefresh={selectedTab === 0 ? fetchUserCasts : fetchComments}
+      refreshing={
+        selectedTab === 0
+          ? userCastsFetchStatus === 'loading'
+          : commentsFetchStatus === 'loading'
+      }
       ListHeaderComponent={
         <View style={styles.profileCtn}>
           <UpperSection profile={profile} isLoggedUser={isLoggedUserProfile} />
@@ -344,7 +431,7 @@ function ProfileScreen({
                 width={'auto'}
                 onPress={() => {
                   if (userCastsFetchStatus === 'error') {
-                    fetchThreads();
+                    fetchUserCasts();
                   } else {
                     fetchComments();
                   }
@@ -353,6 +440,14 @@ function ProfileScreen({
             </View>
           ) : null}
         </View>
+      }
+      ListFooterComponent={
+        (selectedTab === 0 && newUserCastsFetchStatus === 'loading') ||
+        (selectedTab === 1 && newCommentsFetchStatus === 'loading') ? (
+          <View style={{width: '100%', padding: 20, alignItems: 'center'}}>
+            <MyLoader />
+          </View>
+        ) : null
       }
       renderItem={renderItem}
       keyExtractor={(item, _) => item.hash}

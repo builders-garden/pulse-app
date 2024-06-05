@@ -1,5 +1,6 @@
 export function TransformArrayTo3x3<T>(channels: T[]) {
   return channels.reduce((acc, curr, index, array) => {
+    console.log('index', index, curr);
     if (index % 3 === 0) {
       const obj: T[] = [curr];
       if (index + 1 < array.length) {

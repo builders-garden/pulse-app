@@ -7,47 +7,83 @@ import {
   ConversationSectionList,
 } from '../api/cast/types';
 import {FeedItem} from '../api/feed/types';
+import {Profile} from '../api/profile/types';
 import {UserCast} from '../api/user/types';
 import {formatDate} from './date';
 
-export function TransformUserCast(item: UserCast) {
+export function TransformUserCast(item: UserCast, profile: Profile) {
   let headerTitle = '';
   let headerSubtitle = '';
+  let headerImg = '';
   let channel: string = '';
   const content = item.text;
-  if (
-    item.root_parent_url &&
-    item.root_parent_url.startsWith('https://warpcast.com/~/channel/')
-  ) {
-    channel = item.root_parent_url.replace(
-      'https://warpcast.com/~/channel/',
-      '',
-    );
+  if (item.channel) {
+    channel = item.channel.channelId;
     headerTitle = '/' + channel;
-    headerSubtitle = item.author.display_name + ' • @' + item.author.username;
+    headerSubtitle = profile.display_name + ' • @' + profile.username;
+    headerImg = item.channel.imageUrl;
   } else {
-    headerTitle = item.author.display_name;
-    headerSubtitle = '@' + item.author.username;
+    headerTitle = profile.display_name;
+    headerSubtitle = '@' + profile.username;
+    headerImg = profile.pfp_url;
   }
 
-  const postTime = formatDate(new Date(item.timestamp));
+  const postTime = formatDate(new Date(item.castedAtTimestamp));
   let embed = item.embeds.find(
     el => el?.url !== '' && el?.url !== null && el?.url !== undefined,
   );
 
   return {
     channel,
-    headerImg: item.author.pfp_url,
+    headerImg,
     postTime: postTime,
     headerTitle: headerTitle,
     headerSubtitle: headerSubtitle,
     content: content,
     image: embed?.url ?? undefined,
-    upvotesCount: item.reactions.likes_count,
-    commentsCount: item.replies.count,
-    quotesCount: item.reactions.recasts_count,
+    upvotesCount: item.numberOfLikes,
+    commentsCount: item.numberOfReplies,
+    quotesCount: item.numberOfRecasts,
   };
 }
+// export function TransformUserCast(item: UserCast) {
+//   let headerTitle = '';
+//   let headerSubtitle = '';
+//   let channel: string = '';
+//   const content = item.text;
+//   if (
+//     item.root_parent_url &&
+//     item.root_parent_url.startsWith('https://warpcast.com/~/channel/')
+//   ) {
+//     channel = item.root_parent_url.replace(
+//       'https://warpcast.com/~/channel/',
+//       '',
+//     );
+//     headerTitle = '/' + channel;
+//     headerSubtitle = item.author.display_name + ' • @' + item.author.username;
+//   } else {
+//     headerTitle = item.author.display_name;
+//     headerSubtitle = '@' + item.author.username;
+//   }
+
+//   const postTime = formatDate(new Date(item.timestamp));
+//   let embed = item.embeds.find(
+//     el => el?.url !== '' && el?.url !== null && el?.url !== undefined,
+//   );
+
+//   return {
+//     channel,
+//     headerImg: item.author.pfp_url,
+//     postTime: postTime,
+//     headerTitle: headerTitle,
+//     headerSubtitle: headerSubtitle,
+//     content: content,
+//     image: embed?.url ?? undefined,
+//     upvotesCount: item.reactions.likes_count,
+//     commentsCount: item.replies.count,
+//     quotesCount: item.reactions.recasts_count,
+//   };
+// }
 // TODO: Implementare TransformComment e separare le due funzioni
 export function TransformFeedItem(item: FeedItem | Comment) {
   let headerTitle = '';

@@ -101,7 +101,10 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
       const res = await axios.get<NewChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
-      const transformed = TransformArrayTo3x3<NewChannel>(res.data.result);
+      console.log('new channels', JSON.stringify(res.data));
+      const transformed = TransformArrayTo3x3<NewChannel>(
+        res?.data?.result ?? [],
+      );
       setNewChannels(transformed);
       setNewChannelsFetchStatus('success');
     } catch (error) {

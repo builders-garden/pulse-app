@@ -6,12 +6,14 @@ export type TrendingChannelsResponse = {
 export type FavoriteChannelsResponse = TrendingChannelsResponse;
 export type MostFollowedChannelsResponse = {
   result: MostFollowedChannel[];
+  cursor: string;
 };
 export type MostRecentChannelsResponse = {
   result: MostRecentChannel[];
 };
 export type NewChannelsResponse = {
   result: NewChannel[];
+  cursor: string;
 };
 export type ChannelsResponse = {
   result: {
