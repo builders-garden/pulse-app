@@ -188,11 +188,7 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
             keyExtractor={(item, index) => item.hash + index.toString()} // TODO: da rimuovere, fix temporaneo per i cast che arrivano duplicati
           />
         </>
-      ) : feed.length === 0 ? (
-        <View style={styles.infoCtn}>
-          <Text style={styles.infoText}>No feed items</Text>
-        </View>
-      ) : feedFetchStatus == 'loading' ? (
+      ) : feedFetchStatus === 'loading' ? (
         <View style={{width: '100%', padding: 20}}>
           <MyPlaceholderLoader customStyle={{marginBottom: 20}} />
           <MyPlaceholderLoader />

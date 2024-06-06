@@ -26,6 +26,12 @@ import {MediaType, launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import uuid from 'react-native-uuid';
 import {
+  UploadCastBody,
+  UploadCastResult,
+  UploadEmbedResult,
+  UploadMediaBody,
+} from '../../api/cast/types';
+import {
   Channel,
   ChannelsResponse,
   MostRecentChannelsResponse,
@@ -61,6 +67,10 @@ function CreateThreadScreen({
     route.params.channel ? route.params.channel : undefined,
   );
   const [publishStatus, setPublishStatus] = useState<RequestStatus>('idle');
+  const [uploadMediaStatus, setUploadMediaStatus] =
+    useState<RequestStatus>('idle');
+  const [uploadCastStatus, setUploadCastStatus] =
+    useState<RequestStatus>('idle');
   const [searchText, setSearchText] = useState('');
   const [allChannels, setAllChannels] = useState<Channel[]>([]);
   const [recentChannels, setRecentChannels] = useState<Channel[]>([]);
@@ -79,20 +89,6 @@ function CreateThreadScreen({
   const handleSheetChanges = useCallback((index: number) => {
     console.log('handleSheetChanges', index);
   }, []);
-
-  const renderHeaderRight = useCallback(
-    () => (
-      <MyButtonNew
-        style="primary"
-        iconRight={<DiagonalArrowImg style={{marginLeft: 3}} />}
-        onPress={() => {
-          onPublishPress();
-        }}
-        title="Publish"
-      />
-    ),
-    [],
-  );
 
   const renderBackdrop = useCallback(
     (props: BottomSheetBackdropProps) => (
@@ -153,6 +149,10 @@ function CreateThreadScreen({
       }),
     [recentChannels, bottomSheetRef],
   );
+
+  const threadIsValid = useMemo(() => {
+    return threads.findIndex(thread => thread.body.length === 0) === -1;
+  }, [threads]);
 
   const handleSearchChannel = useCallback(
     async (cancelToken: CancelToken | undefined = undefined) => {
@@ -222,12 +222,6 @@ function CreateThreadScreen({
     handleSearch();
   }, [handleSearch]);
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: renderHeaderRight,
-    });
-  }, [navigation, renderHeaderRight]);
-
   // useEffect(() => {
   //   console.log('change ref', inputRef.current);
   //   if (inputRef.current !== null) {
@@ -252,18 +246,18 @@ function CreateThreadScreen({
       console.log(res);
       if (!res.didCancel) {
         const isVideo = res.assets?.[0]?.type?.startsWith('video');
-        const mediaUri = res.assets?.[0]?.uri;
-        if (mediaUri !== undefined && mediaUri !== null) {
+        const media = res.assets?.[0];
+        if (media !== undefined && media !== null) {
           const newThreads = [...threads];
           if (isVideo) {
             newThreads[threadIndex] = {
               ...newThreads[threadIndex],
-              video: mediaUri,
+              video: media,
             };
           } else {
             newThreads[threadIndex] = {
               ...newThreads[threadIndex],
-              images: [...newThreads[threadIndex].images, mediaUri],
+              images: [...newThreads[threadIndex].images, media],
             };
           }
           setThreads(newThreads);
@@ -363,55 +357,156 @@ function CreateThreadScreen({
     }
   }
 
-  const publish = useCallback(async () => {
-    setPublishStatus('loading');
-    // route.params.channelId
-    try {
-      console.log('publishing thread...');
-      const data = new FormData();
-      data.append('name', 'avatar');
-      data.append('fileData', {
-        uri: threads[0].video,
-        name: 'upload.mp4',
-      });
-
+  const uploadMedia = useCallback(
+    async (mediaBody: UploadMediaBody) => {
+      setUploadMediaStatus('loading');
+      // route.params.channelId
       try {
-        const response = await axios.post(
-          ENDPOINT_CAST,
-          data,
+        console.log('mediaBody', mediaBody);
+        const data = new FormData();
+        data.append('embeds', mediaBody[0]);
+        console.log('uploading media...', data);
+        const finalUrl = ENDPOINT_CAST + '/upload-embeds';
+        const response = await axios.post<UploadEmbedResult>(finalUrl, data, {
+          headers: {Authorization: `Bearer ${authContext.state.token}`},
+        });
+        console.log(response.data);
 
+        setUploadMediaStatus('success');
+        return {err: false, data: response.data.result};
+      } catch (error) {
+        console.error(error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error uploading media',
+        });
+        setUploadMediaStatus('error');
+        return {err: true, msg: error};
+      }
+    },
+    [authContext.state.token],
+  );
+
+  const uploadCast = useCallback(
+    async (castBody: UploadCastBody) => {
+      setUploadCastStatus('loading');
+      // route.params.channelId
+      console.log('publishing thread...');
+      try {
+        console.log('body', castBody);
+        const response = await axios.post<UploadCastResult>(
+          ENDPOINT_CAST,
+          castBody,
           {
             headers: {Authorization: `Bearer ${authContext.state.token}`},
           },
         );
         console.log(response.data);
+        setUploadCastStatus('success');
+        return {
+          err: false,
+          data: response.data.result,
+        };
       } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Error uploading cast',
+        });
         console.error(error);
+        setUploadCastStatus('error');
+        return {err: true, msg: error};
       }
+    },
+    [authContext.state.token],
+  );
 
-      // const res = await axios.post(
-      //   ENDPOINT_CAST,
-      //   {
-      //     text: 'test text',
-      //   },
-      //   {
-      //     headers: {Authorization: `Bearer ${authContext.state.token}`},
-      //   },
-      // );
-      setPublishStatus('success');
-    } catch (error) {
-      console.error(error);
-      setPublishStatus('error');
+  const publish = useCallback(async () => {
+    let currentParent = '';
+    for (let i = 0; i < threads.length; i++) {
+      console.log('publishing thread no.', i);
+      const thread = threads[i];
+      let media: {
+        url: string;
+      }[] = [];
+      if (thread.images.length > 0) {
+        const mediaBody: UploadMediaBody = threads[i].images.map(item => {
+          return {
+            uri: item.uri || '',
+            name: item.fileName || '',
+            type: item.type || '',
+          };
+        });
+        const uploadMediaRes = await uploadMedia(mediaBody);
+        if (uploadMediaRes.err) {
+          Toast.show({
+            type: 'error',
+            text1:
+              'It was not possible to upload your media. Please contact support',
+          });
+          return;
+        } else if (uploadMediaRes.data) {
+          media = uploadMediaRes.data.map(item => ({url: item.url}));
+        }
+      }
+      const body: UploadCastBody = {
+        text: threads[i].body,
+        embeds: media,
+      };
+      if (selectedChannel) {
+        body.channelId = selectedChannel.id;
+      }
+      if (currentParent !== '') {
+        body.parent = currentParent;
+        body.parentAuthorFid = Number(authContext.state.fid);
+      }
+      const uploadCastRes = await uploadCast(body);
+      if (uploadCastRes.err) {
+        Toast.show({
+          type: 'error',
+          text1: 'It was not possible to upload the full thread',
+        });
+        return;
+      } else {
+        currentParent = uploadCastRes.data?.hash ?? '';
+      }
     }
-  }, [authContext.state.token, threads]);
+    Toast.show({
+      type: 'success',
+      text1: 'Thread published!',
+    });
+    navigation.goBack();
+  }, [
+    threads,
+    selectedChannel,
+    navigation,
+    authContext,
+    uploadMedia,
+    uploadCast,
+  ]);
 
-  function onPublishPress() {
-    // publish();
-  }
+  const renderHeaderRight = useCallback(
+    () => (
+      <MyButtonNew
+        style="primary"
+        disabled={!threadIsValid}
+        iconRight={<DiagonalArrowImg style={{marginLeft: 3}} />}
+        onPress={() => {
+          publish();
+        }}
+        title="Publish"
+      />
+    ),
+    [threadIsValid, publish],
+  );
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: renderHeaderRight,
+    });
+  }, [navigation, renderHeaderRight]);
 
   return (
     <View style={{flex: 1}}>
-      {/* <Text>Selected index: {currentThreadIndex}</Text> */}
       <FlatList
         style={styles.threadsCtn}
         data={threads}
@@ -446,13 +541,14 @@ function CreateThreadScreen({
         ItemSeparatorComponent={() => <View style={{height: 20}} />}
         ListFooterComponent={
           <MyButtonNew
-            style="secondary"
+            style="primary"
+            filling="outline"
             title="Add new cast"
             iconLeft={
               <PlusImg
                 width={14}
                 height={14}
-                color={MyTheme.white}
+                color={MyTheme.primaryColor}
                 style={{marginRight: 5}}
               />
             }

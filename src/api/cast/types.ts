@@ -18,6 +18,50 @@ export type ReactionResponse = {
   };
 };
 
+export type UploadMediaBody = {
+  uri: string;
+  name: string;
+  type: string;
+}[];
+
+export type UploadEmbedResult = {
+  result: UploadedEmbed[];
+};
+
+export type UploadCastBody = {
+  text: string;
+  embeds: {url: string}[];
+  channelId?: string;
+  parent?: string;
+  idem?: string;
+  parentAuthorFid?: number;
+};
+
+export type UploadCastResult = {
+  result: {
+    hash: string;
+    author: Author;
+    text: string;
+  };
+};
+
+export type UploadedEmbed = {
+  fileId: string;
+  name: string;
+  size: number;
+  versionInfo: {
+    id: string;
+    name: string;
+  };
+  filePath: string;
+  url: string;
+  fileType: string;
+  height: number;
+  width: number;
+  thumbnailUrl: string;
+  AITags?: any;
+};
+
 export type EssentialCast = {
   hash: string;
   text: string;

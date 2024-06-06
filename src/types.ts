@@ -1,5 +1,6 @@
 import {ReactNode} from 'react';
 import {ImageSourcePropType} from 'react-native';
+import {Asset} from 'react-native-image-picker';
 
 export type LinkPreview =
   | {
@@ -55,7 +56,7 @@ export type OnboardingSlide = {
 export type Thread = {
   id: string;
   body: string;
-  images: string[];
-  video?: string;
+  images: Asset[];
+  video?: Asset;
   links: string[];
 };

@@ -43,7 +43,7 @@ const MyThread = ({
 
   const toggleUpvote = useCallback(async () => {
     try {
-      const finalUrl = `${ENDPOINT_CAST}${postHash}/reactions`;
+      const finalUrl = `${ENDPOINT_CAST}/${postHash}/reactions`;
       if ((upvoted && isUpvoted === 0) || isUpvoted === 1) {
         console.log('deleting', finalUrl);
         const res = await axios.delete<ReactionResponse>(finalUrl, {
@@ -86,7 +86,7 @@ const MyThread = ({
   }, [authContext.state.token, postHash, isUpvoted, upvoted]);
   const toggleRecast = useCallback(async () => {
     try {
-      const finalUrl = `${ENDPOINT_CAST}${postHash}/reactions`;
+      const finalUrl = `${ENDPOINT_CAST}/${postHash}/reactions`;
       if ((recasted && isRecasted === 0) || isRecasted === 1) {
         console.log('deleting recast', finalUrl);
         const res = await axios.delete<ReactionResponse>(finalUrl, {

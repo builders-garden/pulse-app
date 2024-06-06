@@ -100,11 +100,11 @@ const styles = StyleSheet.create({
   buttonPrimarySolid: {
     backgroundColor: MyTheme.primaryColor,
     borderColor: MyTheme.primaryColor,
-    borderWidth: 2,
+    borderWidth: 1,
   },
   buttonPrimaryOutline: {
     borderColor: MyTheme.primaryColor,
-    borderWidth: 2,
+    borderWidth: 1,
   },
   buttonPrimaryClear: {
     backgroundColor: 'transparent',
@@ -112,11 +112,11 @@ const styles = StyleSheet.create({
   buttonSecondarySolid: {
     backgroundColor: MyTheme.grey300,
     borderColor: MyTheme.grey300,
-    borderWidth: 2,
+    borderWidth: 1,
   },
   buttonSecondaryOutline: {
     borderColor: MyTheme.grey300,
-    borderWidth: 2,
+    borderWidth: 1,
   },
   buttonSecondaryClear: {
     backgroundColor: 'transparent',
@@ -124,11 +124,11 @@ const styles = StyleSheet.create({
   buttonTertiarySolid: {
     backgroundColor: MyTheme.grey100,
     borderColor: MyTheme.grey100,
-    borderWidth: 2,
+    borderWidth: 1,
   },
   buttonTertiaryOutline: {
     borderColor: MyTheme.grey100,
-    borderWidth: 2,
+    borderWidth: 1,
   },
   buttonTertiaryClear: {
     backgroundColor: 'transparent',
@@ -136,11 +136,11 @@ const styles = StyleSheet.create({
   buttonQuaternarySolid: {
     backgroundColor: MyTheme.grey100,
     borderColor: MyTheme.grey100,
-    borderWidth: 2,
+    borderWidth: 1,
   },
   buttonQuaternaryOutline: {
     borderColor: MyTheme.grey100,
-    borderWidth: 2,
+    borderWidth: 1,
   },
   buttonQuaternaryClear: {
     backgroundColor: 'transparent',

@@ -1,5 +1,12 @@
+import {useScrollToTop} from '@react-navigation/native';
 import axios from 'axios';
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {FlatList, Text, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import {Channel, ChannelResponse} from '../../api/channel/types';
@@ -33,6 +40,9 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
   const [channel, setChannel] = useState<Channel>();
   const [feed, setFeed] = useState<FeedItem[]>([]);
   const [cursor, setCursor] = useState<string>();
+  const listRef = useRef(null);
+
+  useScrollToTop(listRef);
 
   const fetchChannel = useCallback(async () => {
     setChannelFetchStatus('loading');
@@ -224,6 +234,7 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
             }}
           />
           <FlatList
+            ref={listRef}
             data={feed}
             windowSize={10}
             onEndReachedThreshold={1}

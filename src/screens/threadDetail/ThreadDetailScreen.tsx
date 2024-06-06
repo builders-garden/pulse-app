@@ -37,6 +37,7 @@ function ThreadDetailScreen({
       try {
         const url =
           ENDPOINT_CAST +
+          '/' +
           route.params.threadHash +
           '/conversation?replyDepth=5';
         const res = await axios.get<CastConversationResponse>(url, {
