@@ -1,9 +1,11 @@
+import {useScrollToTop} from '@react-navigation/native';
 import axios from 'axios';
 import React, {
   useCallback,
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import {SectionList, StyleSheet, Text, View} from 'react-native';
@@ -32,6 +34,9 @@ function NotificationsScreen() {
   const formattedNotifications = useMemo(() => {
     return SeparateNotificationsByTime(notifications);
   }, [notifications]);
+  const listRef = useRef(null);
+
+  useScrollToTop(listRef);
 
   const fetchNotifications = useCallback(async () => {
     setNotificationsFetchStatus('loading');
@@ -115,6 +120,7 @@ function NotificationsScreen() {
   return (
     <View>
       <SectionList
+        ref={listRef}
         style={{paddingHorizontal: 15, paddingTop: 15}}
         sections={formattedNotifications}
         windowSize={14}

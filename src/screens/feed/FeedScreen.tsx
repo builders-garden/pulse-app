@@ -1,6 +1,13 @@
+import {useScrollToTop} from '@react-navigation/native';
 import axios from 'axios';
-import React, {useCallback, useContext, useEffect, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import {FeedItem, FeedResponse} from '../../api/feed/types';
 import {RequestStatus} from '../../api/types';
@@ -12,6 +19,7 @@ import MyPost from '../../components/post/MyPost';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {TransformFeedItem} from '../../libs/post';
 import {FeedStackScreenProps} from '../../routing/types';
+import {MyTheme} from '../../theme';
 import {ENDPOINT_FEED} from '../../variables';
 
 function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
@@ -21,11 +29,14 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
     useState<RequestStatus>('idle');
   const [feed, setFeed] = useState<FeedItem[]>([]);
   const [cursor, setCursor] = useState<string>();
+  const listRef = useRef(null);
+
+  useScrollToTop(listRef);
 
   const fetchFeed = useCallback(async () => {
     setFeedFetchStatus('loading');
     try {
-      console.log('fetching feed', authContext.state.token);
+      // console.log('fetching feed', authContext.state.token);
       const res = await axios.get<FeedResponse>(ENDPOINT_FEED, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
@@ -138,6 +149,10 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
     [navigation],
   );
 
+  const renderSeparator = useCallback(() => {
+    return <View style={{height: 15}} />;
+  }, []);
+
   return (
     <View>
       {feedFetchStatus === 'success' || feed.length > 0 ? (
@@ -149,6 +164,10 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
             }}
           />
           <FlatList
+            ref={listRef}
+            onScrollToTop={e => {
+              console.log('onScrollToTop', e);
+            }}
             style={{paddingHorizontal: 15, paddingTop: 15}}
             data={feed}
             windowSize={14}
@@ -164,19 +183,39 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
                 </View>
               ) : null
             }
-            ItemSeparatorComponent={() => <View style={{height: 15}} />}
+            ItemSeparatorComponent={renderSeparator}
             renderItem={renderItem}
             keyExtractor={(item, index) => item.hash + index.toString()} // TODO: da rimuovere, fix temporaneo per i cast che arrivano duplicati
           />
         </>
-      ) : (
+      ) : feed.length === 0 ? (
+        <View style={styles.infoCtn}>
+          <Text style={styles.infoText}>No feed items</Text>
+        </View>
+      ) : feedFetchStatus == 'loading' ? (
         <View style={{width: '100%', padding: 20}}>
           <MyPlaceholderLoader customStyle={{marginBottom: 20}} />
           <MyPlaceholderLoader />
+        </View>
+      ) : (
+        <View style={styles.infoCtn}>
+          <Text style={styles.infoText}>No feed items</Text>
         </View>
       )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  infoCtn: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 100,
+  },
+  infoText: {
+    fontFamily: MyTheme.fontRegular,
+    color: MyTheme.grey300,
+  },
+});
 
 export default FeedScreen;

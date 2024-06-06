@@ -1,9 +1,11 @@
+import {useScrollToTop} from '@react-navigation/native';
 import axios from 'axios';
 import React, {
   useCallback,
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
@@ -43,6 +45,10 @@ function ProfileScreen({
   const [userCasts, setUserCasts] = useState<UserCast[]>([]);
   const [userCastsCursor, setUserCastsCursor] = useState<string>();
   const [commentsCursor, setCommentsCursor] = useState<string>();
+
+  const listRef = useRef(null);
+
+  useScrollToTop(listRef);
 
   const isLoggedUserProfile = useMemo(() => {
     if (!authContext.state?.fid) {
@@ -398,6 +404,7 @@ function ProfileScreen({
 
   return (
     <FlatList
+      ref={listRef}
       data={selectedTab === 0 ? userCasts : comments}
       windowSize={10}
       onEndReachedThreshold={1}

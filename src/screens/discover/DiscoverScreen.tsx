@@ -1,5 +1,12 @@
+import {useScrollToTop} from '@react-navigation/native';
 import axios from 'axios';
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {TrendingCastResult, TrendingCastsResponse} from '../../api/cast/types';
 import {
@@ -42,6 +49,9 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
   const [trendingPostsFetchStatus, setTrendingPostsFetchStatus] =
     useState<RequestStatus>('idle');
   const [trendingPosts, setTrendingPosts] = useState<TrendingCastResult[]>([]);
+  const listRef = useRef(null);
+
+  useScrollToTop(listRef);
 
   // FETCH FUNCTIONS
   const fetchChannelsForYou = useCallback(async () => {
@@ -288,7 +298,7 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
           navigation.navigate('CreateThread', {});
         }}
       />
-      <ScrollView style={styles.root}>
+      <ScrollView ref={listRef} style={styles.root}>
         <View>
           <Text style={styles.sectionLabel}>Trending channels</Text>
           <FlatList
