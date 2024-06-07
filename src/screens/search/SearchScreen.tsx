@@ -1,4 +1,4 @@
-import axios, {CancelToken} from 'axios';
+import axios, {CancelToken, CancelTokenSource} from 'axios';
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {
   FlatList,
@@ -41,6 +41,9 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
   const [searchedChannels, setSearchedChannels] = useState<Channel[]>([]);
   const [profilesCursor, setProfilesCursor] = useState<string>();
   const [channelsCursor, setChannelsCursor] = useState<string>();
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
+  const [searchCancelToken, setSearchCancelToken] =
+    useState<CancelTokenSource>();
   const [lastSearches, setLastSearches] = useState<{
     profiles: string;
     channels: string;
@@ -67,6 +70,10 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
       <MySearchField
         width={width * 0.7}
         value={searchText}
+        loading={
+          (profilesSearchFetchStatus === 'loading' && selectedTab === 0) ||
+          (channelsSearchFetchStatus === 'loading' && selectedTab === 1)
+        }
         dismissKeyboardOnCancel
         onCancelPress={() => {
           setSearchText('');
@@ -74,7 +81,13 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
         onChangeText={setSearchText}
       />
     ),
-    [width, searchText],
+    [
+      width,
+      searchText,
+      profilesSearchFetchStatus,
+      channelsSearchFetchStatus,
+      selectedTab,
+    ],
   );
 
   const handleSearchUser = useCallback(
@@ -98,6 +111,8 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
           if (!axios.isCancel(error)) {
             console.error(error);
             setProfilesSearchFetchStatus('error');
+          } else {
+            console.log('cancelled user search');
           }
         }
       }
@@ -127,6 +142,8 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
           if (!axios.isCancel(error)) {
             console.error(error);
             setChannelsSearchFetchStatus('error');
+          } else {
+            console.log('cancelled channel search');
           }
         }
       }
@@ -135,7 +152,15 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
   );
 
   const handleSearch = useCallback(() => {
+    console.log('searching...');
     if (searchText.length > 0) {
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+      if (searchCancelToken) {
+        searchCancelToken.cancel();
+      }
+
       const source = axios.CancelToken.source();
       const timeout = setTimeout(() => {
         if (selectedTab === 0) {
@@ -143,12 +168,31 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
         } else {
           handleSearchChannel(source.token);
         }
-      }, 500);
+      }, 300);
+      setSearchTimeout(timeout);
+      setSearchCancelToken(source);
       return () => {
+        console.log('cancelling...');
         clearTimeout(timeout);
         source.cancel();
+        if (searchTimeout) {
+          clearTimeout(searchTimeout);
+          setSearchTimeout(undefined);
+        }
+        if (searchCancelToken) {
+          searchCancelToken.cancel();
+          setSearchCancelToken(undefined);
+        }
       };
     } else {
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+        setSearchTimeout(undefined);
+      }
+      if (searchCancelToken) {
+        searchCancelToken.cancel();
+        setSearchCancelToken(undefined);
+      }
       setSearchedProfiles([]);
       setSearchedChannels([]);
       setProfilesSearchFetchStatus('idle');

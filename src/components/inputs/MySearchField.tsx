@@ -1,5 +1,11 @@
 import React, {useState} from 'react';
-import {DimensionValue, Keyboard, StyleProp, ViewStyle} from 'react-native';
+import {
+  ActivityIndicator,
+  DimensionValue,
+  Keyboard,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
 import CloseImg from '../../assets/images/icons/close.svg';
 import SearchImg from '../../assets/images/icons/search.svg';
 import {MyTheme} from '../../theme';
@@ -11,6 +17,7 @@ interface MySearchFieldProps {
   width?: DimensionValue;
   customStyle?: StyleProp<ViewStyle>;
   dismissKeyboardOnCancel?: boolean;
+  loading?: boolean;
   // debounceTime?: number;
   onCancelPress?: () => void;
   onChangeText?: (text: string) => void;
@@ -22,6 +29,7 @@ const MySearchField = ({
   value,
   width,
   dismissKeyboardOnCancel,
+  loading,
   // debounceTime,
   customStyle,
   onCancelPress,
@@ -49,19 +57,23 @@ const MySearchField = ({
         />
       }
       rightNode={
-        <CloseImg
-          width={20}
-          height={20}
-          color={MyTheme.grey500}
-          onPress={() => {
-            if (dismissKeyboardOnCancel) {
-              Keyboard.dismiss();
-            }
-            if (onCancelPress) {
-              onCancelPress();
-            }
-          }}
-        />
+        loading ? (
+          <ActivityIndicator size={20} color={MyTheme.grey500} />
+        ) : (
+          <CloseImg
+            width={20}
+            height={20}
+            color={MyTheme.grey500}
+            onPress={() => {
+              if (dismissKeyboardOnCancel) {
+                Keyboard.dismiss();
+              }
+              if (onCancelPress) {
+                onCancelPress();
+              }
+            }}
+          />
+        )
       }
       placeholder={placeholder}
       value={value}

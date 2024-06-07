@@ -3,7 +3,7 @@ import BottomSheet, {
   BottomSheetBackdropProps,
   BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
-import axios, {CancelToken} from 'axios';
+import axios, {CancelToken, CancelTokenSource} from 'axios';
 import React, {
   createRef,
   useCallback,
@@ -75,17 +75,15 @@ function CreateThreadScreen({
   const [, setRecentChannelsFetchStatus] = useState<RequestStatus>('idle');
   const [allChannelsFetchStatus, setAllChannelsFetchStatus] =
     useState<RequestStatus>('idle');
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
+  const [searchCancelToken, setSearchCancelToken] =
+    useState<CancelTokenSource>();
   const [threads, setThreads] = useState<Thread[]>([
     {id: uuid.v4().toString(), body: '', images: [], links: []},
   ]);
   const [currentThreadIndex, setCurrentThreadIndex] = useState(0);
   const inputRef = createRef<TextInput>();
   const bottomSheetRef = createRef<BottomSheet>();
-
-  // callbacks
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log('handleSheetChanges', index);
-  }, []);
 
   const renderBackdrop = useCallback(
     (props: BottomSheetBackdropProps) => (
@@ -171,6 +169,8 @@ function CreateThreadScreen({
           if (!axios.isCancel(error)) {
             console.error(error);
             setAllChannelsFetchStatus('error');
+          } else {
+            console.log('cancelled channel search');
           }
         }
       }
@@ -180,18 +180,43 @@ function CreateThreadScreen({
 
   const handleSearch = useCallback(() => {
     if (searchText.length > 0) {
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+      if (searchCancelToken) {
+        searchCancelToken.cancel();
+      }
+
       const source = axios.CancelToken.source();
       const timeout = setTimeout(() => {
         handleSearchChannel(source.token);
       }, 500);
+      setSearchTimeout(timeout);
+      setSearchCancelToken(source);
       return () => {
         console.log('cancelling request');
         clearTimeout(timeout);
         source.cancel();
+        if (searchTimeout) {
+          clearTimeout(searchTimeout);
+          setSearchTimeout(undefined);
+        }
+        if (searchCancelToken) {
+          searchCancelToken.cancel();
+          setSearchCancelToken(undefined);
+        }
       };
     } else {
       setAllChannels([]);
       setAllChannelsFetchStatus('idle');
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+        setSearchTimeout(undefined);
+      }
+      if (searchCancelToken) {
+        searchCancelToken.cancel();
+        setSearchCancelToken(undefined);
+      }
     }
   }, [searchText, handleSearchChannel]);
 
@@ -565,8 +590,7 @@ function CreateThreadScreen({
         index={-1}
         backdropComponent={renderBackdrop}
         enablePanDownToClose
-        ref={bottomSheetRef}
-        onChange={handleSheetChanges}>
+        ref={bottomSheetRef}>
         <BottomSheetScrollView style={styles.bottomSheetContent}>
           <View style={styles.bottomSheetHeaderCtn}>
             <Text style={styles.bottomSheetHeaderText}>Choose a channel</Text>
