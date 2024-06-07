@@ -14,7 +14,6 @@ import {MyTheme} from '../../../theme';
 
 interface ChannelCardProps {
   onPress: () => void;
-  onButtonPress: () => void;
   imageUrl: string;
   name: string;
   id: string;
@@ -33,7 +32,6 @@ const ChannelCard = ({
   description,
   followerCount,
   onPress,
-  onButtonPress,
 }: ChannelCardProps) => {
   const formattedCount = followerCount ? formatNumber(followerCount) : '';
 

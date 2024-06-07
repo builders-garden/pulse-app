@@ -185,6 +185,7 @@ const MyPost = ({
           <Text
             numberOfLines={1}
             ellipsizeMode="tail"
+            suppressHighlighting
             onPress={() => {
               if (onHeaderSubtitlePress) {
                 onHeaderSubtitlePress();
@@ -210,6 +211,7 @@ const MyPost = ({
       </View>
       <View style={styles.contentCtn}>
         <Text
+          suppressHighlighting
           onPress={() => {
             if (onContentBodyPress) {
               onContentBodyPress();

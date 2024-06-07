@@ -61,6 +61,7 @@ const TrendingPostItem = ({
           <View style={styles.contentCtn}>
             <Text
               numberOfLines={3}
+              suppressHighlighting
               ellipsizeMode="tail"
               onPress={() => {
                 if (onContentBodyPress) {

@@ -105,6 +105,7 @@ const MyComment = ({
                   onHeaderTitlePress();
                 }
               }}
+              suppressHighlighting
               numberOfLines={1}
               ellipsizeMode="tail"
               style={styles.headerTitle}>
@@ -117,6 +118,7 @@ const MyComment = ({
                 }
               }}
               numberOfLines={1}
+              suppressHighlighting
               ellipsizeMode="tail"
               style={styles.headerSubtitle}>
               {' '}
@@ -182,6 +184,7 @@ const MyComment = ({
                 marginBottom: images ? 20 : 0,
               },
             ]}
+            suppressHighlighting
             onPress={() => {
               onContentBodyPress && onContentBodyPress();
             }}>

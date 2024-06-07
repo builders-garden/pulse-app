@@ -156,7 +156,6 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
             params: {channelId: item.channel.id, showDrawer: true},
           });
         }}
-        onButtonPress={() => {}}
       />
     ),
     [channelsForYou, navigation],
@@ -214,7 +213,6 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
                   params: {channelId: channel.channelId, showDrawer: true},
                 });
               }}
-              onButtonPress={() => {}}
             />
           );
         })}
@@ -248,7 +246,6 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
                   params: {channelId: channel.channelId, showDrawer: true},
                 });
               }}
-              onButtonPress={() => {}}
             />
           );
         })}

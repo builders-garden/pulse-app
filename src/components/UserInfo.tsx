@@ -56,6 +56,7 @@ const UserInfo = ({
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
+          suppressHighlighting
           onPress={() => {
             if (onSubtitlePress) {
               onSubtitlePress();
