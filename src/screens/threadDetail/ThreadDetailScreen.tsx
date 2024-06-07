@@ -31,31 +31,33 @@ function ThreadDetailScreen({
   const [threadFetchStatus, setThreadFetchStatus] =
     useState<RequestStatus>('idle');
   const [thread, setThread] = useState<ConversationSectionList>();
-  useEffect(() => {
-    async function fetchCast() {
-      setThreadFetchStatus('loading');
-      try {
-        const url =
-          ENDPOINT_CAST +
-          '/' +
-          route.params.threadHash +
-          '/conversation?replyDepth=5';
-        const res = await axios.get<CastConversationResponse>(url, {
-          headers: {Authorization: `Bearer ${authContext.state.token}`},
-        });
-        // console.log('got response');
-        console.log(res.data);
-        const transformed = res.data.result;
-        setThread(transformed);
-        setThreadFetchStatus('success');
-      } catch (error) {
-        console.error(error);
-        setThreadFetchStatus('error');
-      }
-    }
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-    fetchCast();
+  const fetchCast = useCallback(async () => {
+    setThreadFetchStatus('loading');
+    try {
+      const url =
+        ENDPOINT_CAST +
+        '/' +
+        route.params.threadHash +
+        '/conversation?replyDepth=5';
+      const res = await axios.get<CastConversationResponse>(url, {
+        headers: {Authorization: `Bearer ${authContext.state.token}`},
+      });
+      // console.log('got response');
+      console.log(res.data);
+      const transformed = res.data.result;
+      setThread(transformed);
+      setThreadFetchStatus('success');
+    } catch (error) {
+      console.error(error);
+      setThreadFetchStatus('error');
+    }
   }, [authContext, route.params.threadHash]);
+
+  useEffect(() => {
+    fetchCast();
+  }, [fetchCast]);
 
   const threadsHtml = useMemo(
     () =>
@@ -66,7 +68,7 @@ function ThreadDetailScreen({
               <MyThread
                 key={index}
                 content={transformedCast.content}
-                image={transformedCast.image}
+                images={transformedCast.images}
                 postHash={item.hash}
                 recasted={item.viewer_context.recasted}
                 upvoted={item.viewer_context.liked}
@@ -76,11 +78,16 @@ function ThreadDetailScreen({
                 rootCustomStyle={{
                   marginTop: index === 0 ? 0 : 15,
                 }}
+                onCommentPress={() => {
+                  navigation.navigate('CreateComment', {
+                    cast: item,
+                  });
+                }}
               />
             );
           })
         : [],
-    [thread],
+    [thread, navigation],
   );
 
   const renderComment = useCallback(
@@ -95,7 +102,7 @@ function ThreadDetailScreen({
           headerSubtitle={transformedComment.headerSubtitle}
           indentLevel={item.depth}
           content={transformedComment.content}
-          image={transformedComment.image}
+          images={transformedComment.images}
           upvotesCount={transformedComment.upvotesCount}
           quotesCount={transformedComment.quotesCount}
           rootCustomStyle={{
@@ -149,7 +156,13 @@ function ThreadDetailScreen({
     [thread],
   );
 
-  if (threadFetchStatus === 'loading') {
+  const refreshPage = useCallback(async () => {
+    setIsRefreshing(true);
+    await fetchCast();
+    setIsRefreshing(false);
+  }, [fetchCast]);
+
+  if (threadFetchStatus === 'loading' && !isRefreshing) {
     return (
       <View style={{width: '100%', padding: 20}}>
         <MyPlaceholderLoader customStyle={{marginBottom: 20}} />
@@ -185,6 +198,8 @@ function ThreadDetailScreen({
           paddingRight: 15,
           paddingLeft: 5,
         }}
+        onRefresh={refreshPage}
+        refreshing={isRefreshing}
         ListHeaderComponent={
           <View
             style={{
@@ -240,6 +255,7 @@ function ThreadDetailScreen({
               quote={thread.casts[section.castIndex].text}
               headerTitle={transformedCast.headerTitle}
               headerSubtitle={transformedCast.headerSubtitle}
+              images={transformedCast.images}
               content={transformedCast.content}
               upvotesCount={transformedCast.upvotesCount}
               quotesCount={transformedCast.quotesCount}

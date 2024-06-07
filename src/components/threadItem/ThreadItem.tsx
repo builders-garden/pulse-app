@@ -45,7 +45,7 @@ function ThreadItem({
     .map((image, i) => (
       <MediaBox
         key={image + '_' + i}
-        uri={image}
+        uri={image.uri ?? ''}
         onCancelPress={() => {
           onCancelMediaPress(i);
         }}
@@ -92,7 +92,7 @@ function ThreadItem({
         {thread.video && (
           <MediaBox
             isVideo
-            uri={thread.video}
+            uri={thread.video.uri ?? ''}
             onCancelPress={() => {
               onCancelMediaPress(0);
             }}

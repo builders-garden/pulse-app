@@ -45,6 +45,7 @@ function ProfileScreen({
   const [userCasts, setUserCasts] = useState<UserCast[]>([]);
   const [userCastsCursor, setUserCastsCursor] = useState<string>();
   const [commentsCursor, setCommentsCursor] = useState<string>();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const listRef = useRef(null);
 
@@ -186,6 +187,14 @@ function ProfileScreen({
     profile?.fid,
   ]);
 
+  const refreshPage = useCallback(async () => {
+    setIsRefreshing(true);
+    await fetchProfile();
+    await fetchUserCasts();
+    await fetchComments();
+    setIsRefreshing(false);
+  }, [fetchProfile, fetchUserCasts, fetchComments]);
+
   const jumpToFeedRoot = useCallback(
     (screen: 'Profile' | 'ThreadDetail' | 'Channel', params: any) => {
       navigation.jumpTo('FeedRoot', {
@@ -216,7 +225,7 @@ function ProfileScreen({
             headerTitle={transformedItem.headerTitle}
             headerSubtitle={transformedItem.headerSubtitle}
             content={transformedItem.content}
-            image={transformedItem.image}
+            images={transformedItem.images}
             // TODO: implement upvote and recast
             recasted={false}
             upvoted={false}
@@ -284,7 +293,7 @@ function ProfileScreen({
             content={transformedItem.content}
             quote={item.parentCast?.text}
             quoteTitle={'@' + item.parentCast?.castedBy.profileHandle}
-            image={transformedItem.image}
+            images={transformedItem.images}
             upvotesCount={transformedItem.upvotesCount}
             quotesCount={transformedItem.quotesCount}
             rootCustomStyle={[
@@ -409,12 +418,8 @@ function ProfileScreen({
       windowSize={10}
       onEndReachedThreshold={1}
       onEndReached={selectedTab === 0 ? fetchNewUserCasts : fetchNewComments}
-      onRefresh={selectedTab === 0 ? fetchUserCasts : fetchComments}
-      refreshing={
-        selectedTab === 0
-          ? userCastsFetchStatus === 'loading'
-          : commentsFetchStatus === 'loading'
-      }
+      onRefresh={refreshPage}
+      refreshing={isRefreshing}
       ListHeaderComponent={
         <View style={styles.profileCtn}>
           <UpperSection profile={profile} isLoggedUser={isLoggedUserProfile} />

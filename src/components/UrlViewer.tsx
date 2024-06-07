@@ -30,8 +30,14 @@ const UrlViewer = ({url}: UrlViewerProps) => {
 
   if (linkPreview?.mediaType === 'image') {
     return (
-      <Pressable onPress={() => lightboxContext.show({urls: [url]})}>
-        <FastImage source={{uri: url}} style={styles.viewer} />
+      <Pressable
+        style={styles.viewerCtn}
+        onPress={() => lightboxContext.show({urls: [url]})}>
+        <FastImage
+          source={{uri: url}}
+          style={styles.viewer}
+          resizeMode="contain"
+        />
       </Pressable>
     );
   } else if (linkPreview?.mediaType === 'video') {
@@ -53,9 +59,12 @@ const UrlViewer = ({url}: UrlViewerProps) => {
 };
 
 const styles = StyleSheet.create({
+  viewerCtn: {
+    flex: 1,
+  },
   viewer: {
     width: '100%',
-    height: 200,
+    minHeight: 200,
   },
   youtubePlayer: {
     width: '100%',

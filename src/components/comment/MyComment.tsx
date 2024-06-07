@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
+import {Embed} from '../../api/feed/types';
 import BorderLineImg from '../../assets/images/thread/quote_border_line.svg';
 import {MyTheme} from '../../theme';
 import MyIconButton from '../MyIconButton';
@@ -24,7 +25,7 @@ export type MyCommentProps = {
   quoteTitle?: string;
   quote?: string;
   content: string;
-  image?: string;
+  images?: Embed[];
   quotesCount: number;
   upvotesCount: number;
   hideActionBar?: boolean;
@@ -46,7 +47,7 @@ const MyComment = ({
   quoteTitle,
   quote,
   content,
-  image,
+  images,
   quotesCount,
   upvotesCount,
   hideActionBar,
@@ -67,6 +68,16 @@ const MyComment = ({
       )),
     [indentLevel],
   );
+
+  const mediaHtml = useMemo(() => {
+    if (images) {
+      return images.map((image, index) => (
+        <UrlViewer key={index} url={image.url} />
+      ));
+    }
+
+    return [];
+  }, [images]);
 
   return (
     <View style={[styles.root, rootCustomStyle]}>
@@ -168,7 +179,7 @@ const MyComment = ({
             style={[
               styles.contentText,
               {
-                marginBottom: image ? 20 : 0,
+                marginBottom: images ? 20 : 0,
               },
             ]}
             onPress={() => {
@@ -177,7 +188,7 @@ const MyComment = ({
             {content}
           </Text>
           {/* {image && <Image style={styles.contentImage} source={{uri: image}} />} */}
-          {image && <UrlViewer url={image} />}
+          {images && <View style={styles.mediaCtn}>{mediaHtml}</View>}
         </View>
         {!hideActionBar && (
           <CommentActionBar
@@ -269,6 +280,10 @@ const styles = StyleSheet.create({
   contentText: {
     fontFamily: MyTheme.fontRegular,
     color: MyTheme.black,
+  },
+  mediaCtn: {
+    flexDirection: 'row',
+    width: '100%',
   },
   contentImage: {
     // aspectRatio: 16 / 9,

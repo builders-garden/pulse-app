@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useCallback, useContext, useState} from 'react';
+import React, {useCallback, useContext, useMemo, useState} from 'react';
 import {
   Pressable,
   StyleProp,
@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {ReactionResponse} from '../../api/cast/types';
+import {Embed} from '../../api/feed/types';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {MyTheme} from '../../theme';
 import {ENDPOINT_CAST} from '../../variables';
@@ -24,7 +25,7 @@ type MyPostProps = {
   postTime: string;
   headerSubtitle: string;
   content: string;
-  image?: string;
+  images?: Embed[];
   upvoted: boolean;
   recasted: boolean;
   commentsCount: number;
@@ -45,7 +46,7 @@ const MyPost = ({
   headerTitle,
   headerSubtitle,
   content,
-  image,
+  images,
   upvoted,
   recasted,
   commentsCount,
@@ -149,6 +150,16 @@ const MyPost = ({
     }
   }, [authContext.state.token, postHash, isRecasted, recasted]);
 
+  const mediaHtml = useMemo(() => {
+    if (images) {
+      return images.map((image, index) => (
+        <UrlViewer key={index} url={image.url} />
+      ));
+    }
+
+    return [];
+  }, [images]);
+
   return (
     <View style={[styles.root, customStyle && customStyle]}>
       <View style={styles.header}>
@@ -207,7 +218,8 @@ const MyPost = ({
           style={styles.contentBody}>
           {content}
         </Text>
-        {image && <UrlViewer url={image} />}
+        {images && <View style={styles.mediaCtn}>{mediaHtml}</View>}
+        {/* {image && <UrlViewer url={image} />} */}
       </View>
       <PostActionBar
         isUpvoted={isUpvoted === 0 ? upvoted : isUpvoted === 1}
@@ -281,6 +293,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: 'black',
+  },
+  mediaCtn: {
+    flexDirection: 'row',
+    width: '100%',
   },
   footer: {
     paddingHorizontal: 10,

@@ -176,7 +176,12 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
               params: {threadHash: item.cast.hash},
             });
           }}
-          onButtonPress={() => {}}
+          onHeaderPress={() => {
+            navigation.navigate('FeedRoot', {
+              screen: 'Profile',
+              params: {userFid: item.cast.fid},
+            });
+          }}
         />
       );
     },

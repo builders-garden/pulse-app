@@ -1,8 +1,9 @@
 import axios from 'axios';
-import React, {useCallback, useContext, useState} from 'react';
+import React, {useCallback, useContext, useMemo, useState} from 'react';
 import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {ReactionResponse} from '../../api/cast/types';
+import {Embed} from '../../api/feed/types';
 import BorderLineImg from '../../assets/images/thread/border_line.svg';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {MyTheme} from '../../theme';
@@ -15,13 +16,14 @@ type MyThreadProps = {
   postHash: string;
   upvoted: boolean;
   recasted: boolean;
-  image?: string;
+  images?: Embed[];
   commentsCount: number;
   quotesCount: number;
   upvotesCount: number;
   customStyle?: StyleProp<ViewStyle>;
   rootCustomStyle?: StyleProp<ViewStyle>;
   onContentBodyPress?: () => void;
+  onCommentPress?: () => void;
 };
 
 const MyThread = ({
@@ -29,13 +31,14 @@ const MyThread = ({
   postHash,
   upvoted,
   recasted,
-  image,
+  images,
   commentsCount,
   quotesCount,
   upvotesCount,
   customStyle,
   rootCustomStyle,
   onContentBodyPress,
+  onCommentPress,
 }: MyThreadProps) => {
   const authContext = useContext(AuthContext);
   const [isUpvoted, setIsUpvoted] = useState(0);
@@ -128,6 +131,16 @@ const MyThread = ({
     }
   }, [authContext.state.token, postHash, isRecasted, recasted]);
 
+  const mediaHtml = useMemo(() => {
+    if (images) {
+      return images.map((image, index) => (
+        <UrlViewer key={index} url={image.url} />
+      ));
+    }
+
+    return [];
+  }, [images]);
+
   return (
     <View style={[{flexDirection: 'row'}, rootCustomStyle && rootCustomStyle]}>
       <View style={{alignItems: 'flex-end'}}>
@@ -145,10 +158,11 @@ const MyThread = ({
                 onContentBodyPress();
               }
             }}
+            suppressHighlighting
             style={styles.contentBody}>
             {content}
           </Text>
-          {image && <UrlViewer url={image} />}
+          {images && <View style={styles.mediaCtn}>{mediaHtml}</View>}
         </View>
         <PostActionBar
           commentsCount={commentsCount}
@@ -161,6 +175,9 @@ const MyThread = ({
           }}
           onQuotesPress={() => {
             toggleRecast();
+          }}
+          onCommentsPress={() => {
+            onCommentPress && onCommentPress();
           }}
         />
       </View>
@@ -203,6 +220,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontFamily: MyTheme.fontRegular,
     color: MyTheme.grey600,
+  },
+  mediaCtn: {
+    flexDirection: 'row',
+    width: '100%',
   },
   contentImage: {
     // aspectRatio: 16 / 9,

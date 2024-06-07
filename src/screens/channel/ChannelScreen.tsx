@@ -150,7 +150,7 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
           headerTitle={transformedItem.headerTitle}
           headerSubtitle={transformedItem.headerSubtitle}
           content={transformedItem.content}
-          image={transformedItem.image}
+          images={transformedItem.images}
           customStyle={{marginHorizontal: 15}}
           upvotesCount={transformedItem.upvotesCount}
           commentsCount={transformedItem.commentsCount}

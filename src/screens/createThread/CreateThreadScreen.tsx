@@ -67,15 +67,12 @@ function CreateThreadScreen({
     route.params.channel ? route.params.channel : undefined,
   );
   const [publishStatus, setPublishStatus] = useState<RequestStatus>('idle');
-  const [uploadMediaStatus, setUploadMediaStatus] =
-    useState<RequestStatus>('idle');
-  const [uploadCastStatus, setUploadCastStatus] =
-    useState<RequestStatus>('idle');
+  const [, setUploadMediaStatus] = useState<RequestStatus>('idle');
+  const [, setUploadCastStatus] = useState<RequestStatus>('idle');
   const [searchText, setSearchText] = useState('');
   const [allChannels, setAllChannels] = useState<Channel[]>([]);
   const [recentChannels, setRecentChannels] = useState<Channel[]>([]);
-  const [recentChannelsFetchStatus, setRecentChannelsFetchStatus] =
-    useState<RequestStatus>('idle');
+  const [, setRecentChannelsFetchStatus] = useState<RequestStatus>('idle');
   const [allChannelsFetchStatus, setAllChannelsFetchStatus] =
     useState<RequestStatus>('idle');
   const [threads, setThreads] = useState<Thread[]>([
@@ -234,10 +231,10 @@ function CreateThreadScreen({
       threads[threadIndex].images.length < maxImagesCount &&
       !threads[threadIndex].video
     ) {
-      let mediaType: MediaType = 'mixed';
-      if (threads[threadIndex].images.length > 0) {
-        mediaType = 'photo';
-      }
+      let mediaType: MediaType = 'photo';
+      // if (threads[threadIndex].images.length > 0) {
+      //   mediaType = 'photo';
+      // }
       const res = await launchImageLibrary({
         mediaType: mediaType,
         selectionLimit: 1,
@@ -266,7 +263,7 @@ function CreateThreadScreen({
     } else {
       Toast.show({
         type: 'info',
-        text1: "You can't upload more than 2 images or 1 video!",
+        text1: "You can't upload more than 2 images!",
         text2: 'Create another thread to upload more images.',
         topOffset: 50,
       });
@@ -300,7 +297,6 @@ function CreateThreadScreen({
       id: uuid.v4().toString(),
       body: '',
       images: [],
-      video: '',
       links: [],
     });
     return [...left, ...right];
@@ -364,7 +360,9 @@ function CreateThreadScreen({
       try {
         console.log('mediaBody', mediaBody);
         const data = new FormData();
-        data.append('embeds', mediaBody[0]);
+        mediaBody.forEach(item => {
+          data.append('embeds', item);
+        });
         console.log('uploading media...', data);
         const finalUrl = ENDPOINT_CAST + '/upload-embeds';
         const response = await axios.post<UploadEmbedResult>(finalUrl, data, {
@@ -421,6 +419,7 @@ function CreateThreadScreen({
   );
 
   const publish = useCallback(async () => {
+    setPublishStatus('loading');
     let currentParent = '';
     for (let i = 0; i < threads.length; i++) {
       console.log('publishing thread no.', i);
@@ -443,6 +442,7 @@ function CreateThreadScreen({
             text1:
               'It was not possible to upload your media. Please contact support',
           });
+          setPublishStatus('error');
           return;
         } else if (uploadMediaRes.data) {
           media = uploadMediaRes.data.map(item => ({url: item.url}));
@@ -465,11 +465,13 @@ function CreateThreadScreen({
           type: 'error',
           text1: 'It was not possible to upload the full thread',
         });
+        setPublishStatus('error');
         return;
       } else {
         currentParent = uploadCastRes.data?.hash ?? '';
       }
     }
+    setPublishStatus('success');
     Toast.show({
       type: 'success',
       text1: 'Thread published!',
@@ -488,7 +490,8 @@ function CreateThreadScreen({
     () => (
       <MyButtonNew
         style="primary"
-        disabled={!threadIsValid}
+        disabled={!threadIsValid || publishStatus === 'loading'}
+        loading={publishStatus === 'loading'}
         iconRight={<DiagonalArrowImg style={{marginLeft: 3}} />}
         onPress={() => {
           publish();
@@ -496,7 +499,7 @@ function CreateThreadScreen({
         title="Publish"
       />
     ),
-    [threadIsValid, publish],
+    [threadIsValid, publishStatus, publish],
   );
 
   useEffect(() => {

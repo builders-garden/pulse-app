@@ -63,14 +63,19 @@ const MyButtonNew = ({
         customStyle,
       ]}>
       {iconLeft && iconLeft}
-      {loading ? (
-        <ActivityIndicator color="white" />
+      {loading && !iconRight ? (
+        <ActivityIndicator size={11} color="white" />
       ) : (
         <Text style={[textSize, styles.buttonText, textStyle, textCustomStyle]}>
           {title}
         </Text>
       )}
-      {iconRight && iconRight}
+      {iconRight &&
+        (loading ? (
+          <ActivityIndicator style={{marginLeft: 3}} color="white" />
+        ) : (
+          iconRight
+        ))}
     </Pressable>
   );
 };

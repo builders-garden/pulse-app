@@ -4,12 +4,19 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 import {StyleSheet, TextInput, View} from 'react-native';
 import {MediaType, launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import uuid from 'react-native-uuid';
+import {
+  UploadCastBody,
+  UploadCastResult,
+  UploadEmbedResult,
+  UploadMediaBody,
+} from '../../api/cast/types';
 import {RequestStatus} from '../../api/types';
 import DiagonalArrowImg from '../../assets/images/icons/diagonal_arrow.svg';
 import MyButtonNew from '../../components/buttons/MyButtonNew';
@@ -29,7 +36,9 @@ function CreateCommentScreen({
 }: RootStackScreenProps<'CreateComment'>) {
   const authContext = useContext(AuthContext);
   const [publishStatus, setPublishStatus] = useState<RequestStatus>('idle');
-  const [thread, setThread] = useState<Thread>({
+  const [, setUploadMediaStatus] = useState<RequestStatus>('idle');
+  const [, setUploadCastStatus] = useState<RequestStatus>('idle');
+  const [comment, setComment] = useState<Thread>({
     id: uuid.v4().toString(),
     body: '',
     images: [],
@@ -37,18 +46,145 @@ function CreateCommentScreen({
   });
   const inputRef = createRef<TextInput>();
 
+  const commentIsValid = useMemo(() => {
+    return comment.body.length > 0;
+  }, [comment]);
+
+  const uploadMedia = useCallback(
+    async (mediaBody: UploadMediaBody) => {
+      setUploadMediaStatus('loading');
+      // route.params.channelId
+      try {
+        console.log('mediaBody', mediaBody);
+        const data = new FormData();
+        mediaBody.forEach(item => {
+          data.append('embeds', item);
+        });
+        console.log('uploading media...', data);
+        const finalUrl = ENDPOINT_CAST + '/upload-embeds';
+        const response = await axios.post<UploadEmbedResult>(finalUrl, data, {
+          headers: {Authorization: `Bearer ${authContext.state.token}`},
+        });
+        console.log(response.data);
+
+        setUploadMediaStatus('success');
+        return {err: false, data: response.data.result};
+      } catch (error) {
+        console.error(error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error uploading media',
+        });
+        setUploadMediaStatus('error');
+        return {err: true, msg: error};
+      }
+    },
+    [authContext.state.token],
+  );
+
+  const uploadCast = useCallback(
+    async (castBody: UploadCastBody) => {
+      setUploadCastStatus('loading');
+      // route.params.channelId
+      console.log('publishing comment...');
+      try {
+        console.log('body', castBody);
+        const response = await axios.post<UploadCastResult>(
+          ENDPOINT_CAST,
+          castBody,
+          {
+            headers: {Authorization: `Bearer ${authContext.state.token}`},
+          },
+        );
+        console.log(response.data);
+        setUploadCastStatus('success');
+        return {
+          err: false,
+          data: response.data.result,
+        };
+      } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Error uploading cast',
+        });
+        console.error(error);
+        setUploadCastStatus('error');
+        return {err: true, msg: error};
+      }
+    },
+    [authContext.state.token],
+  );
+
+  const publish = useCallback(async () => {
+    setPublishStatus('loading');
+    console.log('publishing comment');
+    let media: {
+      url: string;
+    }[] = [];
+    if (comment.images.length > 0) {
+      const mediaBody: UploadMediaBody = comment.images.map(item => {
+        return {
+          uri: item.uri || '',
+          name: item.fileName || '',
+          type: item.type || '',
+        };
+      });
+      const uploadMediaRes = await uploadMedia(mediaBody);
+      if (uploadMediaRes.err) {
+        Toast.show({
+          type: 'error',
+          text1: 'It was not possible to upload your media',
+        });
+        setPublishStatus('error');
+        return;
+      } else if (uploadMediaRes.data) {
+        media = uploadMediaRes.data.map(item => ({url: item.url}));
+      }
+    }
+    const body: UploadCastBody = {
+      text: comment.body,
+      embeds: media,
+    };
+    body.parent = route.params.cast.hash;
+    body.parentAuthorFid = route.params.cast.author.fid;
+    const uploadCastRes = await uploadCast(body);
+    if (uploadCastRes.err) {
+      Toast.show({
+        type: 'error',
+        text1: 'It was not possible to upload the full comment',
+      });
+      setPublishStatus('error');
+      return;
+    }
+    setPublishStatus('success');
+    Toast.show({
+      type: 'success',
+      text1: 'Comment published!',
+    });
+    navigation.goBack();
+  }, [
+    comment,
+    navigation,
+    uploadMedia,
+    uploadCast,
+    route.params.cast.hash,
+    route.params.cast.author.fid,
+  ]);
+
   const renderHeaderRight = useCallback(
     () => (
       <MyButtonNew
         style="primary"
+        disabled={!commentIsValid || publishStatus === 'loading'}
+        loading={publishStatus === 'loading'}
         iconRight={<DiagonalArrowImg style={{marginLeft: 3}} />}
         onPress={() => {
-          onPublishPress();
+          publish();
         }}
         title="Send"
       />
     ),
-    [],
+    [publishStatus, commentIsValid, publish],
   );
 
   useEffect(() => {
@@ -58,11 +194,11 @@ function CreateCommentScreen({
   }, [navigation, renderHeaderRight]);
 
   async function onAddMediaPress() {
-    if (thread.images.length < maxImagesCount && !thread.video) {
-      let mediaType: MediaType = 'mixed';
-      if (thread.images.length > 0) {
-        mediaType = 'photo';
-      }
+    if (comment.images.length < maxImagesCount && !comment.video) {
+      let mediaType: MediaType = 'photo';
+      // if (threads[threadIndex].images.length > 0) {
+      //   mediaType = 'photo';
+      // }
       const res = await launchImageLibrary({
         mediaType: mediaType,
         selectionLimit: 1,
@@ -71,97 +207,51 @@ function CreateCommentScreen({
       console.log(res);
       if (!res.didCancel) {
         const isVideo = res.assets?.[0]?.type?.startsWith('video');
-        const mediaUri = res.assets?.[0]?.uri;
-        if (mediaUri !== undefined && mediaUri !== null) {
-          const newThread = {...thread};
+        const media = res.assets?.[0];
+        if (media !== undefined && media !== null) {
+          const newComment = {...comment};
           if (isVideo) {
-            newThread.video = mediaUri;
+            newComment.video = media;
           } else {
-            newThread.images = [...newThread.images, mediaUri];
+            newComment.images = [...newComment.images, media];
           }
-          setThread(newThread);
+          setComment(newComment);
         }
       }
     } else {
       Toast.show({
         type: 'info',
-        text1: "You can't upload more than 2 images or 1 video!",
+        text1: "You can't upload more than 2 images!",
         text2: 'Create another thread to upload more images.',
         topOffset: 50,
       });
     }
   }
   async function onCancelMediaPress(mediaIndex: number) {
-    const newThread = {...thread};
+    const newThread = {...comment};
     if (newThread.video) {
       delete newThread.video;
     } else {
       newThread.images = newThread.images.filter((el, i) => i !== mediaIndex);
     }
-    setThread(newThread);
+    setComment(newThread);
   }
 
   function onThreadChangeText(newText: string) {
-    const newThread = {...thread};
+    const newThread = {...comment};
     newThread.body = newText;
-    setThread(newThread);
+    setComment(newThread);
   }
 
   function onKeyPress() {
-    if (thread.body.length === inputLimit) {
+    if (comment.body.length === inputLimit) {
       Toast.show({
         type: 'info',
         text1: 'Input limit reached!',
-        text2: 'Please create another thread to continue.',
+        text2: 'Please create another comment to continue.',
         topOffset: 50,
       });
     }
-  }
-
-  const publish = useCallback(async () => {
-    setPublishStatus('loading');
-    // route.params.channelId
-    try {
-      console.log('publishing thread...');
-      const data = new FormData();
-      data.append('name', 'avatar');
-      data.append('fileData', {
-        uri: thread[0].video,
-        name: 'upload.mp4',
-      });
-
-      try {
-        const response = await axios.post(
-          ENDPOINT_CAST,
-          data,
-
-          {
-            headers: {Authorization: `Bearer ${authContext.state.token}`},
-          },
-        );
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-
-      // const res = await axios.post(
-      //   ENDPOINT_CAST,
-      //   {
-      //     text: 'test text',
-      //   },
-      //   {
-      //     headers: {Authorization: `Bearer ${authContext.state.token}`},
-      //   },
-      // );
-      setPublishStatus('success');
-    } catch (error) {
-      console.error(error);
-      setPublishStatus('error');
-    }
-  }, [authContext.state.token, thread]);
-
-  function onPublishPress() {
-    // publish();
   }
 
   return (
@@ -170,7 +260,7 @@ function CreateCommentScreen({
       <ThreadItem
         active={true}
         textInputRef={inputRef}
-        thread={thread}
+        thread={comment}
         maxLength={inputLimit}
         onKeyPress={() => onKeyPress()}
         onChangeText={newText => onThreadChangeText(newText)}

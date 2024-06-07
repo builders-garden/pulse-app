@@ -58,7 +58,7 @@ function AuthProvider({children}: PropsWithChildren) {
           type: 'SIGN_IN',
           payload: {
             token: data.token,
-            fid: data.fid,
+            fid: data.fid.toString(),
             profile,
           },
         });

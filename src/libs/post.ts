@@ -29,7 +29,7 @@ export function TransformUserCast(item: UserCast, profile: Profile) {
   }
 
   const postTime = formatDate(new Date(item.castedAtTimestamp));
-  let embed = item.embeds.find(
+  let embeds = item.embeds.filter(
     el => el?.url !== '' && el?.url !== null && el?.url !== undefined,
   );
 
@@ -40,7 +40,7 @@ export function TransformUserCast(item: UserCast, profile: Profile) {
     headerTitle: headerTitle,
     headerSubtitle: headerSubtitle,
     content: content,
-    image: embed?.url ?? undefined,
+    images: embeds ?? [],
     upvotesCount: item.numberOfLikes,
     commentsCount: item.numberOfReplies,
     quotesCount: item.numberOfRecasts,
@@ -103,7 +103,7 @@ export function TransformFeedItem(item: FeedItem | Comment) {
   }
 
   const postTime = formatDate(new Date(item.timestamp));
-  let embed = item.embeds.find(
+  let embeds = item.embeds.filter(
     el => el.url !== '' && el.url !== null && el.url !== undefined,
   );
 
@@ -114,7 +114,7 @@ export function TransformFeedItem(item: FeedItem | Comment) {
     headerTitle: headerTitle,
     headerSubtitle: headerSubtitle,
     content: content,
-    image: embed?.url ?? undefined,
+    images: embeds ?? [],
     upvotesCount: item.reactions.likes.length,
     commentsCount: item.replies.count,
     quotesCount: item.reactions.recasts.length,
@@ -141,7 +141,7 @@ export function TransformCast(item: Cast | CastWithDepth | CastWithoutReplies) {
   }
 
   const postTime = formatDate(new Date(item.timestamp));
-  let embed = item.embeds.find(
+  let embeds = item.embeds.filter(
     el => el.url !== '' && el.url !== null && el.url !== undefined,
   );
 
@@ -152,7 +152,7 @@ export function TransformCast(item: Cast | CastWithDepth | CastWithoutReplies) {
     headerTitle: headerTitle,
     headerSubtitle: headerSubtitle,
     content: content,
-    image: embed?.url ?? undefined,
+    images: embeds ?? [],
     upvotesCount: item.reactions.likes_count,
     commentsCount: item.replies.count,
     quotesCount: item.reactions.recasts_count,

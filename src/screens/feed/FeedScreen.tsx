@@ -102,7 +102,7 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
           headerTitle={transformedItem.headerTitle}
           headerSubtitle={transformedItem.headerSubtitle}
           content={transformedItem.content}
-          image={transformedItem.image}
+          images={transformedItem.images}
           upvotesCount={transformedItem.upvotesCount}
           commentsCount={transformedItem.commentsCount}
           quotesCount={transformedItem.quotesCount}

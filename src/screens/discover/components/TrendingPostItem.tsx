@@ -1,5 +1,12 @@
 import React from 'react';
-import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
+import {
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  Text,
+  View,
+  ViewStyle,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {TrendingCastResult} from '../../../api/cast/types';
 import {formatDate} from '../../../libs/date';
@@ -10,13 +17,14 @@ type TrendingPostItemProps = {
   trendingCast: TrendingCastResult;
   customStyle?: StyleProp<ViewStyle>;
   onContentBodyPress?: () => void;
-  onButtonPress?: () => void;
+  onHeaderPress?: () => void;
 };
 
 const TrendingPostItem = ({
   trendingCast,
   customStyle,
   onContentBodyPress,
+  onHeaderPress,
 }: TrendingPostItemProps) => {
   const castedDate = new Date(trendingCast.cast.castedAtTimestamp);
   const formattedDate = formatDate(castedDate);
@@ -30,16 +38,20 @@ const TrendingPostItem = ({
               source={{uri: trendingCast.cast.castedBy.profileImage}}
               style={styles.headerImg}
             />
-            <View style={styles.headerTextCtn}>
+            <Pressable
+              onPress={() => {
+                onHeaderPress && onHeaderPress();
+              }}
+              style={styles.headerTextCtn}>
               <Text numberOfLines={1} style={styles.headerTitle}>
                 {trendingCast.cast.castedBy.profileDisplayName}
               </Text>
               <View style={styles.headerSubtitleCtn}>
                 <Text numberOfLines={1} style={styles.headerSubtitle}>
-                  /{trendingCast.cast.castedBy.profileHandle} • {formattedDate}
+                  @{trendingCast.cast.castedBy.profileHandle} • {formattedDate}
                 </Text>
               </View>
-            </View>
+            </Pressable>
             {/* <FollowButton
               customStyle={[styles.actionButton]}
               fid={trendingCast.fid}
