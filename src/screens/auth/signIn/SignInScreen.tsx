@@ -11,10 +11,7 @@ import {
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {useSharedValue} from 'react-native-reanimated';
-import Carousel, {
-  ICarouselInstance,
-  Pagination,
-} from 'react-native-reanimated-carousel';
+import Carousel, {ICarouselInstance} from 'react-native-reanimated-carousel';
 import Toast from 'react-native-toast-message';
 import {SignerResponse} from '../../../api/auth/types';
 import {RequestStatus} from '../../../api/types';
@@ -25,58 +22,6 @@ import {AuthContext} from '../../../contexts/auth/Auth.context';
 import {MyTheme} from '../../../theme';
 import {OnboardingSlide} from '../../../types';
 import {ENDPOINT_SIGNER} from '../../../variables';
-
-const carouselData: OnboardingSlide[] = [
-  {
-    title: (
-      <Text>
-        Finally enjoy{' '}
-        <Text
-          style={{
-            fontFamily: MyTheme.fontBold,
-          }}>
-          threads
-        </Text>{' '}
-        on Farcaster
-      </Text>
-    ),
-    body: 'Lorem ipsum dolor sit amet consectetur. Mi viverra nullam eu at id luctus. Amet nisl id.',
-    image: require('../../../assets/images/onboarding/screen.jpg'),
-  },
-  {
-    title: (
-      <Text>
-        Finally enjoy{' '}
-        <Text
-          style={{
-            fontFamily: MyTheme.fontBold,
-          }}>
-          threads
-        </Text>{' '}
-        on Farcaster
-      </Text>
-    ),
-    body: 'Lorem ipsum dolor sit amet consectetur. Mi viverra nullam eu at id luctus. Amet nisl id.',
-    image: require('../../../assets/images/onboarding/screen.jpg'),
-    inverted: true,
-  },
-  {
-    title: (
-      <Text>
-        Enhanced{' '}
-        <Text
-          style={{
-            fontFamily: MyTheme.fontBold,
-          }}>
-          content
-        </Text>{' '}
-        experience
-      </Text>
-    ),
-    body: 'Lorem ipsum dolor sit amet consectetur. Mi viverra nullam eu at id luctus. Amet nisl id.',
-    image: require('../../../assets/images/onboarding/screen.jpg'),
-  },
-];
 
 function SignInScreen() {
   const authContext = useContext(AuthContext);
@@ -116,9 +61,7 @@ function SignInScreen() {
                 height: carouselHeight * 0.3 - 40,
               },
             ]}>
-            <View style={styles.textBox}>
-              <Text style={styles.titleText}>{item.title}</Text>
-            </View>
+            <View style={styles.textBox}>{item.title}</View>
             <View style={styles.textBox}>
               <Text style={styles.bodyText}>{item.body}</Text>
             </View>
@@ -247,7 +190,7 @@ function SignInScreen() {
             renderItem={renderItem}
           />
         </View>
-        <Pagination.Basic
+        {/* <Pagination.Basic
           progress={progress}
           data={carouselData}
           dotStyle={{
@@ -260,7 +203,7 @@ function SignInScreen() {
             width: width - 30,
           }}
           onPress={onPressPagination}
-        />
+        /> */}
 
         {/* <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           {paginationItems}
@@ -316,9 +259,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   titleText: {
-    fontSize: 18,
-
-    fontFamily: MyTheme.fontRegular,
+    fontSize: 20,
+    fontFamily: MyTheme.fontLight,
+    color: MyTheme.black,
+  },
+  textHighlight: {
+    fontFamily: MyTheme.fontSemiBold,
+    fontSize: 24,
+    marginTop: 7,
+    marginBottom: 5,
     color: MyTheme.black,
   },
   boldText: {
@@ -364,5 +313,52 @@ const styles = StyleSheet.create({
     color: MyTheme.white,
   },
 });
+
+const carouselData: OnboardingSlide[] = [
+  {
+    title: (
+      <>
+        <Text style={styles.titleText}>Finally enjoy</Text>
+        <Text style={styles.textHighlight}>THREADS</Text>
+        <Text style={styles.titleText}>on Farcaster</Text>
+      </>
+    ),
+    body: 'Lorem ipsum dolor sit amet consectetur. Mi viverra nullam eu at id luctus. Amet nisl id.',
+    image: require('../../../assets/images/onboarding/screen.jpg'),
+  },
+  // {
+  //   title: (
+  //     <Text>
+  //       Finally enjoy{' '}
+  //       <Text
+  //         style={{
+  //           fontFamily: MyTheme.fontBold,
+  //         }}>
+  //         threads
+  //       </Text>{' '}
+  //       on Farcaster
+  //     </Text>
+  //   ),
+  //   body: 'Lorem ipsum dolor sit amet consectetur. Mi viverra nullam eu at id luctus. Amet nisl id.',
+  //   image: require('../../../assets/images/onboarding/screen.jpg'),
+  //   inverted: true,
+  // },
+  // {
+  //   title: (
+  //     <Text>
+  //       Enhanced{' '}
+  //       <Text
+  //         style={{
+  //           fontFamily: MyTheme.fontBold,
+  //         }}>
+  //         content
+  //       </Text>{' '}
+  //       experience
+  //     </Text>
+  //   ),
+  //   body: 'Lorem ipsum dolor sit amet consectetur. Mi viverra nullam eu at id luctus. Amet nisl id.',
+  //   image: require('../../../assets/images/onboarding/screen.jpg'),
+  // },
+];
 
 export default SignInScreen;

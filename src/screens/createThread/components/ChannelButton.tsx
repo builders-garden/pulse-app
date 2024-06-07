@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontFamily: MyTheme.fontBold,
+    color: MyTheme.black,
     maxWidth: '50%',
   },
 });

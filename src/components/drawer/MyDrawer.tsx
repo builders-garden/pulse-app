@@ -20,20 +20,16 @@ import {Drawer} from 'react-native-drawer-layout';
 import Toast from 'react-native-toast-message';
 import {
   Channel,
-  ChannelActivity,
-  ChannelsResponse,
-  FavoriteChannelsResponse,
+  FavouriteChannel,
+  FavouriteChannelsResponse,
+  FollowedChannelsResponse,
   MostRecentChannel,
   MostRecentChannelsResponse,
 } from '../../api/channel/types';
 import {RequestStatus} from '../../api/types';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {MyTheme} from '../../theme';
-import {
-  ENDPOINT_CHANNELS,
-  ENDPOINT_FAVORITE_CHANNELS,
-  ENDPOINT_PROFILE,
-} from '../../variables';
+import {ENDPOINT_PROFILE} from '../../variables';
 import MyLoader from '../MyLoader';
 import MyButton from '../buttons/MyButton';
 import MyDrawerHeader from './MyDrawerHeader';
@@ -53,7 +49,7 @@ const MyDrawer = ({
 }: PropsWithChildren<MyDrawerProps>) => {
   const authContext = useContext(AuthContext);
   const navigation = useNavigation<any>();
-  const [favoriteChannels, setFavoriteChannels] = useState<ChannelActivity[]>(
+  const [favoriteChannels, setFavoriteChannels] = useState<FavouriteChannel[]>(
     [],
   );
   const [favoriteChannelsFetchStatus, setFavoriteChannelsFetchStatus] =
@@ -74,18 +70,18 @@ const MyDrawer = ({
     console.log('fetching favorites');
     setFavoriteChannelsFetchStatus('loading');
     try {
-      const finalUrl = ENDPOINT_FAVORITE_CHANNELS;
-      const res = await axios.get<FavoriteChannelsResponse>(finalUrl, {
+      const finalUrl = `${ENDPOINT_PROFILE}/${authContext.state.fid}/favourite-channels?limit=15`;
+      const res = await axios.get<FavouriteChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
       console.log('got response');
-      setFavoriteChannels(res.data.result.splice(0, 4));
+      setFavoriteChannels(res.data.result.slice(0, 4));
       setFavoriteChannelsFetchStatus('success');
     } catch (error) {
       console.error(error);
       setFavoriteChannelsFetchStatus('error');
     }
-  }, [authContext.state.token]);
+  }, [authContext.state]);
   const fetchRecentChannels = useCallback(async () => {
     console.log('fetching recents');
     setRecentChannelsFetchStatus('loading');
@@ -107,19 +103,21 @@ const MyDrawer = ({
     console.log('fetching all');
     setAllChannelsFetchStatus('loading');
     try {
-      const finalUrl = ENDPOINT_CHANNELS + '?limit=15';
-      const res = await axios.get<ChannelsResponse>(finalUrl, {
+      const finalUrl = `${ENDPOINT_PROFILE}/${authContext.state.fid}/followed-channels?limit=15`;
+      const res = await axios.get<FollowedChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
       console.log('got response');
-      setAllChannels(res.data.result.channels);
-      setCursor(res.data.result.next.cursor);
+      setAllChannels(res.data.result);
+      if (res.data.cursor) {
+        setCursor(res.data.cursor);
+      }
       setAllChannelsFetchStatus('success');
     } catch (error) {
       console.error(error);
       setAllChannelsFetchStatus('error');
     }
-  }, [authContext.state.token]);
+  }, [authContext.state.token, authContext.state.fid]);
   const fetchNewAllChannels = useCallback(async () => {
     if (
       newAllChannelsFetchStatus !== 'loading' &&
@@ -129,13 +127,15 @@ const MyDrawer = ({
       try {
         setNewAllChannelsFetchStatus('loading');
         console.log('fetching new channels');
-        const finalUrl = `${ENDPOINT_CHANNELS}?limit=20&cursor=${cursor}`;
-        const res = await axios.get<ChannelsResponse>(finalUrl, {
+        const finalUrl = `${ENDPOINT_PROFILE}/${authContext.state.fid}/followed-channels?limit=20&cursor=${cursor}`;
+        const res = await axios.get<FollowedChannelsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
         // console.log('got response');
-        setAllChannels([...allChannels, ...res.data.result.channels]);
-        setCursor(res.data.result.next.cursor);
+        setAllChannels([...allChannels, ...res.data.result]);
+        if (res.data.cursor) {
+          setCursor(res.data.cursor);
+        }
         setNewAllChannelsFetchStatus('success');
       } catch (error) {
         console.error(error);
@@ -148,6 +148,7 @@ const MyDrawer = ({
     }
   }, [
     authContext.state.token,
+    authContext.state.fid,
     cursor,
     allChannels,
     allChannelsFetchStatus,
@@ -262,7 +263,11 @@ const MyDrawer = ({
           <FlatList
             data={allChannels}
             windowSize={20}
-            onEndReached={fetchNewAllChannels}
+            onEndReached={() => {
+              if (cursor) {
+                fetchNewAllChannels();
+              }
+            }}
             onRefresh={refresh}
             refreshing={isRefreshing}
             ListHeaderComponent={
@@ -296,6 +301,7 @@ const MyDrawer = ({
     allChannelsFetchStatus,
     newAllChannelsFetchStatus,
     isRefreshing,
+    cursor,
     fetchFavoritesChannels,
     fetchRecentChannels,
     fetchAllChannels,

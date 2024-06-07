@@ -1,4 +1,5 @@
-import React, {useMemo} from 'react';
+import axios from 'axios';
+import React, {useCallback, useContext, useMemo, useState} from 'react';
 import {
   Pressable,
   StyleProp,
@@ -9,19 +10,24 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
+import {ReactionResponse} from '../../api/cast/types';
 import {Embed} from '../../api/feed/types';
 import BorderLineImg from '../../assets/images/thread/quote_border_line.svg';
+import {AuthContext} from '../../contexts/auth/Auth.context';
 import {MyTheme} from '../../theme';
+import {ENDPOINT_CAST} from '../../variables';
 import MyIconButton from '../MyIconButton';
 import UrlViewer from '../UrlViewer';
 import CommentActionBar from './CommentActionBar';
 
 export type MyCommentProps = {
+  commentHash: string;
   indentLevel?: number;
   headerImg: string;
   headerTitle: string;
   postTime: string;
   headerSubtitle: string;
+  upvoted?: boolean;
   quoteTitle?: string;
   quote?: string;
   content: string;
@@ -37,11 +43,14 @@ export type MyCommentProps = {
   onHeaderImagePress?: () => void;
   onReplyPress?: () => void;
 };
+const indentSize = 5;
 
 const MyComment = ({
+  commentHash,
   indentLevel = 0,
   headerImg,
   postTime,
+  upvoted,
   headerTitle,
   headerSubtitle,
   quoteTitle,
@@ -59,7 +68,8 @@ const MyComment = ({
   onHeaderImagePress,
   onReplyPress,
 }: MyCommentProps) => {
-  const indentSize = 5;
+  const authContext = useContext(AuthContext);
+  const [isUpvoted, setIsUpvoted] = useState(0);
 
   const indentsHtml = useMemo(
     () =>
@@ -78,6 +88,50 @@ const MyComment = ({
 
     return [];
   }, [images]);
+
+  const toggleUpvote = useCallback(async () => {
+    try {
+      const finalUrl = `${ENDPOINT_CAST}/${commentHash}/reactions`;
+      if ((upvoted && isUpvoted === 0) || isUpvoted === 1) {
+        console.log('deleting', finalUrl);
+        const res = await axios.delete<ReactionResponse>(finalUrl, {
+          data: {
+            reactionType: 'like',
+          },
+          headers: {Authorization: `Bearer ${authContext.state.token}`},
+        });
+        console.log('got response', res.data);
+        if (res.data.result.success) {
+          if (isUpvoted === 1) {
+            setIsUpvoted(0);
+          } else if (isUpvoted === 0) {
+            setIsUpvoted(-1);
+          }
+        }
+      } else if ((!upvoted && isUpvoted === 0) || isUpvoted === -1) {
+        console.log('upvoting', finalUrl);
+        const res = await axios.post<ReactionResponse>(
+          finalUrl,
+          {
+            reactionType: 'like',
+          },
+          {
+            headers: {Authorization: `Bearer ${authContext.state.token}`},
+          },
+        );
+        console.log('got response', res.data);
+        if (res.data.result.success) {
+          if (isUpvoted === -1) {
+            setIsUpvoted(0);
+          } else if (isUpvoted === 0) {
+            setIsUpvoted(1);
+          }
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [authContext.state.token, commentHash, isUpvoted, upvoted]);
 
   return (
     <View style={[styles.root, rootCustomStyle]}>
@@ -200,6 +254,7 @@ const MyComment = ({
             onReplyPress={() => {
               onReplyPress && onReplyPress();
             }}
+            onUpvotesPress={toggleUpvote}
           />
         )}
       </View>

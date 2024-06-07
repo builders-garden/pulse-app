@@ -286,6 +286,7 @@ function ProfileScreen({
 
         return (
           <MyComment
+            commentHash={item.hash}
             headerImg={transformedItem.headerImg}
             postTime={transformedItem.postTime}
             headerTitle={transformedItem.headerTitle}
@@ -364,24 +365,30 @@ function ProfileScreen({
     }
   }, [profile, fetchUserCasts]);
 
-  if (profileFetchStatus === 'loading') {
-    return (
-      <View style={styles.loadingCtn}>
-        <MyLoader />
-      </View>
-    );
-  } else if (profileFetchStatus === 'error') {
-    return (
-      <View style={styles.errorCtn}>
-        <MyButton title="Retry" width={'auto'} onPress={() => fetchProfile()} />
-      </View>
-    );
-  } else if (!profile) {
-    return (
-      <View style={styles.errorCtn}>
-        <Text>Profile not found</Text>
-      </View>
-    );
+  if (!isRefreshing) {
+    if (profileFetchStatus === 'loading') {
+      return (
+        <View style={styles.loadingCtn}>
+          <MyLoader />
+        </View>
+      );
+    } else if (profileFetchStatus === 'error') {
+      return (
+        <View style={styles.errorCtn}>
+          <MyButton
+            title="Retry"
+            width={'auto'}
+            onPress={() => fetchProfile()}
+          />
+        </View>
+      );
+    } else if (!profile) {
+      return (
+        <View style={styles.errorCtn}>
+          <Text>Profile not found</Text>
+        </View>
+      );
+    }
   }
 
   // if (userCastsFetchStatus === 'loading' || commentsFetchStatus === 'loading') {
@@ -430,36 +437,45 @@ function ProfileScreen({
               onPress={setSelectedTab}
             />
           </View>
-          {userCastsFetchStatus === 'loading' ||
-          commentsFetchStatus === 'loading' ? (
-            <View style={styles.loadingCtn}>
-              <MyLoader />
-            </View>
-          ) : userCastsFetchStatus === 'error' ||
-            commentsFetchStatus === 'error' ? (
-            <View style={styles.errorCtn}>
-              <MyButton
-                title="Retry"
-                width={'auto'}
-                onPress={() => {
-                  if (userCastsFetchStatus === 'error') {
-                    fetchUserCasts();
-                  } else {
-                    fetchComments();
-                  }
-                }}
-              />
-            </View>
-          ) : null}
+          {!isRefreshing &&
+            (userCastsFetchStatus === 'loading' ||
+            commentsFetchStatus === 'loading' ? (
+              <View style={styles.loadingCtn}>
+                <MyLoader />
+              </View>
+            ) : userCastsFetchStatus === 'error' ||
+              commentsFetchStatus === 'error' ? (
+              <View style={styles.errorCtn}>
+                <MyButton
+                  title="Retry"
+                  width={'auto'}
+                  onPress={() => {
+                    if (userCastsFetchStatus === 'error') {
+                      fetchUserCasts();
+                    } else {
+                      fetchComments();
+                    }
+                  }}
+                />
+              </View>
+            ) : null)}
         </View>
       }
       ListFooterComponent={
-        (selectedTab === 0 && newUserCastsFetchStatus === 'loading') ||
-        (selectedTab === 1 && newCommentsFetchStatus === 'loading') ? (
-          <View style={{width: '100%', padding: 20, alignItems: 'center'}}>
-            <MyLoader />
-          </View>
-        ) : null
+        <>
+          {isRefreshing &&
+            ((selectedTab === 0 &&
+              newUserCastsFetchStatus === 'loading' &&
+              userCastsFetchStatus === 'success') ||
+              (selectedTab === 1 &&
+                newCommentsFetchStatus === 'loading' &&
+                commentsFetchStatus === 'success' && (
+                  <View
+                    style={{width: '100%', padding: 20, alignItems: 'center'}}>
+                    <MyLoader />
+                  </View>
+                )))}
+        </>
       }
       renderItem={renderItem}
       keyExtractor={(item, _) => item.hash}

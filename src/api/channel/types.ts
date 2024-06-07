@@ -3,7 +3,6 @@ import {Profile} from '../profile/types';
 export type TrendingChannelsResponse = {
   result: ChannelActivity[];
 };
-export type FavoriteChannelsResponse = TrendingChannelsResponse;
 export type MostFollowedChannelsResponse = {
   result: MostFollowedChannel[];
   cursor: string;
@@ -23,6 +22,14 @@ export type ChannelsResponse = {
     };
   };
 };
+export type FollowedChannelsResponse = {
+  result: Channel[];
+  cursor: string | null;
+};
+export type FavouriteChannelsResponse = {
+  result: FavouriteChannel[];
+};
+
 export type ChannelResponse = {
   result: Channel;
 };
@@ -58,6 +65,13 @@ export type MostFollowedChannel = {
   followerCount: number;
   imageUrl: string;
   url: string;
+};
+export type FavouriteChannel = {
+  name: string;
+  userFid: number;
+  id: string;
+  image: string;
+  createdAt: string;
 };
 
 export type NewChannel = Omit<MostFollowedChannel, 'followerCount'> & {

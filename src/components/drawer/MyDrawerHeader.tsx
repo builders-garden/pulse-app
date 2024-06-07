@@ -2,13 +2,13 @@ import {useNavigation} from '@react-navigation/native';
 import React, {PropsWithChildren} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {ChannelActivity, MostRecentChannel} from '../../api/channel/types';
+import {FavouriteChannel, MostRecentChannel} from '../../api/channel/types';
 import ChatImg from '../../assets/images/icons/chat.svg';
 import {MyTheme} from '../../theme';
 import MyChipBase from '../MyChipBase';
 import MyDrawerSectionChannel from './MyDrawerSectionChannel';
 interface MyDrawerHeaderProps {
-  favoriteChannels: ChannelActivity[];
+  favoriteChannels: FavouriteChannel[];
   recentChannels: MostRecentChannel[];
   onPressItem?: () => void;
 }
@@ -41,38 +41,40 @@ const MyDrawerHeader = ({
           <Text style={styles.followingText}>Following</Text>
         </View>
       </Pressable>
-      <View style={styles.section}>
-        <Text style={styles.headingText}>Favorites</Text>
-        <View style={styles.favoriteSectionItemsCtn}>
-          {/* Replace with your actual images */}
-          {favoriteChannels.map(item => (
-            <MyDrawerSectionChannel
-              key={item.channel.id}
-              channelId={item.channel.id}
-              channelName={item.channel.name}
-              channelImageUrl={item.channel.image_url}
-              onPressItem={() => {
-                onPressItem && onPressItem();
-                navigation.reset({
-                  index: 0,
-                  routes: [
-                    {
-                      name: 'FeedRoot',
-                      params: {
-                        screen: 'Channel',
+      {favoriteChannels && favoriteChannels.length > 0 && (
+        <View style={styles.section}>
+          <Text style={styles.headingText}>Favorites</Text>
+          <View style={styles.favoriteSectionItemsCtn}>
+            {/* Replace with your actual images */}
+            {favoriteChannels.map(item => (
+              <MyDrawerSectionChannel
+                key={item.id}
+                channelId={item.id}
+                channelName={item.name}
+                channelImageUrl={item.image}
+                onPressItem={() => {
+                  onPressItem && onPressItem();
+                  navigation.reset({
+                    index: 0,
+                    routes: [
+                      {
+                        name: 'FeedRoot',
                         params: {
-                          channelId: item.channel.id,
-                          showDrawer: true,
+                          screen: 'Channel',
+                          params: {
+                            channelId: item.id,
+                            showDrawer: true,
+                          },
                         },
                       },
-                    },
-                  ],
-                });
-              }}
-            />
-          ))}
+                    ],
+                  });
+                }}
+              />
+            ))}
+          </View>
         </View>
-      </View>
+      )}
       <View style={styles.section}>
         <Text style={styles.headingText}>Recent</Text>
         <View style={styles.recentSectionItemsCtn}>

@@ -177,8 +177,7 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
             refreshing={feedFetchStatus === 'loading'}
             ListFooterComponent={
               newThreadsFetchStatus === 'loading' ? (
-                <View
-                  style={{width: '100%', padding: 20, alignItems: 'center'}}>
+                <View style={styles.refreshLoaderCtn}>
                   <MyLoader />
                 </View>
               ) : null
@@ -211,6 +210,12 @@ const styles = StyleSheet.create({
   infoText: {
     fontFamily: MyTheme.fontRegular,
     color: MyTheme.grey300,
+  },
+  refreshLoaderCtn: {
+    width: '100%',
+    paddingTop: 20,
+    paddingBottom: 30,
+    alignItems: 'center',
   },
 });
 
