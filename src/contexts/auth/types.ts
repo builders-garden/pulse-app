@@ -2,7 +2,7 @@ import {Profile} from '../../api/profile/types';
 
 export interface AuthContextModel {
   state: User;
-  signIn: (data: SignInPayload) => void;
+  signIn: (data: SignInPayload) => Promise<void>;
   signOut: () => void;
   signUp: (data: SignUpPayload) => void;
 }

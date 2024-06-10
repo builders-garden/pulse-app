@@ -5,7 +5,7 @@ export const AuthContext = createContext<AuthContextModel>({
   state: {
     status: UserStatus.NOT_LOGGED,
   },
-  signIn: () => {},
+  signIn: () => Promise.resolve(),
   signOut: () => {},
   signUp: () => {},
 });

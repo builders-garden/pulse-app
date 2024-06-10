@@ -24,6 +24,7 @@ import MyLoader from '../../components/MyLoader';
 import MyButton from '../../components/buttons/MyButton';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {TransformArrayTo3x3} from '../../libs/arrays';
+import {TrendingCastResult2EssentialCast} from '../../libs/post';
 import {HomeTabScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
 import {
@@ -181,6 +182,10 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
               params: {userFid: item.cast.fid},
             });
           }}
+          onCommentPress={() => {
+            const transformed = TrendingCastResult2EssentialCast(item);
+            navigation.navigate('CreateComment', {cast: transformed});
+          }}
         />
       );
     },
@@ -198,7 +203,7 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
             <ChannelCard
               key={channel.channelId}
               name={channel.name}
-              description={'description'}
+              description={channel.description}
               followerCount={channel.followerCount}
               imageUrl={channel.imageUrl}
               id={channel.channelId}
@@ -232,7 +237,7 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
             <ChannelCard
               key={channel.channelId}
               name={channel.name}
-              description={'description'}
+              description={channel.description}
               imageUrl={channel.imageUrl}
               id={channel.channelId}
               customStyle={{

@@ -91,6 +91,13 @@ export type Author = {
   power_badge: boolean;
 };
 
+export type EssentialAuthor = {
+  fid: number;
+  username: string;
+  display_name: string;
+  pfp_url: string;
+};
+
 export type Reaction = {
   count: number;
   fids: any[];

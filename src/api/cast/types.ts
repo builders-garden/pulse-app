@@ -1,5 +1,5 @@
 import {FeedItem, Reaction} from '../feed/types';
-import {Author} from '../user/types';
+import {Author, EssentialAuthor} from '../user/types';
 
 export type CastConversationResponse = {
   result: ConversationSectionList;
@@ -66,7 +66,7 @@ export type EssentialCast = {
   hash: string;
   text: string;
   timestamp: string;
-  author: Author;
+  author: EssentialAuthor;
 };
 
 export type Cast = Omit<FeedItem, 'reactions'> & {
@@ -123,7 +123,7 @@ export type TrendingCast = {
   embeds: TrendingCastEmbed[];
   url: string;
   fid: string;
-  castedAtTimestamp: Date;
+  castedAtTimestamp: string;
   hash: string;
   numberOfLikes: number;
   numberOfRecasts: number;

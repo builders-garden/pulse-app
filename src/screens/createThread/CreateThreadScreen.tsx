@@ -38,9 +38,10 @@ import {
 } from '../../api/channel/types';
 import {RequestStatus} from '../../api/types';
 import DiagonalArrowImg from '../../assets/images/icons/diagonal_arrow.svg';
+import ListImg from '../../assets/images/icons/list.svg';
 import PlusImg from '../../assets/images/icons/plus.svg';
+import RecentImg from '../../assets/images/icons/recent.svg';
 import MyChipBase from '../../components/MyChipBase';
-import MyLoader from '../../components/MyLoader';
 import MyButton from '../../components/buttons/MyButton';
 import MyButtonNew from '../../components/buttons/MyButtonNew';
 import MySearchField from '../../components/inputs/MySearchField';
@@ -71,10 +72,14 @@ function CreateThreadScreen({
   const [, setUploadCastStatus] = useState<RequestStatus>('idle');
   const [searchText, setSearchText] = useState('');
   const [allChannels, setAllChannels] = useState<Channel[]>([]);
+  const [searchedChannels, setSearchedChannels] = useState<Channel[]>([]);
   const [recentChannels, setRecentChannels] = useState<Channel[]>([]);
   const [, setRecentChannelsFetchStatus] = useState<RequestStatus>('idle');
   const [allChannelsFetchStatus, setAllChannelsFetchStatus] =
     useState<RequestStatus>('idle');
+  const [searchChannelsFetchStatus, setSearchChannelsFetchStatus] =
+    useState<RequestStatus>('idle');
+  const [channelSearchIsDirty, setChannelSearchIsDirty] = useState(false);
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout>();
   const [searchCancelToken, setSearchCancelToken] =
     useState<CancelTokenSource>();
@@ -92,7 +97,33 @@ function CreateThreadScreen({
     [],
   );
 
-  const renderedChannelChips = useMemo(
+  const renderedSearchedChannelChips = useMemo(
+    () =>
+      searchedChannels.map((item: Channel) => {
+        return (
+          <MyChipBase
+            key={item.id}
+            title={`/${item.id}`}
+            size="small"
+            iconLeft={
+              <FastImage
+                style={styles.channelChipImg}
+                source={{uri: item.image_url}}
+              />
+            }
+            style="tertiary"
+            customStyle={styles.channelChip}
+            textCustomStyle={{color: MyTheme.grey500}}
+            onPress={() => {
+              setSelectedChannel(item);
+              bottomSheetRef.current?.close();
+            }}
+          />
+        );
+      }),
+    [searchedChannels, bottomSheetRef],
+  );
+  const renderedAllChannelChips = useMemo(
     () =>
       allChannels.map((item: Channel) => {
         return (
@@ -152,7 +183,7 @@ function CreateThreadScreen({
   const handleSearchChannel = useCallback(
     async (cancelToken: CancelToken | undefined = undefined) => {
       if (authContext.state?.fid) {
-        setAllChannelsFetchStatus('loading');
+        setSearchChannelsFetchStatus('loading');
         try {
           const finalUrl =
             ENDPOINT_CHANNELS + '?limit=10&idOrName=' + searchText;
@@ -163,12 +194,15 @@ function CreateThreadScreen({
           });
           console.log('got response', res.data.result);
           // console.log('got response');
-          setAllChannels(res.data.result.channels.slice(0, 50));
-          setAllChannelsFetchStatus('success');
+          setSearchedChannels(res.data.result.channels.slice(0, 50));
+          if (!channelSearchIsDirty) {
+            setChannelSearchIsDirty(true);
+          }
+          setSearchChannelsFetchStatus('success');
         } catch (error) {
           if (!axios.isCancel(error)) {
             console.error(error);
-            setAllChannelsFetchStatus('error');
+            setSearchChannelsFetchStatus('error');
           } else {
             console.log('cancelled channel search');
           }
@@ -207,8 +241,9 @@ function CreateThreadScreen({
         }
       };
     } else {
-      setAllChannels([]);
-      setAllChannelsFetchStatus('idle');
+      setSearchedChannels([]);
+      setChannelSearchIsDirty(false);
+      setSearchChannelsFetchStatus('idle');
       if (searchTimeout) {
         clearTimeout(searchTimeout);
         setSearchTimeout(undefined);
@@ -243,6 +278,31 @@ function CreateThreadScreen({
   useEffect(() => {
     handleSearch();
   }, [handleSearch]);
+  useEffect(() => {
+    async function fetchAllChannels() {
+      if (authContext.state?.fid) {
+        setAllChannelsFetchStatus('loading');
+        try {
+          const finalUrl = ENDPOINT_CHANNELS + '?limit=30';
+          const res = await axios.get<ChannelsResponse>(finalUrl, {
+            headers: {Authorization: `Bearer ${authContext.state.token}`},
+          });
+          // console.log('got response');
+          setAllChannels(res.data.result.channels.slice(0, 50));
+          setAllChannelsFetchStatus('success');
+        } catch (error) {
+          if (!axios.isCancel(error)) {
+            console.error(error);
+            setAllChannelsFetchStatus('error');
+          } else {
+            console.log('cancelled channel search');
+          }
+        }
+      }
+    }
+
+    fetchAllChannels();
+  }, []);
 
   // useEffect(() => {
   //   console.log('change ref', inputRef.current);
@@ -598,33 +658,15 @@ function CreateThreadScreen({
             <MySearchField
               value={searchText}
               dismissKeyboardOnCancel
+              loading={searchChannelsFetchStatus === 'loading'}
               onCancelPress={() => {
                 setSearchText('');
+                setChannelSearchIsDirty(false);
               }}
               onChangeText={setSearchText}
             />
           </View>
-          {allChannelsFetchStatus === 'success' ? (
-            <>
-              {allChannels.length > 0 ? (
-                <View style={styles.channelsCtn}>{renderedChannelChips}</View>
-              ) : (
-                <View style={styles.infoCtn}>
-                  <Text style={styles.infoText}>No channels</Text>
-                </View>
-              )}
-            </>
-          ) : allChannelsFetchStatus === 'loading' ? (
-            <View
-              style={{
-                width: '100%',
-                padding: 20,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <MyLoader />
-            </View>
-          ) : allChannelsFetchStatus === 'error' ? (
+          {searchChannelsFetchStatus === 'error' ? (
             <View
               style={{
                 width: '100%',
@@ -642,11 +684,37 @@ function CreateThreadScreen({
                 }}
               />
             </View>
+          ) : channelSearchIsDirty ? (
+            <>
+              {searchedChannels.length > 0 ? (
+                <View style={styles.channelsCtn}>
+                  {renderedSearchedChannelChips}
+                </View>
+              ) : (
+                <View style={styles.infoCtn}>
+                  <Text style={styles.infoText}>No channels</Text>
+                </View>
+              )}
+            </>
           ) : (
             <>
               <View>
-                <Text style={styles.bottomSheetSubHeaderText}>RECENT</Text>
+                <View style={styles.bottomSheetSubHeader}>
+                  <RecentImg width={20} height={20} />
+                  <Text style={styles.bottomSheetSubHeaderText}>RECENT</Text>
+                </View>
                 <View style={styles.channelsCtn}>{renderedRecentChips}</View>
+              </View>
+              <View>
+                <View style={styles.bottomSheetSubHeader}>
+                  <ListImg width={20} height={20} />
+                  <Text style={styles.bottomSheetSubHeaderText}>
+                    ALL CHANNELS
+                  </Text>
+                </View>
+                <View style={styles.channelsCtn}>
+                  {renderedAllChannelChips}
+                </View>
               </View>
             </>
           )}
@@ -690,10 +758,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: MyTheme.fontRegular,
   },
-  bottomSheetSubHeaderText: {
-    color: MyTheme.grey400,
+  bottomSheetSubHeader: {
+    flexDirection: 'row',
     paddingHorizontal: 20,
     marginBottom: 20,
+    alignItems: 'center',
+  },
+  bottomSheetSubHeaderText: {
+    color: MyTheme.grey400,
+    marginLeft: 6,
     fontFamily: MyTheme.fontSemiBold,
   },
   channelsCtn: {

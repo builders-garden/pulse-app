@@ -10,6 +10,10 @@ import React, {
 } from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
 import Toast from 'react-native-toast-message';
+import {
+  MostRecentChannel,
+  MostRecentChannelsResponse,
+} from '../../api/channel/types';
 import {Profile, ProfileResponse} from '../../api/profile/types';
 import {RequestStatus} from '../../api/types';
 import {UserCast, UserCastsResponse} from '../../api/user/types';
@@ -22,6 +26,7 @@ import {AuthContext} from '../../contexts/auth/Auth.context';
 import {TransformUserCast} from '../../libs/post';
 import {FeedStackScreenProps, HomeTabScreenProps} from '../../routing/types';
 import {ENDPOINT_PROFILE} from '../../variables';
+import About from './components/About';
 import UpperSection from './components/UpperSection';
 
 const HEADER_HEIGHT = 250;
@@ -46,7 +51,9 @@ function ProfileScreen({
   const [userCastsCursor, setUserCastsCursor] = useState<string>();
   const [commentsCursor, setCommentsCursor] = useState<string>();
   const [isRefreshing, setIsRefreshing] = useState(false);
-
+  const [recentChannels, setRecentChannels] = useState<MostRecentChannel[]>([]);
+  const [recentChannelsFetchStatus, setRecentChannelsFetchStatus] =
+    useState<RequestStatus>('idle');
   const listRef = useRef(null);
 
   useScrollToTop(listRef);
@@ -118,6 +125,24 @@ function ProfileScreen({
       }
     }
   }, [authContext.state.token, profile?.fid]);
+
+  const fetchRecentChannels = useCallback(async () => {
+    console.log('fetching recents');
+    setRecentChannelsFetchStatus('loading');
+    try {
+      const finalUrl =
+        ENDPOINT_PROFILE + '/' + authContext.state.fid + '/active-channels';
+      const res = await axios.get<MostRecentChannelsResponse>(finalUrl, {
+        headers: {Authorization: `Bearer ${authContext.state.token}`},
+      });
+      console.log('recent channels', res.data.result);
+      setRecentChannels(res.data.result);
+      setRecentChannelsFetchStatus('success');
+    } catch (error) {
+      console.error(error);
+      setRecentChannelsFetchStatus('error');
+    }
+  }, [authContext.state.token, authContext.state.fid]);
 
   const fetchNewComments = useCallback(async () => {
     if (newCommentsFetchStatus !== 'loading' && commentsCursor) {
@@ -210,6 +235,7 @@ function ProfileScreen({
       if (
         userCastsFetchStatus !== 'success' ||
         commentsFetchStatus !== 'success' ||
+        recentChannelsFetchStatus !== 'success' ||
         !profile
       ) {
         return null;
@@ -281,7 +307,7 @@ function ProfileScreen({
             }}
           />
         );
-      } else {
+      } else if (selectedTab === 1) {
         const transformedItem = TransformUserCast(item, profile);
 
         return (
@@ -341,11 +367,14 @@ function ProfileScreen({
           />
         );
       }
+
+      return null;
     },
     [
       selectedTab,
       userCastsFetchStatus,
       commentsFetchStatus,
+      recentChannelsFetchStatus,
       profile,
       navigation,
       jumpToFeedRoot,
@@ -366,6 +395,11 @@ function ProfileScreen({
       fetchUserCasts();
     }
   }, [profile, fetchUserCasts]);
+  useEffect(() => {
+    if (profile) {
+      fetchRecentChannels();
+    }
+  }, [profile, fetchRecentChannels]);
 
   if (!isRefreshing) {
     if (profileFetchStatus === 'loading') {
@@ -467,6 +501,20 @@ function ProfileScreen({
                 />
               </View>
             ) : null)}
+          {selectedTab === 2 &&
+            recentChannels.length > 0 &&
+            userCastsFetchStatus === 'success' &&
+            commentsFetchStatus === 'success' &&
+            profile && (
+              <About
+                recentChannels={recentChannels}
+                onChannelPress={channelId => {
+                  jumpToFeedRoot('Channel', {
+                    channelId,
+                  });
+                }}
+              />
+            )}
         </View>
       }
       ListFooterComponent={

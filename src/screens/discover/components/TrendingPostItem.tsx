@@ -18,6 +18,7 @@ type TrendingPostItemProps = {
   customStyle?: StyleProp<ViewStyle>;
   onContentBodyPress?: () => void;
   onHeaderPress?: () => void;
+  onCommentPress?: () => void;
 };
 
 const TrendingPostItem = ({
@@ -25,6 +26,7 @@ const TrendingPostItem = ({
   customStyle,
   onContentBodyPress,
   onHeaderPress,
+  onCommentPress,
 }: TrendingPostItemProps) => {
   const castedDate = new Date(trendingCast.cast.castedAtTimestamp);
   const formattedDate = formatDate(castedDate);
@@ -77,6 +79,7 @@ const TrendingPostItem = ({
           commentsCount={trendingCast.cast.numberOfReplies}
           quotesCount={trendingCast.cast.numberOfRecasts}
           upvotesCount={trendingCast.cast.numberOfLikes}
+          onCommentsPress={onCommentPress}
         />
       </View>
     </View>

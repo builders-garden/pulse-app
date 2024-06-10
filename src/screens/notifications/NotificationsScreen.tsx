@@ -34,6 +34,7 @@ function NotificationsScreen() {
   const formattedNotifications = useMemo(() => {
     return SeparateNotificationsByTime(notifications);
   }, [notifications]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const listRef = useRef(null);
 
   useScrollToTop(listRef);
@@ -89,6 +90,12 @@ function NotificationsScreen() {
     notifications,
   ]);
 
+  const refreshPage = useCallback(async () => {
+    setIsRefreshing(true);
+    await fetchNotifications();
+    setIsRefreshing(false);
+  }, [fetchNotifications]);
+
   useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications, authContext]);
@@ -97,7 +104,7 @@ function NotificationsScreen() {
     return <NotificationItem notification={item} />;
   }, []);
 
-  if (notificationsFetchStatus === 'loading') {
+  if (notificationsFetchStatus === 'loading' && !isRefreshing) {
     return (
       <View style={styles.loadingCtn}>
         <MyLoader />
@@ -124,6 +131,8 @@ function NotificationsScreen() {
         style={{paddingHorizontal: 15, paddingTop: 15}}
         sections={formattedNotifications}
         windowSize={14}
+        refreshing={isRefreshing}
+        onRefresh={refreshPage}
         onEndReachedThreshold={1}
         onEndReached={fetchNewItems}
         ItemSeparatorComponent={() => <View style={{height: 15}} />}

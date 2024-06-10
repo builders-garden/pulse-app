@@ -5,6 +5,8 @@ import {
   Comment,
   ConversationSection,
   ConversationSectionList,
+  EssentialCast,
+  TrendingCastResult,
 } from '../api/cast/types';
 import {FeedItem} from '../api/feed/types';
 import {Profile} from '../api/profile/types';
@@ -195,4 +197,19 @@ export function FlattenConversation(item: Cast, depth: number = 0) {
   }
 
   return flattened;
+}
+export function TrendingCastResult2EssentialCast(
+  item: TrendingCastResult,
+): EssentialCast {
+  return {
+    hash: item.cast.hash,
+    text: item.cast.text,
+    timestamp: item.cast.castedAtTimestamp,
+    author: {
+      display_name: item.cast.castedBy.profileDisplayName,
+      username: item.cast.castedBy.profileHandle,
+      pfp_url: item.cast.castedBy.profileImage,
+      fid: item.fid,
+    },
+  };
 }

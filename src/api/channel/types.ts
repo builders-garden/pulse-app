@@ -65,6 +65,7 @@ export type MostFollowedChannel = {
   followerCount: number;
   imageUrl: string;
   url: string;
+  description: string;
 };
 export type FavouriteChannel = {
   name: string;

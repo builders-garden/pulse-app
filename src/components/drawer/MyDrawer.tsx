@@ -103,7 +103,7 @@ const MyDrawer = ({
     console.log('fetching all');
     setAllChannelsFetchStatus('loading');
     try {
-      const finalUrl = `${ENDPOINT_PROFILE}/${authContext.state.fid}/followed-channels?limit=15`;
+      const finalUrl = `${ENDPOINT_PROFILE}/${authContext.state.fid}/followed-channels?limit=10`;
       const res = await axios.get<FollowedChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
@@ -127,7 +127,7 @@ const MyDrawer = ({
       try {
         setNewAllChannelsFetchStatus('loading');
         console.log('fetching new channels');
-        const finalUrl = `${ENDPOINT_PROFILE}/${authContext.state.fid}/followed-channels?limit=20&cursor=${cursor}`;
+        const finalUrl = `${ENDPOINT_PROFILE}/${authContext.state.fid}/followed-channels?limit=10&cursor=${cursor}`;
         const res = await axios.get<FollowedChannelsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
@@ -135,6 +135,8 @@ const MyDrawer = ({
         setAllChannels([...allChannels, ...res.data.result]);
         if (res.data.cursor) {
           setCursor(res.data.cursor);
+        } else {
+          setCursor(undefined);
         }
         setNewAllChannelsFetchStatus('success');
       } catch (error) {
