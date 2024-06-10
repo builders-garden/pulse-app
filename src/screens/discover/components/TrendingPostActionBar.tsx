@@ -11,6 +11,9 @@ type TrendingPostItemActionBarProps = {
   commentsCount: number;
   quotesCount: number;
   upvotesCount: number;
+  hideUpvote?: boolean;
+  hideRecast?: boolean;
+  hideReply?: boolean;
   onCommentsPress?: () => void;
   onQuotesPress?: () => void;
   onUpvotesPress?: () => void;
@@ -23,6 +26,9 @@ const TrendingPostItemActionBar = ({
   commentsCount,
   quotesCount,
   upvotesCount,
+  hideUpvote,
+  hideRecast,
+  hideReply,
   onCommentsPress,
   onQuotesPress,
   onUpvotesPress,
@@ -30,60 +36,66 @@ const TrendingPostItemActionBar = ({
 }: TrendingPostItemActionBarProps) => {
   return (
     <View style={styles.postActionBar}>
-      <MyChipBase
-        iconLeft={
-          <UpvoteImg
-            style={{marginRight: 3}}
-            width={18}
-            height={18}
-            color={MyTheme.grey400}
-          />
-        }
-        title={upvotesCount.toString()}
-        size="small"
-        style="secondary"
-        filling="clear"
-        onPress={() => {
-          onUpvotesPress && onUpvotesPress();
-        }}
-        customStyle={{marginRight: 5}}
-      />
-      <MyChipBase
-        iconLeft={
-          <CommentImg
-            color={MyTheme.grey400}
-            style={{marginRight: 3}}
-            width={18}
-            height={18}
-          />
-        }
-        size="small"
-        style="secondary"
-        filling="clear"
-        title={commentsCount.toString()}
-        onPress={() => {
-          onCommentsPress && onCommentsPress();
-        }}
-        customStyle={{marginRight: 5}}
-      />
-      <MyChipBase
-        iconLeft={
-          <QuoteImg
-            color={MyTheme.grey400}
-            style={{marginRight: 3}}
-            width={18}
-            height={18}
-          />
-        }
-        size="small"
-        style="secondary"
-        filling="clear"
-        title={quotesCount.toString()}
-        onPress={() => {
-          onQuotesPress && onQuotesPress();
-        }}
-        customStyle={{marginRight: 5}}
-      />
+      {!hideUpvote && (
+        <MyChipBase
+          iconLeft={
+            <UpvoteImg
+              style={{marginRight: 3}}
+              width={18}
+              height={18}
+              color={MyTheme.grey400}
+            />
+          }
+          title={upvotesCount.toString()}
+          size="small"
+          style="secondary"
+          filling="clear"
+          onPress={() => {
+            onUpvotesPress && onUpvotesPress();
+          }}
+          customStyle={{marginRight: 5}}
+        />
+      )}
+      {!hideReply && (
+        <MyChipBase
+          iconLeft={
+            <CommentImg
+              color={MyTheme.grey400}
+              style={{marginRight: 3}}
+              width={18}
+              height={18}
+            />
+          }
+          size="small"
+          style="secondary"
+          filling="clear"
+          title={commentsCount.toString()}
+          onPress={() => {
+            onCommentsPress && onCommentsPress();
+          }}
+          customStyle={{marginRight: 5}}
+        />
+      )}
+      {!hideRecast && (
+        <MyChipBase
+          iconLeft={
+            <QuoteImg
+              color={MyTheme.grey400}
+              style={{marginRight: 3}}
+              width={18}
+              height={18}
+            />
+          }
+          size="small"
+          style="secondary"
+          filling="clear"
+          title={quotesCount.toString()}
+          onPress={() => {
+            onQuotesPress && onQuotesPress();
+          }}
+          customStyle={{marginRight: 5}}
+        />
+      )}
 
       <MyIconButtonBase
         onPress={() => {

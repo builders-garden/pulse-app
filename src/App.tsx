@@ -2,6 +2,7 @@ import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import React from 'react';
 import Toast from 'react-native-toast-message';
+import AppWrapper from './AppWrapper';
 import MyInfoToast from './components/toasts/MyInfoToast';
 import AuthProvider from './contexts/auth/AuthProvider';
 import DrawerProvider from './contexts/drawer/DrawerProvider';
@@ -36,7 +37,9 @@ function App(): React.JSX.Element {
       <LightboxProvider>
         <NavigationContainer theme={NavigationTheme}>
           <DrawerProvider>
-            <StackContainer />
+            <AppWrapper>
+              <StackContainer />
+            </AppWrapper>
           </DrawerProvider>
         </NavigationContainer>
       </LightboxProvider>

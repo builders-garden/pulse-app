@@ -27,7 +27,8 @@ export type MyCommentProps = {
   headerTitle: string;
   postTime: string;
   headerSubtitle: string;
-  upvoted?: boolean;
+  upvoted: boolean;
+  recasted: boolean;
   quoteTitle?: string;
   quote?: string;
   content: string;
@@ -51,6 +52,7 @@ const MyComment = ({
   headerImg,
   postTime,
   upvoted,
+  recasted,
   headerTitle,
   headerSubtitle,
   quoteTitle,
@@ -70,6 +72,7 @@ const MyComment = ({
 }: MyCommentProps) => {
   const authContext = useContext(AuthContext);
   const [isUpvoted, setIsUpvoted] = useState(0);
+  const [isRecasted, setIsRecasted] = useState(0);
 
   const indentsHtml = useMemo(
     () =>
@@ -132,6 +135,49 @@ const MyComment = ({
       console.error(error);
     }
   }, [authContext.state.token, commentHash, isUpvoted, upvoted]);
+  const toggleRecast = useCallback(async () => {
+    try {
+      const finalUrl = `${ENDPOINT_CAST}/${commentHash}/reactions`;
+      if ((recasted && isRecasted === 0) || isRecasted === 1) {
+        console.log('deleting recast', finalUrl);
+        const res = await axios.delete<ReactionResponse>(finalUrl, {
+          data: {
+            reactionType: 'recast',
+          },
+          headers: {Authorization: `Bearer ${authContext.state.token}`},
+        });
+        console.log('got response', res.data);
+        if (res.data.result.success) {
+          if (isRecasted === 1) {
+            setIsRecasted(0);
+          } else if (isRecasted === 0) {
+            setIsRecasted(-1);
+          }
+        }
+      } else if ((!recasted && isRecasted === 0) || isRecasted === -1) {
+        console.log('recasting', finalUrl);
+        const res = await axios.post<ReactionResponse>(
+          finalUrl,
+          {
+            reactionType: 'recast',
+          },
+          {
+            headers: {Authorization: `Bearer ${authContext.state.token}`},
+          },
+        );
+        console.log('got response', res.data);
+        if (res.data.result.success) {
+          if (isRecasted === -1) {
+            setIsRecasted(0);
+          } else if (isRecasted === 0) {
+            setIsRecasted(1);
+          }
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [authContext.state.token, commentHash, isRecasted, recasted]);
 
   return (
     <View style={[styles.root, rootCustomStyle]}>
@@ -249,12 +295,15 @@ const MyComment = ({
         </View>
         {!hideActionBar && (
           <CommentActionBar
-            quotesCount={quotesCount}
-            upvotesCount={upvotesCount}
+            isUpvoted={isUpvoted === 0 ? upvoted : isUpvoted === 1}
+            isRecasted={isRecasted === 0 ? recasted : isRecasted === 1}
+            upvotesCount={upvotesCount + isUpvoted}
+            quotesCount={quotesCount + isRecasted}
             onReplyPress={() => {
               onReplyPress && onReplyPress();
             }}
             onUpvotesPress={toggleUpvote}
+            onQuotesPress={toggleRecast}
           />
         )}
       </View>

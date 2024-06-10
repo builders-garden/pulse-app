@@ -165,6 +165,7 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
           />
           <FlatList
             ref={listRef}
+            showsVerticalScrollIndicator={false}
             onScrollToTop={e => {
               console.log('onScrollToTop', e);
             }}

@@ -17,7 +17,10 @@ import {ENDPOINT_CHANNELS} from '../../variables';
 import Header from './components/Header';
 import ProfileLine from './components/ProfileLine';
 
-function ChannelDetailScreen({route}: FeedStackScreenProps<'ChannelDetail'>) {
+function ChannelDetailScreen({
+  navigation,
+  route,
+}: FeedStackScreenProps<'ChannelDetail'>) {
   const authContext = useContext(AuthContext);
   const [channelFetchStatus, setChannelFetchStatus] =
     useState<RequestStatus>('idle');
@@ -52,10 +55,13 @@ function ChannelDetailScreen({route}: FeedStackScreenProps<'ChannelDetail'>) {
             key={host.fid}
             profile={host}
             customStyle={{marginTop: 15}}
+            onProfilePress={() => {
+              navigation.navigate('Profile', {userFid: host.fid.toString()});
+            }}
           />
         );
       }),
-    [channel],
+    [channel, navigation],
   );
 
   if (channelFetchStatus === 'loading') {

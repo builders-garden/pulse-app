@@ -236,6 +236,7 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
           <FlatList
             ref={listRef}
             data={feed}
+            showsVerticalScrollIndicator={false}
             windowSize={10}
             onEndReachedThreshold={1}
             onEndReached={fetchNewItems}

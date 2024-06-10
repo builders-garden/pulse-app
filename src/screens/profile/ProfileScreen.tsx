@@ -289,6 +289,8 @@ function ProfileScreen({
             commentHash={item.hash}
             headerImg={transformedItem.headerImg}
             postTime={transformedItem.postTime}
+            upvoted={false}
+            recasted={false}
             headerTitle={transformedItem.headerTitle}
             headerSubtitle={transformedItem.headerSubtitle}
             content={transformedItem.content}
@@ -423,13 +425,19 @@ function ProfileScreen({
       ref={listRef}
       data={selectedTab === 0 ? userCasts : comments}
       windowSize={10}
+      showsVerticalScrollIndicator={false}
       onEndReachedThreshold={1}
       onEndReached={selectedTab === 0 ? fetchNewUserCasts : fetchNewComments}
       onRefresh={refreshPage}
       refreshing={isRefreshing}
       ListHeaderComponent={
         <View style={styles.profileCtn}>
-          <UpperSection profile={profile} isLoggedUser={isLoggedUserProfile} />
+          {profile && (
+            <UpperSection
+              profile={profile}
+              isLoggedUser={isLoggedUserProfile}
+            />
+          )}
           <View style={{padding: 15}}>
             <MyTabs
               tabs={['Threads', 'Comments', 'About']}

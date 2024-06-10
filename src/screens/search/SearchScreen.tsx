@@ -355,6 +355,7 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
           style={{paddingHorizontal: 15, paddingTop: 15}}
           data={selectedTab === 0 ? searchedProfiles : searchedChannels}
           windowSize={14}
+          showsVerticalScrollIndicator={false}
           onEndReachedThreshold={1}
           onRefresh={refresh}
           onEndReached={selectedTab === 0 ? fetchNewProfiles : fetchNewChannels}

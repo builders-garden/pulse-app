@@ -121,22 +121,9 @@ function SignInScreen() {
     setIsModalOpen(false);
   }
 
-  // async function retrieveUserToken() {
-  //   try {
-  //     const token = await EncryptedStorage.getItem('user_token');
-
-  //     if (token !== undefined) {
-  //       return token;
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     return null;
-  //   }
-  // }
-
-  async function storeUserToken(token: string) {
+  async function storeUserToken(token: string, fid: string) {
     try {
-      await EncryptedStorage.setItem('user_token', token);
+      await EncryptedStorage.setItem('user', JSON.stringify({token, fid}));
     } catch (error) {
       console.error(error);
     }
@@ -144,7 +131,7 @@ function SignInScreen() {
 
   async function SignIn(token: string, fid: string) {
     try {
-      await storeUserToken(token);
+      await storeUserToken(token, fid);
       authContext.signIn({token, fid});
     } catch (error) {
       console.error(error);

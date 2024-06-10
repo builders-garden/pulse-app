@@ -120,24 +120,24 @@ export function TransformFeedItem(item: FeedItem | Comment) {
     quotesCount: item.reactions.recasts.length,
   };
 }
-export function TransformCast(item: Cast | CastWithDepth | CastWithoutReplies) {
+export function TransformCast(
+  item: Cast | CastWithDepth | CastWithoutReplies,
+  useChannel = false,
+) {
   let headerTitle = '';
   let headerSubtitle = '';
-  let channel: string = '';
+  let headerImg = '';
+  let channel = '';
   const content = item.text;
-  if (
-    item.root_parent_url &&
-    item.root_parent_url.startsWith('https://warpcast.com/~/channel/')
-  ) {
-    channel = item.root_parent_url.replace(
-      'https://warpcast.com/~/channel/',
-      '',
-    );
+  if (useChannel && item.channel) {
+    channel = item.channel.id;
     headerTitle = '/' + channel;
     headerSubtitle = item.author.display_name + ' • @' + item.author.username;
+    headerImg = item.channel.image_url;
   } else {
     headerTitle = item.author.display_name;
     headerSubtitle = '@' + item.author.username;
+    headerImg = item.author.pfp_url;
   }
 
   const postTime = formatDate(new Date(item.timestamp));
@@ -147,7 +147,7 @@ export function TransformCast(item: Cast | CastWithDepth | CastWithoutReplies) {
 
   return {
     channel,
-    headerImg: item.author.pfp_url,
+    headerImg,
     postTime: postTime,
     headerTitle: headerTitle,
     headerSubtitle: headerSubtitle,

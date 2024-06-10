@@ -21,7 +21,12 @@ function UpperSection({profile, isLoggedUser}: UpperSectionProps) {
           source={{uri: profile?.pfp_url}}
         />
         <View style={{marginLeft: 15}}>
-          <Text style={styles.displayName}>{profile.display_name}</Text>
+          <Text
+            style={styles.displayName}
+            numberOfLines={1}
+            ellipsizeMode="tail">
+            {profile.display_name}
+          </Text>
           <View style={styles.usernameCtn}>
             <Text style={styles.subtitle}>@{profile.username}</Text>
             <Text style={[styles.subtitle, styles.dotSeparator]}> · </Text>
@@ -74,7 +79,8 @@ const styles = StyleSheet.create({
   displayName: {
     fontSize: 20,
     color: MyTheme.black,
-    fontFamily: 'BeVietnamPro-Bold',
+    fontFamily: MyTheme.fontBold,
+    width: '90%',
   },
   usernameCtn: {
     flexDirection: 'row',
@@ -82,7 +88,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: MyTheme.grey400,
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: MyTheme.fontRegular,
   },
   dotSeparator: {
     marginHorizontal: 5,
@@ -90,7 +96,7 @@ const styles = StyleSheet.create({
   bio: {
     marginTop: 15,
     color: MyTheme.grey500,
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: MyTheme.fontRegular,
   },
   countersCtn: {
     flexDirection: 'row',
@@ -104,7 +110,7 @@ const styles = StyleSheet.create({
   },
   locationText: {
     color: MyTheme.grey400,
-    fontFamily: 'BeVietnamPro-Regular',
+    fontFamily: MyTheme.fontRegular,
   },
 });
 

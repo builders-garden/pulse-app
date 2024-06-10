@@ -300,11 +300,15 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
           navigation.navigate('CreateThread', {});
         }}
       />
-      <ScrollView ref={listRef} style={styles.root}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        ref={listRef}
+        style={styles.root}>
         <View>
           <Text style={styles.sectionLabel}>Trending channels</Text>
           <FlatList
             horizontal
+            showsHorizontalScrollIndicator={false}
             data={channelsForYou}
             renderItem={renderForYouItem}
           />
@@ -313,6 +317,7 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
           <Text style={styles.sectionLabel}>Trending threads</Text>
           <FlatList
             horizontal
+            showsHorizontalScrollIndicator={false}
             data={trendingPosts}
             renderItem={renderTrendingPostItem}
           />
@@ -329,6 +334,7 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
           <Text style={styles.sectionLabel}>Top channels</Text>
           <FlatList
             horizontal
+            showsHorizontalScrollIndicator={false}
             data={topChannels}
             renderItem={renderTopChannelItem}
           />
@@ -337,6 +343,7 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
           <Text style={styles.sectionLabel}>New channels</Text>
           <FlatList
             horizontal
+            showsHorizontalScrollIndicator={false}
             data={newChannels}
             renderItem={renderNewChannelItem}
           />

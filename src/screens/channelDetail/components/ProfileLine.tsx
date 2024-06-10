@@ -1,34 +1,53 @@
 import React from 'react';
-import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
+import {
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  Text,
+  View,
+  ViewStyle,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {Profile} from '../../../api/profile/types';
-import MyButtonNew from '../../../components/buttons/MyButtonNew';
 import {MyTheme} from '../../../theme';
 
 interface ProfileLineProps {
   profile: Profile;
   customStyle?: StyleProp<ViewStyle>;
+  onFollowPress?: () => void;
+  onProfilePress: () => void;
 }
 
-function ProfileLine({profile, customStyle}: ProfileLineProps) {
+function ProfileLine({
+  profile,
+  customStyle,
+  onProfilePress,
+  onFollowPress,
+}: ProfileLineProps) {
   return (
     <View style={[styles.root, customStyle && customStyle]}>
       <FastImage style={styles.profileImage} source={{uri: profile.pfp_url}} />
-      <View style={styles.infoCtn}>
+      <Pressable style={styles.infoCtn} onPress={onProfilePress}>
         <Text style={styles.nameText} numberOfLines={1}>
           {profile.display_name}
         </Text>
         <Text style={styles.subtitle} numberOfLines={1}>
           @{profile.username}
         </Text>
-      </View>
+      </Pressable>
+      {/* <FollowButton
+        fid={profile.fid}
+        followingInitialValue={profile.viewer_context?.following!}
+      />
       <MyButtonNew
         title="Follow"
-        onPress={() => {}}
+        onPress={() => {
+          onFollowPress && onFollowPress();
+        }}
         style="quaternary"
         size="medium"
         customStyle={{marginLeft: 'auto'}}
-      />
+      /> */}
     </View>
   );
 }

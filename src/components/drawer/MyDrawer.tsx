@@ -263,6 +263,7 @@ const MyDrawer = ({
           <FlatList
             data={allChannels}
             windowSize={20}
+            showsVerticalScrollIndicator={false}
             onEndReached={() => {
               if (cursor) {
                 fetchNewAllChannels();

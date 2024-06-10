@@ -537,6 +537,7 @@ function CreateThreadScreen({
     <View style={{flex: 1}}>
       <FlatList
         style={styles.threadsCtn}
+        showsVerticalScrollIndicator={false}
         data={threads}
         ListHeaderComponent={
           <View style={{marginBottom: 20}}>

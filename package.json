@@ -21,6 +21,7 @@
     "react": "18.2.0",
     "react-content-loader": "^7.0.0",
     "react-native": "0.73.6",
+    "react-native-bootsplash": "^5.5.3",
     "react-native-drawer-layout": "^3.3.0",
     "react-native-encrypted-storage": "^4.0.3",
     "react-native-fast-image": "^8.6.3",

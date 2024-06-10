@@ -98,6 +98,7 @@ function ThreadDetailScreen({
           key={index}
           commentHash={item.hash}
           upvoted={item.viewer_context.liked}
+          recasted={item.viewer_context.recasted}
           headerImg={transformedComment.headerImg}
           postTime={transformedComment.postTime}
           headerTitle={transformedComment.headerTitle}
@@ -254,6 +255,7 @@ function ThreadDetailScreen({
             <MyComment
               commentHash={section.header.hash}
               upvoted={section.header.viewer_context.liked}
+              recasted={section.header.viewer_context.recasted}
               headerImg={transformedCast.headerImg}
               postTime={transformedCast.postTime}
               quote={thread.casts[section.castIndex].text}
