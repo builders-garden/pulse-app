@@ -20,21 +20,20 @@ export function TransformUserCast(item: UserCast, profile: Profile) {
   let channel: string = '';
   const content = item.text;
   if (item.channel) {
-    channel = item.channel.channelId;
+    channel = item.channel.id;
     headerTitle = '/' + channel;
     headerSubtitle = profile.display_name + ' • @' + profile.username;
-    headerImg = item.channel.imageUrl;
+    headerImg = item.channel.image_url;
   } else {
     headerTitle = profile.display_name;
     headerSubtitle = '@' + profile.username;
     headerImg = profile.pfp_url;
   }
 
-  const postTime = formatDate(new Date(item.castedAtTimestamp));
+  const postTime = formatDate(new Date(item.timestamp));
   let embeds = item.embeds.filter(
     el => el?.url !== '' && el?.url !== null && el?.url !== undefined,
   );
-
   return {
     channel,
     headerImg,
@@ -43,9 +42,9 @@ export function TransformUserCast(item: UserCast, profile: Profile) {
     headerSubtitle: headerSubtitle,
     content: content,
     images: embeds ?? [],
-    upvotesCount: item.numberOfLikes,
-    commentsCount: item.numberOfReplies,
-    quotesCount: item.numberOfRecasts,
+    upvotesCount: item.reactions.likes_count,
+    commentsCount: item.replies.count,
+    quotesCount: item.reactions.recasts_count,
   };
 }
 // export function TransformUserCast(item: UserCast) {

@@ -90,7 +90,10 @@ function ProfileScreen({
       setCommentsFetchStatus('loading');
       try {
         const finalUrl =
-          ENDPOINT_PROFILE + '/' + profile?.fid + '/replies?limit=15';
+          ENDPOINT_PROFILE +
+          '/' +
+          profile?.fid +
+          '/replies-and-recasts?limit=15';
         const res = await axios.get<UserCastsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
@@ -110,7 +113,7 @@ function ProfileScreen({
       setUserCastsFetchStatus('loading');
       try {
         const finalUrl =
-          ENDPOINT_PROFILE + '/' + profile?.fid + '/tmp-casts?limit=15';
+          ENDPOINT_PROFILE + '/' + profile?.fid + '/casts?limit=15';
         const res = await axios.get<UserCastsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
@@ -154,7 +157,7 @@ function ProfileScreen({
           ENDPOINT_PROFILE +
           '/' +
           profile?.fid +
-          '/replies?limit=15&cursor=' +
+          '/replies-and-recasts?limit=15&cursor=' +
           commentsCursor;
         const res = await axios.get<UserCastsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
@@ -187,7 +190,7 @@ function ProfileScreen({
           ENDPOINT_PROFILE +
           '/' +
           profile?.fid +
-          '/tmp-casts?limit=15&cursor=' +
+          '/casts?limit=15&cursor=' +
           userCastsCursor;
         const res = await axios.get<UserCastsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
@@ -252,9 +255,8 @@ function ProfileScreen({
             headerSubtitle={transformedItem.headerSubtitle}
             content={transformedItem.content}
             images={transformedItem.images}
-            // TODO: implement upvote and recast
-            recasted={false}
-            upvoted={false}
+            recasted={item.viewer_context.recasted}
+            upvoted={item.viewer_context.liked}
             upvotesCount={transformedItem.upvotesCount}
             commentsCount={transformedItem.commentsCount}
             quotesCount={transformedItem.quotesCount}
@@ -301,7 +303,7 @@ function ProfileScreen({
                   author: profile,
                   text: transformedItem.content,
                   hash: item.hash,
-                  timestamp: item.castedAtTimestamp,
+                  timestamp: item.timestamp,
                 },
               });
             }}
@@ -320,8 +322,8 @@ function ProfileScreen({
             headerTitle={transformedItem.headerTitle}
             headerSubtitle={transformedItem.headerSubtitle}
             content={transformedItem.content}
-            quote={item.parentCast?.text}
-            quoteTitle={'@' + item.parentCast?.castedBy.profileHandle}
+            quote={item.parent_cast?.text}
+            quoteTitle={'@' + item.parent_cast?.parent_cast?.author.username}
             images={transformedItem.images}
             upvotesCount={transformedItem.upvotesCount}
             quotesCount={transformedItem.quotesCount}
