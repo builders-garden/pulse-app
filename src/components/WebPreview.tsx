@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Alert,
-  Image,
   Linking,
   Pressable,
   StyleProp,
@@ -10,6 +9,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import LinkImg from '../assets/images/icons/link.svg';
 import {MyTheme} from '../theme';
 import {LinkPreview} from '../types';
@@ -39,6 +39,8 @@ const WebPreview = ({url, linkPreview, customStyle}: WebPreviewProps) => {
       }
       if ('images' in linkPreview && linkPreview.images.length > 0) {
         image = linkPreview.images[0];
+      } else if ('favicons' in linkPreview && linkPreview.favicons.length > 0) {
+        image = linkPreview.favicons[0];
       }
     }
   }
@@ -71,7 +73,11 @@ const WebPreview = ({url, linkPreview, customStyle}: WebPreviewProps) => {
   return (
     <Pressable style={[styles.container, customStyle]} onPress={OpenURL}>
       {image !== '' ? (
-        <Image source={{uri: image}} style={styles.image} />
+        <FastImage
+          source={{uri: image}}
+          style={styles.image}
+          resizeMode="contain"
+        />
       ) : (
         <View style={styles.placeholderBox}>
           <LinkImg width={50} height={50} />

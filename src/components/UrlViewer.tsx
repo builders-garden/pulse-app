@@ -51,10 +51,8 @@ const UrlViewer = ({url}: UrlViewerProps) => {
         webViewStyle={styles.youtubePlayer}
       />
     );
-  } else if (linkPreview?.mediaType === 'website') {
-    return <WebPreview url={url} linkPreview={linkPreview} />;
   } else {
-    return <WebPreview url={url} />;
+    return <WebPreview url={url} linkPreview={linkPreview} />;
   }
 };
 

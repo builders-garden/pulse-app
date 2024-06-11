@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   headerIcon: {
-    backgroundColor: MyTheme.primaryLightOpacity,
     marginRight: 10,
     borderRadius: 3,
     width: 30,

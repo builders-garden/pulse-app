@@ -1,5 +1,6 @@
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
+import {PostHogProvider} from 'posthog-react-native';
 import React from 'react';
 import Toast from 'react-native-toast-message';
 import AppWrapper from './AppWrapper';
@@ -11,7 +12,7 @@ import StackContainer from './routing/StackContainer';
 import {MyTheme} from './theme';
 
 Sentry.init({
-  dsn: 'https://7557a7f2a56ad29b7d17e918574585da@o4507152584933376.ingest.de.sentry.io/4507248348954704',
+  dsn: process.env.SENTRY_DSN,
 });
 function App(): React.JSX.Element {
   // const isDarkMode = useColorScheme() === 'dark';
@@ -36,11 +37,13 @@ function App(): React.JSX.Element {
     <AuthProvider>
       <LightboxProvider>
         <NavigationContainer theme={NavigationTheme}>
-          <DrawerProvider>
-            <AppWrapper>
-              <StackContainer />
-            </AppWrapper>
-          </DrawerProvider>
+          <PostHogProvider apiKey={process.env.POSTHOG_API_KEY} autocapture>
+            <DrawerProvider>
+              <AppWrapper>
+                <StackContainer />
+              </AppWrapper>
+            </DrawerProvider>
+          </PostHogProvider>
         </NavigationContainer>
       </LightboxProvider>
       <Toast config={toastConfig} />
