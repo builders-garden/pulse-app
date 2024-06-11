@@ -2,6 +2,7 @@ import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {PostHogProvider} from 'posthog-react-native';
 import React from 'react';
+import {Text, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import AppWrapper from './AppWrapper';
 import MyInfoToast from './components/toasts/MyInfoToast';
@@ -47,6 +48,19 @@ function App(): React.JSX.Element {
         </NavigationContainer>
       </LightboxProvider>
       <Toast config={toastConfig} />
+      <View style={{backgroundColor: 'red'}}>
+        <Text
+          style={{
+            color: 'white',
+            textAlign: 'center',
+            fontSize: 18,
+            paddingBottom: 10,
+            paddingTop: 5,
+            fontFamily: MyTheme.fontRegular,
+          }}>
+          alpha version - alpha version - alpha version
+        </Text>
+      </View>
     </AuthProvider>
   );
 }
