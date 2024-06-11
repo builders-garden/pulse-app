@@ -50,7 +50,7 @@ function FeedStackContainer() {
         name="Channel"
         component={ChannelScreen}
         options={{
-          title: '',
+          headerShown: false,
         }}
       />
       <Stack.Screen name="ChannelDetail" component={ChannelDetailScreen} />

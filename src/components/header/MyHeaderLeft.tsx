@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/native';
 import React, {ReactNode, useContext} from 'react';
 import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
 import MenuLinesImg from '../../assets/images/icons/menu_lines.svg';
@@ -13,6 +14,8 @@ interface MyHeaderLeftProps {
 
 const MyHeaderLeft = ({title, icon, customStyle}: MyHeaderLeftProps) => {
   const drawerContext = useContext(DrawerContext);
+  const navigation = useNavigation();
+
   return (
     <View style={[styles.headerRoot, customStyle && customStyle]}>
       <MyIconButtonBase

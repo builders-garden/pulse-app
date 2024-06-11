@@ -60,35 +60,32 @@ function NotificationsScreen() {
   }, [authContext.state.token]);
 
   const fetchNewItems = useCallback(async () => {
-    if (newNotificationsFetchStatus !== 'loading' && cursor) {
-      try {
-        setNewNotificationsFetchStatus('loading');
-        console.log('fetching new notifications');
-        const res = await axios.get<NotificationsResponse>(
-          `${ENDPOINT_NOTIFICATIONS}&cursor=${cursor}`,
-          {
-            headers: {Authorization: `Bearer ${authContext.state.token}`},
-          },
-        );
-
-        setNotifications([...notifications, ...res.data.result]);
+    try {
+      setNewNotificationsFetchStatus('loading');
+      console.log('fetching new notifications', cursor);
+      const res = await axios.get<NotificationsResponse>(
+        `${ENDPOINT_NOTIFICATIONS}?cursor=${cursor}`,
+        {
+          headers: {Authorization: `Bearer ${authContext.state.token}`},
+        },
+      );
+      console.log('got new notifications', JSON.stringify(res.data));
+      setNotifications([...notifications, ...res.data.result]);
+      if (res.data.cursor) {
         setCursor(res.data.cursor);
-        setNewNotificationsFetchStatus('success');
-      } catch (error) {
-        console.error(error);
-        Toast.show({
-          type: 'error',
-          text1: 'Error fetching new items',
-        });
-        setNewNotificationsFetchStatus('error');
+      } else {
+        setCursor(undefined);
       }
+      setNewNotificationsFetchStatus('success');
+    } catch (error) {
+      console.error(error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error fetching new items',
+      });
+      setNewNotificationsFetchStatus('error');
     }
-  }, [
-    authContext.state.token,
-    cursor,
-    newNotificationsFetchStatus,
-    notifications,
-  ]);
+  }, [authContext.state.token, cursor, notifications]);
 
   const refreshPage = useCallback(async () => {
     setIsRefreshing(true);
@@ -134,7 +131,15 @@ function NotificationsScreen() {
         refreshing={isRefreshing}
         onRefresh={refreshPage}
         onEndReachedThreshold={1}
-        onEndReached={fetchNewItems}
+        onEndReached={() => {
+          if (
+            newNotificationsFetchStatus !== 'loading' &&
+            notificationsFetchStatus === 'success' &&
+            cursor
+          ) {
+            fetchNewItems();
+          }
+        }}
         ItemSeparatorComponent={() => <View style={{height: 15}} />}
         ListFooterComponent={
           newNotificationsFetchStatus === 'loading' ? (

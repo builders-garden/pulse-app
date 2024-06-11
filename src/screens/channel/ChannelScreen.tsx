@@ -1,3 +1,9 @@
+import {
+  FlatListWithHeaders,
+  Header,
+  LargeHeader,
+  ScalingView,
+} from '@codeherence/react-native-header';
 import {useScrollToTop} from '@react-navigation/native';
 import axios from 'axios';
 import React, {
@@ -7,7 +13,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {FlatList, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
+import Animated from 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 import {Channel, ChannelResponse} from '../../api/channel/types';
 import {FeedItem, FeedResponse} from '../../api/feed/types';
@@ -19,6 +26,8 @@ import MyIconButtonBase from '../../components/MyIconButtonBase';
 import MyLoader from '../../components/MyLoader';
 import MyPlaceholderLoader from '../../components/MyPlaceholderLoader';
 import MyButton from '../../components/buttons/MyButton';
+import MyHeaderLeft from '../../components/header/MyHeaderLeft';
+import MyHeaderRight from '../../components/header/MyHeaderRight';
 import MyPost from '../../components/post/MyPost';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {DrawerContext} from '../../contexts/drawer/Drawer.context';
@@ -26,7 +35,8 @@ import {TransformFeedItem} from '../../libs/post';
 import {FeedStackScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
 import {ENDPOINT_CHANNELS} from '../../variables';
-import Header from './components/Header';
+import ChannelHeader from './components/ChannelHeader';
+import ChannelHeaderLarge from './components/ChannelHeaderLarge';
 
 function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
   const authContext = useContext(AuthContext);
@@ -200,79 +210,125 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
     [navigation],
   );
 
-  if (channelFetchStatus === 'loading') {
-    return (
-      <View style={{width: '100%', padding: 20}}>
-        <MyPlaceholderLoader customStyle={{marginBottom: 20}} />
-        <MyPlaceholderLoader />
-      </View>
-    );
-  } else if (channelFetchStatus === 'error') {
-    return (
-      <View style={{width: '100%', padding: 20}}>
-        <Text>Error fetching channel</Text>
-        <MyButton
-          title="Retry"
-          onPress={() => {
-            fetchChannel();
-          }}
-        />
-      </View>
-    );
-  }
+  const HeaderComponent = useCallback(
+    ({showNavBar}) => (
+      <Header
+        showNavBar={showNavBar}
+        headerStyle={{
+          backgroundColor: MyTheme.white,
+        }}
+        headerLeft={
+          <>
+            <MyHeaderLeft />
+            {channel && (
+              <Animated.View style={{opacity: showNavBar}}>
+                <ChannelHeader
+                  title={channel?.name!}
+                  subtitle={channel?.id!}
+                  image={channel?.image_url!}
+                  customStyle={{marginLeft: 10}}
+                />
+              </Animated.View>
+            )}
+          </>
+        }
+        headerRight={<MyHeaderRight />}
+      />
+    ),
+    [channel],
+  );
 
-  return (
-    <View>
-      {feedFetchStatus === 'success' ||
-      (feed.length > 0 &&
-        (isRefreshing || newThreadsFetchStatus == 'loading')) ? (
-        <>
-          <MyFloatingButton
-            icon={<PenImg width={25} height={25} color="white" />}
-            onPress={() => {
-              navigation.navigate('CreateThread', {channel: channel});
-            }}
-          />
-          <FlatList
-            ref={listRef}
-            data={feed}
-            showsVerticalScrollIndicator={false}
-            windowSize={10}
-            onEndReachedThreshold={1}
-            onEndReached={fetchNewItems}
-            onRefresh={refreshFeed}
-            refreshing={feedFetchStatus === 'loading'}
-            ListHeaderComponent={
-              <Header
-                customStyle={{marginBottom: 15}}
-                channel={channel!}
-                onSeeMorePress={() => {
-                  navigation.navigate('ChannelDetail', {
-                    channelId: channel?.id!,
-                  });
+  const LargeHeaderComponent = useCallback(
+    ({scrollY}) => (
+      <>
+        {
+          <LargeHeader
+            headerStyle={{
+              paddingVertical: 0,
+              paddingHorizontal: 0,
+            }}>
+            <ScalingView scrollY={scrollY} style={{width: '100%'}}>
+              {channel && (
+                <ChannelHeaderLarge
+                  customStyle={{marginBottom: 15, width: '100%'}}
+                  channel={channel}
+                  onSeeMorePress={() => {
+                    navigation.navigate('ChannelDetail', {
+                      channelId: channel?.id!,
+                    });
+                  }}
+                />
+              )}
+            </ScalingView>
+          </LargeHeader>
+        }
+        {feedFetchStatus === 'loading' && !isRefreshing ? (
+          <View style={{width: '100%', padding: 20}}>
+            <MyPlaceholderLoader customStyle={{marginBottom: 20}} />
+            <MyPlaceholderLoader />
+          </View>
+        ) : (
+          feedFetchStatus === 'error' && (
+            <View style={{width: '100%', padding: 20}}>
+              <Text>Error fetching channel</Text>
+              <MyButton
+                title="Retry"
+                onPress={() => {
+                  fetchChannel();
                 }}
               />
-            }
-            ListFooterComponent={
-              newThreadsFetchStatus === 'loading' ? (
-                <View
-                  style={{width: '100%', padding: 20, alignItems: 'center'}}>
-                  <MyLoader />
-                </View>
-              ) : null
-            }
-            ItemSeparatorComponent={() => <View style={{height: 15}} />}
-            renderItem={renderItem}
-            keyExtractor={(item, _) => item.hash}
-          />
-        </>
-      ) : (
-        <View style={{width: '100%', padding: 20}}>
-          <MyPlaceholderLoader customStyle={{marginBottom: 20}} />
-          <MyPlaceholderLoader />
-        </View>
-      )}
-    </View>
+            </View>
+          )
+        )}
+      </>
+    ),
+    [navigation, channel, fetchChannel, feedFetchStatus],
+  );
+
+  return (
+    <>
+      <MyFloatingButton
+        icon={<PenImg width={25} height={25} color="white" />}
+        onPress={() => {
+          navigation.navigate('CreateThread', {channel: channel});
+        }}
+      />
+      <FlatListWithHeaders
+        ref={listRef}
+        HeaderComponent={HeaderComponent}
+        LargeHeaderComponent={LargeHeaderComponent}
+        data={feed}
+        showsVerticalScrollIndicator={false}
+        windowSize={10}
+        onEndReachedThreshold={1}
+        onEndReached={() => {
+          if (
+            feedFetchStatus === 'success' &&
+            newThreadsFetchStatus === 'idle' &&
+            cursor
+          ) {
+            fetchNewItems();
+          }
+        }}
+        onRefresh={refreshFeed}
+        refreshing={isRefreshing}
+        ListFooterComponent={
+          newThreadsFetchStatus === 'loading' ? (
+            <View
+              style={{
+                width: '100%',
+                padding: 20,
+                alignItems: 'center',
+              }}>
+              <MyLoader />
+            </View>
+          ) : null
+        }
+        ItemSeparatorComponent={() => <View style={{height: 15}} />}
+        renderItem={renderItem}
+        keyExtractor={(item, _) => item.hash}
+      />
+    </>
   );
 }
 

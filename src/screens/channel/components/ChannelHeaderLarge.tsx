@@ -12,13 +12,17 @@ import {Channel} from '../../../api/channel/types';
 import FollowCounter from '../../../components/FollowCounter';
 import {MyTheme} from '../../../theme';
 
-interface HeaderProps {
+interface ChannelHeaderLargeProps {
   channel: Channel;
   customStyle?: StyleProp<ViewStyle>;
   onSeeMorePress?: () => void;
 }
 
-function Header({channel, customStyle, onSeeMorePress}: HeaderProps) {
+function ChannelHeaderLarge({
+  channel,
+  customStyle,
+  onSeeMorePress,
+}: ChannelHeaderLargeProps) {
   return (
     <View style={[styles.upperSection, customStyle && customStyle]}>
       <View style={styles.channelInfo}>
@@ -110,4 +114,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Header;
+export default ChannelHeaderLarge;
