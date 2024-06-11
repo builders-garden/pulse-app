@@ -148,7 +148,7 @@ function ProfileScreen({
   }, [authContext.state.token, authContext.state.fid]);
 
   const fetchNewComments = useCallback(async () => {
-    if (newCommentsFetchStatus !== 'loading' && commentsCursor) {
+    if (newCommentsFetchStatus !== 'loading') {
       try {
         setNewCommentsFetchStatus('loading');
         console.log('fetching new threads');
@@ -163,7 +163,11 @@ function ProfileScreen({
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
         setComments([...comments, ...res.data.result]);
-        setCommentsCursor(res.data.cursor);
+        if (res.data.cursor) {
+          setCommentsCursor(res.data.cursor);
+        } else {
+          setCommentsCursor(undefined);
+        }
         setNewCommentsFetchStatus('success');
       } catch (error) {
         console.error(error);
@@ -182,7 +186,7 @@ function ProfileScreen({
     newCommentsFetchStatus,
   ]);
   const fetchNewUserCasts = useCallback(async () => {
-    if (newUserCastsFetchStatus !== 'loading' && userCastsCursor) {
+    if (newUserCastsFetchStatus !== 'loading') {
       try {
         setNewUserCastsFetchStatus('loading');
         console.log('fetching new threads');
@@ -196,7 +200,11 @@ function ProfileScreen({
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
         setUserCasts([...userCasts, ...res.data.result]);
-        setUserCastsCursor(res.data.cursor);
+        if (res.data.cursor) {
+          setUserCastsCursor(res.data.cursor);
+        } else {
+          setUserCastsCursor(undefined);
+        }
         setNewUserCastsFetchStatus('success');
       } catch (error) {
         console.error(error);
@@ -459,11 +467,17 @@ function ProfileScreen({
   return (
     <FlatList
       ref={listRef}
-      data={selectedTab === 0 ? userCasts : comments}
+      data={selectedTab === 0 ? userCasts : selectedTab === 1 ? comments : []}
       windowSize={10}
       showsVerticalScrollIndicator={false}
       onEndReachedThreshold={1}
-      onEndReached={selectedTab === 0 ? fetchNewUserCasts : fetchNewComments}
+      onEndReached={() => {
+        if (selectedTab === 0 && userCastsCursor) {
+          fetchNewUserCasts();
+        } else if (selectedTab === 1 && commentsCursor) {
+          fetchNewComments();
+        }
+      }}
       onRefresh={refreshPage}
       refreshing={isRefreshing}
       ListHeaderComponent={
@@ -474,13 +488,11 @@ function ProfileScreen({
               isLoggedUser={isLoggedUserProfile}
             />
           )}
-          <View style={{padding: 15}}>
-            <MyTabs
-              tabs={['Threads', 'Comments', 'About']}
-              selectedTab={selectedTab}
-              onPress={setSelectedTab}
-            />
-          </View>
+          <MyTabs
+            tabs={['Threads', 'Comments', 'About']}
+            selectedTab={selectedTab}
+            onPress={setSelectedTab}
+          />
           {!isRefreshing &&
             (userCastsFetchStatus === 'loading' ||
             commentsFetchStatus === 'loading' ? (
@@ -510,6 +522,7 @@ function ProfileScreen({
             profile && (
               <About
                 recentChannels={recentChannels}
+                profile={profile}
                 onChannelPress={channelId => {
                   jumpToFeedRoot('Channel', {
                     channelId,

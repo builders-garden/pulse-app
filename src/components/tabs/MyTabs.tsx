@@ -32,7 +32,10 @@ const styles = StyleSheet.create({
   tabsCtn: {
     flexDirection: 'row',
     backgroundColor: MyTheme.white,
-    borderRadius: 8,
+    borderTopColor: MyTheme.greyTransparent,
+    borderTopWidth: 1,
+    borderBottomColor: MyTheme.greyTransparent,
+    borderBottomWidth: 1,
   },
 });
 export default MyTabs;

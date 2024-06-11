@@ -21,6 +21,10 @@ export type Profile = Author & {
     following: boolean;
     followed_by: boolean;
   };
+  socialCapital?: {
+    socialCapitalScore: number;
+    socialCapitalRank: number;
+  };
 };
 
 export type ProfileFollowDetail = {
