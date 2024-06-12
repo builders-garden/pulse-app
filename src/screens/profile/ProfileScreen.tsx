@@ -560,6 +560,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     paddingBottom: 100,
+    marginTop: 100,
   },
   errorCtn: {
     justifyContent: 'center',

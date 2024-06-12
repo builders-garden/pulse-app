@@ -1,4 +1,4 @@
-import {NeynarSigninButton, Variant} from '@neynar/react-native-signin';
+import {NeynarSigninButton} from '@neynar/react-native-signin';
 import axios from 'axios';
 import React, {useCallback, useContext, useState} from 'react';
 import {
@@ -208,7 +208,8 @@ function SignInScreen() {
                 console.log('User is not authenticated');
               }
             }}
-            variant={Variant.WARPCAST}
+            customLogoUrl="https://ik.imagekit.io/buildersgarden/262800_hfXBlvg13"
+            text="Sign in with Warpcast"
             buttonStyles={styles.warpcastBtn}
             textStyles={styles.warpcastBtnText}
             backgroundColor={MyTheme.warpcast}
@@ -310,7 +311,7 @@ const carouselData: OnboardingSlide[] = [
         <Text style={styles.titleText}>on Farcaster</Text>
       </>
     ),
-    body: 'Lorem ipsum dolor sit amet consectetur. Mi viverra nullam eu at id luctus. Amet nisl id.',
+    body: 'Stringz is the client focused on offering an enhanced content experience and long conversations!',
     image: require('../../../assets/images/onboarding/screen.jpg'),
   },
   // {

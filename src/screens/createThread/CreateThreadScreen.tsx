@@ -600,7 +600,7 @@ function CreateThreadScreen({
         showsVerticalScrollIndicator={false}
         data={threads}
         ListHeaderComponent={
-          <View style={{marginBottom: 20}}>
+          <View style={{marginBottom: 20, paddingHorizontal: 20}}>
             <ChannelButton
               channel={selectedChannel}
               onPress={() => {
@@ -726,7 +726,6 @@ function CreateThreadScreen({
 
 const styles = StyleSheet.create({
   threadsCtn: {
-    paddingHorizontal: 20,
     paddingTop: 20,
   },
   contentContainer: {

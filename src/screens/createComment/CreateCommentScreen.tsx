@@ -278,7 +278,6 @@ function CreateCommentScreen({
 
 const styles = StyleSheet.create({
   threadCtn: {
-    paddingHorizontal: 20,
     paddingTop: 20,
   },
   contentContainer: {

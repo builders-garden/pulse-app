@@ -299,6 +299,8 @@ const styles = StyleSheet.create({
   mediaCtn: {
     flexDirection: 'row',
     width: '100%',
+    flexWrap: 'wrap',
+    rowGap: 10,
   },
   footer: {
     paddingHorizontal: 10,

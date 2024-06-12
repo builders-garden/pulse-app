@@ -59,74 +59,97 @@ const WebPreview = ({url, linkPreview, customStyle}: WebPreviewProps) => {
 
   if (title !== '' && description === '' && image === '') {
     return (
-      <Pressable style={[styles.container, customStyle]} onPress={OpenURL}>
-        <View style={styles.placeholderBox}>
-          <LinkImg width={50} height={50} />
-        </View>
-        <Text style={styles.titleOnly} ellipsizeMode="tail" numberOfLines={1}>
-          {title}
-        </Text>
-      </Pressable>
+      <View style={styles.root}>
+        <Pressable style={[styles.container, customStyle]} onPress={OpenURL}>
+          <View style={styles.placeholderBox}>
+            <LinkImg width={30} height={30} />
+          </View>
+          <Text style={styles.titleOnly} ellipsizeMode="tail" numberOfLines={1}>
+            {title}
+          </Text>
+        </Pressable>
+      </View>
     );
   }
 
   return (
-    <Pressable style={[styles.container, customStyle]} onPress={OpenURL}>
-      {image !== '' ? (
-        <FastImage
-          source={{uri: image}}
-          style={styles.image}
-          resizeMode="contain"
-        />
-      ) : (
-        <View style={styles.placeholderBox}>
-          <LinkImg width={50} height={50} />
+    <View style={styles.root}>
+      <Pressable style={[styles.container, customStyle]} onPress={OpenURL}>
+        {image !== '' ? (
+          <FastImage
+            source={{uri: image}}
+            style={styles.image}
+            resizeMode="cover"
+          />
+        ) : (
+          <View style={styles.placeholderBox}>
+            <LinkImg width={30} height={30} />
+          </View>
+        )}
+        <View style={styles.textsCtn}>
+          {title !== '' && (
+            <Text style={styles.title} ellipsizeMode="tail" numberOfLines={1}>
+              {title}
+            </Text>
+          )}
+          {description !== '' && (
+            <Text
+              style={styles.description}
+              ellipsizeMode="tail"
+              numberOfLines={1}>
+              {description}
+            </Text>
+          )}
         </View>
-      )}
-      {title !== '' && <Text style={styles.title}>{title}</Text>}
-      {description !== '' && (
-        <Text style={styles.description} ellipsizeMode="tail" numberOfLines={1}>
-          {description}
-        </Text>
-      )}
-    </Pressable>
+      </Pressable>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  root: {
+    paddingHorizontal: 20,
     width: '100%',
+  },
+  container: {
     backgroundColor: MyTheme.white,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: MyTheme.greyTransparent,
+    borderWidth: 1,
+    borderRadius: 3,
+    width: '100%',
   },
   image: {
-    width: '100%',
-    height: 150,
+    width: 55,
+    height: 55,
     resizeMode: 'cover',
+    borderTopLeftRadius: 3,
+    borderBottomLeftRadius: 3,
   },
   placeholderBox: {
-    width: '100%',
-    height: 80,
-    justifyContent: 'flex-end',
+    width: 55,
+    height: 55,
+    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: MyTheme.white,
   },
+  textsCtn: {
+    flex: 1,
+  },
   title: {
-    fontSize: 16,
-    marginTop: 10,
     paddingHorizontal: 10,
-    fontFamily: MyTheme.fontBold,
+    fontFamily: MyTheme.fontSemiBold,
     color: MyTheme.black,
   },
   titleOnly: {
-    fontSize: 16,
-    marginTop: 10,
-    marginBottom: 10,
+    flex: 1,
     paddingHorizontal: 10,
     fontFamily: MyTheme.fontRegular,
     color: MyTheme.black,
   },
   description: {
-    marginBottom: 10,
+    fontSize: 12,
     paddingHorizontal: 10,
     fontFamily: MyTheme.fontRegular,
     color: MyTheme.black,

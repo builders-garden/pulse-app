@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Alert, Linking, Pressable, StyleSheet, Text, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {MostRecentChannel} from '../../../api/channel/types';
 import {Profile} from '../../../api/profile/types';
@@ -14,6 +14,21 @@ interface AboutProps {
 }
 
 function About({recentChannels, profile, onChannelPress}: AboutProps) {
+  async function OpenLearnMore() {
+    const learnMoreUrl =
+      'https://docs.airstack.xyz/airstack-docs-and-faqs/farcaster/farcaster/social-capital';
+
+    const supported = await Linking.canOpenURL(learnMoreUrl);
+
+    if (!supported) {
+      Alert.alert(`Don't know how to open this URL: ${learnMoreUrl}`);
+      return;
+    }
+
+    // SignerPollLoop(signerRes);
+    await Linking.openURL(learnMoreUrl);
+  }
+
   const channelsHtml = useMemo(
     () =>
       recentChannels.map(el => (
@@ -60,17 +75,43 @@ function About({recentChannels, profile, onChannelPress}: AboutProps) {
         </View>
         <View style={styles.socialCapitalRoot}>
           <View style={styles.socialCapitalBox}>
-            <View>
+            <View
+              style={[
+                styles.socialCapitalBoxSection,
+                {
+                  justifyContent: 'flex-end',
+                },
+              ]}>
               <Text style={styles.socialCapitalRank}>
                 n.
                 {profile.socialCapital?.socialCapitalRank}
               </Text>
             </View>
-            <View>
+            <View
+              style={[
+                styles.socialCapitalBoxSection,
+                {
+                  justifyContent: 'center',
+                },
+              ]}>
               <Text style={styles.socialCapitalScore}>{flooredScore}</Text>
             </View>
-            <View>
-              <Text style={styles.socialCapitalLabel}>SCS</Text>
+            <View
+              style={[
+                styles.socialCapitalBoxSection,
+                {
+                  justifyContent: 'flex-start',
+                },
+              ]}>
+              <Text style={styles.socialCapitalLabel}>
+                Social Capital Score
+              </Text>
+              <Text
+                style={styles.socialCapitalSubLabel}
+                onPress={OpenLearnMore}
+                suppressHighlighting>
+                powered by Airstack
+              </Text>
             </View>
           </View>
         </View>
@@ -121,6 +162,7 @@ const styles = StyleSheet.create({
   },
   socialCapitalRoot: {
     paddingHorizontal: 14,
+    marginBottom: 14,
   },
   socialCapitalBox: {
     width: '100%',
@@ -130,6 +172,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 3,
   },
+  socialCapitalBoxSection: {
+    alignItems: 'center',
+    height: '25%',
+  },
+  learnMoreBox: {position: 'absolute', bottom: 5},
+  learnMoreText: {
+    color: MyTheme.primaryColor,
+    fontFamily: MyTheme.fontRegular,
+    fontSize: 10,
+    textDecorationLine: 'underline',
+  },
   socialCapitalRank: {
     color: MyTheme.primaryColor,
     fontFamily: MyTheme.fontSemiBold,
@@ -138,11 +191,18 @@ const styles = StyleSheet.create({
     color: MyTheme.primaryColor,
     fontSize: 24,
     fontFamily: MyTheme.fontBold,
-    marginVertical: 5,
   },
   socialCapitalLabel: {
     color: MyTheme.grey400,
     fontFamily: MyTheme.fontRegular,
+  },
+  socialCapitalSubLabel: {
+    color: MyTheme.primaryColor,
+    textDecorationLine: 'underline',
+    textAlign: 'center',
+    fontFamily: MyTheme.fontRegular,
+    fontSize: 10,
+    marginBottom: -11,
   },
 });
 

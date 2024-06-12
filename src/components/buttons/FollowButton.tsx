@@ -46,14 +46,14 @@ const FollowButton = ({
     try {
       if (isCurrentlyFollowing) {
         const finalUrl = `${ENDPOINT_PROFILE}/unfollow`;
-        console.log('deleting', finalUrl, fid);
+        // console.log('deleting', finalUrl, fid);
         const res = await axios.delete<ProfileFollowResponse>(finalUrl, {
           data: {
             fids: fid,
           },
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
-        console.log('got response', res.data);
+        // console.log('got response', res.data);
         if (res.data.result.success) {
           if (isFollow === 1) {
             setIsFollow(0);
@@ -69,8 +69,8 @@ const FollowButton = ({
         }
       } else {
         const finalUrl = `${ENDPOINT_PROFILE}/follow`;
-        console.log('following', finalUrl);
-        console.log('following', fid);
+        // console.log('following', finalUrl);
+        // console.log('following', fid);
         const res = await axios.post<ProfileFollowResponse>(
           finalUrl,
           {
@@ -80,7 +80,7 @@ const FollowButton = ({
             headers: {Authorization: `Bearer ${authContext.state.token}`},
           },
         );
-        console.log('got response', res.data);
+        // console.log('got response', res.data);
         if (res.data.result.success) {
           if (isFollow === -1) {
             setIsFollow(0);

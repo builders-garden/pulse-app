@@ -20,7 +20,7 @@ function UpperSection({profile, isLoggedUser}: UpperSectionProps) {
           style={styles.profileImage}
           source={{uri: profile?.pfp_url}}
         />
-        <View style={{marginLeft: 15}}>
+        <View style={styles.profileInfoTextsCtn}>
           <Text
             style={styles.displayName}
             numberOfLines={1}
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
+  profileInfoTextsCtn: {marginLeft: 15, flex: 1},
   profileImage: {
     width: 50,
     height: 50,

@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@animatereactnative/marquee": "^0.2.0",
     "@codeherence/react-native-header": "^0.12.2",
     "@gorhom/bottom-sheet": "^4",
     "@neynar/react-native-signin": "^1.1.0",

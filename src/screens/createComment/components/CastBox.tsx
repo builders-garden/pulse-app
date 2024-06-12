@@ -64,7 +64,8 @@ function CastBox({cast, customStyle}: CastBoxProps) {
 const styles = StyleSheet.create({
   root: {
     flexDirection: 'row',
-    left: -10,
+    paddingRight: 20,
+    paddingLeft: 10,
   },
   border: {
     width: 2,
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
   },
   contentCtn: {
     backgroundColor: MyTheme.white,
-    width: '100%',
+    flex: 1,
     padding: 15,
     borderTopRightRadius: 8,
     borderBottomRightRadius: 8,

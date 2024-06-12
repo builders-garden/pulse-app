@@ -96,14 +96,14 @@ const MyComment = ({
     try {
       const finalUrl = `${ENDPOINT_CAST}/${commentHash}/reactions`;
       if ((upvoted && isUpvoted === 0) || isUpvoted === 1) {
-        console.log('deleting', finalUrl);
+        // console.log('deleting', finalUrl);
         const res = await axios.delete<ReactionResponse>(finalUrl, {
           data: {
             reactionType: 'like',
           },
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
-        console.log('got response', res.data);
+        // console.log('got response', res.data);
         if (res.data.result.success) {
           if (isUpvoted === 1) {
             setIsUpvoted(0);

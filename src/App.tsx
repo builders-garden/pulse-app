@@ -1,3 +1,4 @@
+import {Marquee} from '@animatereactnative/marquee';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {PostHogProvider} from 'posthog-react-native';
@@ -49,17 +50,19 @@ function App(): React.JSX.Element {
       </LightboxProvider>
       <Toast config={toastConfig} />
       <View style={{backgroundColor: 'red'}}>
-        <Text
-          style={{
-            color: 'white',
-            textAlign: 'center',
-            fontSize: 18,
-            paddingBottom: 10,
-            paddingTop: 5,
-            fontFamily: MyTheme.fontRegular,
-          }}>
-          alpha version - alpha version - alpha version
-        </Text>
+        <Marquee speed={0.4}>
+          <Text
+            numberOfLines={1}
+            style={{
+              color: 'white',
+              fontSize: 18,
+              paddingBottom: 10,
+              paddingTop: 5,
+              fontFamily: MyTheme.fontRegular,
+            }}>
+            alpha version -{' '}
+          </Text>
+        </Marquee>
       </View>
     </AuthProvider>
   );
