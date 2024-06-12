@@ -14,7 +14,6 @@ import {Embed} from '../../api/feed/types';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {MyTheme} from '../../theme';
 import {ENDPOINT_CAST} from '../../variables';
-import MyIconButton from '../MyIconButton';
 import UrlViewer from '../UrlViewer';
 import PostActionBar from './PostActionBar';
 
@@ -195,13 +194,13 @@ const MyPost = ({
             {headerSubtitle}
           </Text>
         </View>
-        <MyIconButton
+        {/* <MyIconButton
           iconSize={25}
           onPress={() => {}}
           style="secondary"
           filling="clear"
           icon={require('../../assets/images/icons/vertical_dots.png')}
-        />
+        /> */}
         {/* <Entypo
             name="dots-three-horizontal"
             size={16}

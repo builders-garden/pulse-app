@@ -258,8 +258,14 @@ function ProfileScreen({
           <MyPost
             postHash={item.hash}
             headerImg={transformedItem.headerImg}
-            postTime={transformedItem.postTime}
-            headerTitle={transformedItem.headerTitle}
+            postTime={
+              transformedItem.postTime +
+              transformedItem.postTime +
+              transformedItem.postTime
+            }
+            headerTitle={
+              transformedItem.headerTitle + transformedItem.headerTitle
+            }
             headerSubtitle={transformedItem.headerSubtitle}
             content={transformedItem.content}
             images={transformedItem.images}

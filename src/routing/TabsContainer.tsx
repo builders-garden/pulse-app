@@ -23,145 +23,147 @@ function TabsContainer() {
   const authContext = useContext(AuthContext);
 
   return (
-    <Tab.Navigator
-      screenOptions={({route}) => ({
-        tabBarShowLabel: false,
-        headerStyle: {
-          backgroundColor: MyTheme.white,
-        },
-        headerTintColor: MyTheme.black,
-        tabBarIcon: ({focused}) => {
-          let icon;
-          let size = 25;
-          const color = focused ? MyTheme.white : MyTheme.black;
+    <>
+      <Tab.Navigator
+        screenOptions={({route}) => ({
+          tabBarShowLabel: false,
+          headerStyle: {
+            backgroundColor: MyTheme.white,
+          },
+          headerTintColor: MyTheme.black,
+          tabBarIcon: ({focused}) => {
+            let icon;
+            let size = 25;
+            const color = focused ? MyTheme.white : MyTheme.black;
 
-          if (route.name === 'FeedRoot') {
-            icon = <FeedImg color={color} />;
-          } else if (route.name === 'Discover') {
-            icon = <RadarImg color={color} />;
-          } else if (route.name === 'Notifications') {
-            icon = <BellImg color={color} />;
-          } else if (route.name === 'PersonalProfile') {
-            icon = (
-              <FastImage
-                source={{uri: authContext.state.profile?.pfp_url}}
-                style={{
-                  width: size,
-                  height: size,
-                  borderRadius: 5,
-                  zIndex: 1,
-                }}
-              />
-            );
+            if (route.name === 'FeedRoot') {
+              icon = <FeedImg color={color} />;
+            } else if (route.name === 'Discover') {
+              icon = <RadarImg color={color} />;
+            } else if (route.name === 'Notifications') {
+              icon = <BellImg color={color} />;
+            } else if (route.name === 'PersonalProfile') {
+              icon = (
+                <FastImage
+                  source={{uri: authContext.state.profile?.pfp_url}}
+                  style={{
+                    width: size,
+                    height: size,
+                    borderRadius: 5,
+                    zIndex: 1,
+                  }}
+                />
+              );
+
+              if (focused) {
+                return (
+                  <View>
+                    {icon}
+                    <LinearGradient
+                      style={styles.selectedTabBarProfile}
+                      colors={[
+                        MyTheme.primaryGradientFirst,
+                        MyTheme.primaryGradientSecond,
+                      ]}
+                    />
+                  </View>
+                );
+              }
+            }
 
             if (focused) {
               return (
-                <View>
+                <LinearGradient
+                  style={styles.selectedTabBarBtn}
+                  colors={[
+                    MyTheme.primaryGradientFirst,
+                    MyTheme.primaryGradientSecond,
+                  ]}>
                   {icon}
-                  <LinearGradient
-                    style={styles.selectedTabBarProfile}
-                    colors={[
-                      MyTheme.primaryGradientFirst,
-                      MyTheme.primaryGradientSecond,
-                    ]}
-                  />
-                </View>
+                </LinearGradient>
               );
             }
-          }
 
-          if (focused) {
-            return (
-              <LinearGradient
-                style={styles.selectedTabBarBtn}
-                colors={[
-                  MyTheme.primaryGradientFirst,
-                  MyTheme.primaryGradientSecond,
-                ]}>
-                {icon}
-              </LinearGradient>
-            );
-          }
-
-          return icon;
-        },
-      })}
-      initialRouteName="FeedRoot">
-      <Tab.Screen
-        name="FeedRoot"
-        component={FeedStackContainer}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Tab.Screen
-        name="Discover"
-        options={{
-          title: '',
-          headerLeft: () => (
-            <MyHeaderLeft
-              title="Discover"
-              customStyle={{
-                paddingLeft: 14,
-              }}
-              icon={<RadarImg color={MyTheme.primaryColor} />}
-            />
-          ),
-        }}
-        component={DiscoverScreen}
-      />
-      <Tab.Screen
-        name="Notifications"
-        options={{
-          title: '',
-          headerLeft: () => (
-            <MyHeaderLeft
-              title="Notifications"
-              customStyle={{
-                paddingLeft: 14,
-              }}
-              icon={<BellImg color={MyTheme.primaryColor} />}
-            />
-          ),
-          headerShadowVisible: false,
-        }}
-        component={NotificationsScreen}
-      />
-      <Tab.Screen
-        name="PersonalProfile"
-        options={{
-          title: '',
-          headerShadowVisible: false,
-          headerLeft: () => (
-            <MyHeaderLeft
-              customStyle={{
-                paddingLeft: 14,
-              }}
-              // icon={
-              //   <FastImage
-              //     source={{uri: authContext.state.profile?.pfp_url}}
-              //     style={{
-              //       width: 25,
-              //       height: 25,
-              //       borderRadius: 5,
-              //       zIndex: 1,
-              //     }}
-              //   />
-              // }
-            />
-          ),
-          headerRight: () => (
-            <MyHeaderRight
-              customStyle={{
-                marginRight: 16,
-              }}
-            />
-          ),
-        }}
-        initialParams={{userFid: authContext.state.fid}}
-        component={ProfileScreen}
-      />
-    </Tab.Navigator>
+            return icon;
+          },
+        })}
+        initialRouteName="FeedRoot">
+        <Tab.Screen
+          name="FeedRoot"
+          component={FeedStackContainer}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Tab.Screen
+          name="Discover"
+          options={{
+            title: '',
+            headerLeft: () => (
+              <MyHeaderLeft
+                title="Discover"
+                customStyle={{
+                  paddingLeft: 14,
+                }}
+                icon={<RadarImg color={MyTheme.primaryColor} />}
+              />
+            ),
+          }}
+          component={DiscoverScreen}
+        />
+        <Tab.Screen
+          name="Notifications"
+          options={{
+            title: '',
+            headerLeft: () => (
+              <MyHeaderLeft
+                title="Notifications"
+                customStyle={{
+                  paddingLeft: 14,
+                }}
+                icon={<BellImg color={MyTheme.primaryColor} />}
+              />
+            ),
+            headerShadowVisible: false,
+          }}
+          component={NotificationsScreen}
+        />
+        <Tab.Screen
+          name="PersonalProfile"
+          options={{
+            title: '',
+            headerShadowVisible: false,
+            headerLeft: () => (
+              <MyHeaderLeft
+                customStyle={{
+                  paddingLeft: 14,
+                }}
+                // icon={
+                //   <FastImage
+                //     source={{uri: authContext.state.profile?.pfp_url}}
+                //     style={{
+                //       width: 25,
+                //       height: 25,
+                //       borderRadius: 5,
+                //       zIndex: 1,
+                //     }}
+                //   />
+                // }
+              />
+            ),
+            headerRight: () => (
+              <MyHeaderRight
+                customStyle={{
+                  marginRight: 16,
+                }}
+              />
+            ),
+          }}
+          initialParams={{userFid: authContext.state.fid}}
+          component={ProfileScreen}
+        />
+      </Tab.Navigator>
+    </>
   );
 }
 

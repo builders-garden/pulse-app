@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Alert,
   Linking,
   Pressable,
   StyleProp,
@@ -46,12 +45,12 @@ const WebPreview = ({url, linkPreview, customStyle}: WebPreviewProps) => {
   }
 
   async function OpenURL() {
-    const supported = await Linking.canOpenURL(url);
+    // const supported = await Linking.canOpenURL(url);
 
-    if (!supported) {
-      Alert.alert(`Don't know how to open this URL: ${url}`);
-      return;
-    }
+    // if (!supported) {
+    //   Alert.alert(`Don't know how to open this URL: ${url}`);
+    //   return;
+    // }
 
     // SignerPollLoop(signerRes);
     await Linking.openURL(url);

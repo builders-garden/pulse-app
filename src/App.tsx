@@ -1,11 +1,10 @@
-import {Marquee} from '@animatereactnative/marquee';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {PostHogProvider} from 'posthog-react-native';
 import React from 'react';
-import {Text, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import AppWrapper from './AppWrapper';
+import DevMarquee from './components/DevMarquee';
 import MyInfoToast from './components/toasts/MyInfoToast';
 import AuthProvider from './contexts/auth/AuthProvider';
 import DrawerProvider from './contexts/drawer/DrawerProvider';
@@ -49,21 +48,7 @@ function App(): React.JSX.Element {
         </NavigationContainer>
       </LightboxProvider>
       <Toast config={toastConfig} />
-      <View style={{backgroundColor: 'red'}}>
-        <Marquee speed={0.4}>
-          <Text
-            numberOfLines={1}
-            style={{
-              color: 'white',
-              fontSize: 18,
-              paddingBottom: 10,
-              paddingTop: 5,
-              fontFamily: MyTheme.fontRegular,
-            }}>
-            alpha version -{' '}
-          </Text>
-        </Marquee>
-      </View>
+      <DevMarquee />
     </AuthProvider>
   );
 }

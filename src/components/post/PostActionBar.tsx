@@ -1,14 +1,11 @@
 import React from 'react';
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import CommentImg from '../../assets/images/icons/comment.svg';
-import HatImg from '../../assets/images/icons/hat.svg';
 import QuoteImg from '../../assets/images/icons/quote.svg';
-import ShareImg from '../../assets/images/icons/share.svg';
 import UpvoteImg from '../../assets/images/icons/upvote.svg';
 import UpvoteFillImg from '../../assets/images/icons/upvote_fill.svg';
 import {MyTheme} from '../../theme';
 import MyChipBase from '../MyChipBase';
-import MyIconButtonBase from '../MyIconButtonBase';
 type PostActionBarProps = {
   commentsCount: number;
   quotesCount: number;
@@ -115,7 +112,7 @@ const PostActionBar = ({
         customStyle={styles.leftChip}
         textCustomStyle={styles.leftChipText}
       />
-      <View style={styles.verticalDivider} />
+      {/* <View style={styles.verticalDivider} />
       <MyChipBase
         iconLeft={
           <HatImg
@@ -133,7 +130,7 @@ const PostActionBar = ({
           onTipPress && onTipPress();
         }}
         customStyle={styles.tipChip}
-      />
+      /> */}
       {/* <MyIconButtonBase
         onPress={() => {
           onBookmarkPress && onBookmarkPress();
@@ -142,14 +139,14 @@ const PostActionBar = ({
         icon={<BookmarkImg width={18} height={18} color={MyTheme.grey300} />}
         customStyle={{marginLeft: 'auto', marginRight: 8}}
       /> */}
-      <MyIconButtonBase
+      {/* <MyIconButtonBase
         onPress={() => {
           onSharePress && onSharePress();
         }}
         filling="clear"
         icon={<ShareImg width={18} height={18} color={MyTheme.grey300} />}
         customStyle={styles.shareBtn}
-      />
+      /> */}
     </View>
   );
 };
