@@ -10,6 +10,7 @@ import {
 import FastImage from 'react-native-fast-image';
 import {Channel} from '../../../api/channel/types';
 import FollowCounter from '../../../components/FollowCounter';
+import HighlightedText from '../../../components/HighlightedText';
 import {MyTheme} from '../../../theme';
 
 interface ChannelHeaderLargeProps {
@@ -52,7 +53,10 @@ function ChannelHeaderLarge({
           </View>
         </View>
       </View>
-      <Text style={styles.description}>{channel.description}</Text>
+      <HighlightedText
+        customStyle={styles.description}
+        text={channel.description}
+      />
       <Pressable onPress={onSeeMorePress}>
         <Text style={styles.seeMoreText}>See more</Text>
       </Pressable>

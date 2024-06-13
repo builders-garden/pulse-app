@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {TrendingCastResult} from '../../../api/cast/types';
+import HighlightedText from '../../../components/HighlightedText';
 import {formatDate} from '../../../libs/date';
 import {MyTheme} from '../../../theme';
 import TrendingPostActionBar from './TrendingPostActionBar';
@@ -61,18 +62,16 @@ const TrendingPostItem = ({
             /> */}
           </View>
           <View style={styles.contentCtn}>
-            <Text
+            <HighlightedText
               numberOfLines={3}
-              suppressHighlighting
-              ellipsizeMode="tail"
               onPress={() => {
                 if (onContentBodyPress) {
                   onContentBodyPress();
                 }
               }}
-              style={styles.contentBody}>
-              {trendingCast.cast.text}
-            </Text>
+              customStyle={styles.contentBody}
+              text={trendingCast.cast.text}
+            />
           </View>
         </View>
         <TrendingPostActionBar

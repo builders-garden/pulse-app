@@ -16,6 +16,7 @@ import BorderLineImg from '../../assets/images/thread/quote_border_line.svg';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {MyTheme} from '../../theme';
 import {ENDPOINT_CAST} from '../../variables';
+import HighlightedText from '../HighlightedText';
 import MyIconButton from '../MyIconButton';
 import UrlViewer from '../UrlViewer';
 import CommentActionBar from './CommentActionBar';
@@ -277,19 +278,19 @@ const MyComment = ({
           </View>
         )}
         <View style={styles.contentCtn}>
-          <Text
-            style={[
+          <HighlightedText
+            customStyle={[
               styles.contentText,
               {
                 marginBottom: images ? 20 : 0,
               },
             ]}
-            suppressHighlighting
             onPress={() => {
               onContentBodyPress && onContentBodyPress();
-            }}>
-            {content}
-          </Text>
+            }}
+            text={content}
+          />
+
           {/* {image && <Image style={styles.contentImage} source={{uri: image}} />} */}
           {images && <View style={styles.mediaCtn}>{mediaHtml}</View>}
         </View>

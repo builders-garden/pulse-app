@@ -45,8 +45,7 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
   const [feedFetchStatus, setFeedFetchStatus] = useState<RequestStatus>('idle');
   const [newThreadsFetchStatus, setNewThreadsFetchStatus] =
     useState<RequestStatus>('idle');
-  const [channelFetchStatus, setChannelFetchStatus] =
-    useState<RequestStatus>('idle');
+  const [, setChannelFetchStatus] = useState<RequestStatus>('idle');
   const [channel, setChannel] = useState<Channel>();
   const [feed, setFeed] = useState<FeedItem[]>([]);
   const [cursor, setCursor] = useState<string>();
@@ -217,6 +216,7 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
         headerStyle={{
           backgroundColor: MyTheme.white,
         }}
+        ignoreTopSafeArea
         headerLeft={
           <>
             <MyHeaderLeft />

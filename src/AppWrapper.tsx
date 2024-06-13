@@ -4,9 +4,13 @@ import React, {
   useContext,
   useEffect,
 } from 'react';
+import {View} from 'react-native';
 import BootSplash from 'react-native-bootsplash';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import DevMarquee from './components/DevMarquee';
 import {AuthContext} from './contexts/auth/Auth.context';
+import {MyTheme} from './theme';
 
 async function retrieveUserToken() {
   try {
@@ -23,6 +27,7 @@ async function retrieveUserToken() {
 
 function AppWrapper({children}: PropsWithChildren): React.JSX.Element {
   const authContext = useContext(AuthContext);
+  const insets = useSafeAreaInsets();
 
   const checkUserToken = useCallback(async () => {
     if (authContext) {
@@ -44,7 +49,14 @@ function AppWrapper({children}: PropsWithChildren): React.JSX.Element {
     init();
   }, []);
 
-  return <>{children}</>;
+  return (
+    <>
+      <View style={{paddingTop: insets.top, backgroundColor: MyTheme.white}}>
+        <DevMarquee />
+      </View>
+      {children}
+    </>
+  );
 }
 
 export default AppWrapper;

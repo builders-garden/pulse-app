@@ -4,6 +4,7 @@ import FastImage from 'react-native-fast-image';
 import {Profile} from '../../../api/profile/types';
 import FidImg from '../../../assets/images/icons/fid.svg';
 import FollowCounter from '../../../components/FollowCounter';
+import HighlightedText from '../../../components/HighlightedText';
 import FollowButton from '../../../components/buttons/FollowButton';
 import {MyTheme} from '../../../theme';
 
@@ -35,7 +36,10 @@ function UpperSection({profile, isLoggedUser}: UpperSectionProps) {
           </View>
         </View>
       </View>
-      <Text style={styles.bio}>{profile.profile.bio.text}</Text>
+      <HighlightedText
+        customStyle={styles.bio}
+        text={profile.profile.bio.text}
+      />
       <View style={styles.countersCtn}>
         <FollowCounter
           count={profile.following_count}

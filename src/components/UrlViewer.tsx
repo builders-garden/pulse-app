@@ -19,6 +19,7 @@ const UrlViewer = ({url}: UrlViewerProps) => {
     const fetchMediaType = async () => {
       try {
         const res: LinkPreview = await getLinkPreview(url);
+        console.log('Link preview:', res);
         setLinkPreview(res);
       } catch (error) {
         // console.log('Failed to fetch media type:', url, JSON.stringify(error));

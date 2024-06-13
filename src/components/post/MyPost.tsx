@@ -14,6 +14,7 @@ import {Embed} from '../../api/feed/types';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {MyTheme} from '../../theme';
 import {ENDPOINT_CAST} from '../../variables';
+import HighlightedText from '../HighlightedText';
 import UrlViewer from '../UrlViewer';
 import PostActionBar from './PostActionBar';
 
@@ -214,16 +215,16 @@ const MyPost = ({
           /> */}
       </View>
       <View style={styles.contentCtn}>
-        <Text
-          suppressHighlighting
+        <HighlightedText
           onPress={() => {
             if (onContentBodyPress) {
               onContentBodyPress();
             }
           }}
-          style={styles.contentBody}>
-          {content}
-        </Text>
+          customStyle={styles.contentBody}
+          text={content}
+        />
+
         {images && <View style={styles.mediaCtn}>{mediaHtml}</View>}
         {/* {image && <UrlViewer url={image} />} */}
       </View>

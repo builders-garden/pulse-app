@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, {useCallback, useContext, useMemo, useState} from 'react';
-import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
+import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {ReactionResponse} from '../../api/cast/types';
 import {Embed} from '../../api/feed/types';
@@ -8,6 +8,7 @@ import BorderLineImg from '../../assets/images/thread/border_line.svg';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {MyTheme} from '../../theme';
 import {ENDPOINT_CAST} from '../../variables';
+import HighlightedText from '../HighlightedText';
 import UrlViewer from '../UrlViewer';
 import PostActionBar from '../post/PostActionBar';
 
@@ -152,16 +153,15 @@ const MyThread = ({
       </View>
       <View style={[styles.root, customStyle && customStyle]}>
         <View style={styles.contentCtn}>
-          <Text
+          <HighlightedText
             onPress={() => {
               if (onContentBodyPress) {
                 onContentBodyPress();
               }
             }}
-            suppressHighlighting
-            style={styles.contentBody}>
-            {content}
-          </Text>
+            customStyle={styles.contentBody}
+            text={content}
+          />
           {images && <View style={styles.mediaCtn}>{mediaHtml}</View>}
         </View>
         <PostActionBar

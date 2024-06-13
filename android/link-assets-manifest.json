@@ -3,23 +3,23 @@
   "data": [
     {
       "path": "assets/fonts/BeVietnamPro-Bold.ttf",
-      "sha1": "0bd7e256f73efd0a8135c5090d62f150107ff37a"
+      "sha1": "c069d5ab4472bdcc6c2dc7b6de18e37d9cce4f47"
     },
     {
       "path": "assets/fonts/BeVietnamPro-Light.ttf",
-      "sha1": "4c7d4497bc6b506d9fefdc8227418bbb637bc524"
+      "sha1": "30e799d389b403b92518444d82c0dc8704b2a67f"
     },
     {
       "path": "assets/fonts/BeVietnamPro-Medium.ttf",
-      "sha1": "7525dd63d853386f3c192fa78502e547ea620e96"
+      "sha1": "3e6b944facd5265a0ceb995560fa372955c7d20d"
     },
     {
       "path": "assets/fonts/BeVietnamPro-Regular.ttf",
-      "sha1": "03d9e7cd56b446b0585b36a46c3f4b140c6e0026"
+      "sha1": "4daf238a9cc699d756617fd60df5f89fb5e31080"
     },
     {
       "path": "assets/fonts/BeVietnamPro-SemiBold.ttf",
-      "sha1": "1b8668d1e0f6949d9a702c2a590971ab7946a79f"
+      "sha1": "a5aee696b1294e2b5c6d1f856c81db90b0a178a5"
     }
   ]
 }

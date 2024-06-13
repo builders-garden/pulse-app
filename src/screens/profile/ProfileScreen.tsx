@@ -331,7 +331,7 @@ function ProfileScreen({
             headerSubtitle={transformedItem.headerSubtitle}
             content={transformedItem.content}
             quote={item.parent_cast?.text}
-            quoteTitle={'@' + item.parent_cast?.parent_cast?.author.username}
+            quoteTitle={'@' + item?.parent_cast?.author.username}
             images={transformedItem.images}
             upvotesCount={transformedItem.upvotesCount}
             quotesCount={transformedItem.quotesCount}
