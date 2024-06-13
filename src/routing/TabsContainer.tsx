@@ -31,6 +31,7 @@ function TabsContainer() {
             backgroundColor: MyTheme.white,
           },
           headerTintColor: MyTheme.black,
+          headerStatusBarHeight: 0,
           tabBarIcon: ({focused}) => {
             let icon;
             let size = 25;
@@ -138,17 +139,6 @@ function TabsContainer() {
                 customStyle={{
                   paddingLeft: 14,
                 }}
-                // icon={
-                //   <FastImage
-                //     source={{uri: authContext.state.profile?.pfp_url}}
-                //     style={{
-                //       width: 25,
-                //       height: 25,
-                //       borderRadius: 5,
-                //       zIndex: 1,
-                //     }}
-                //   />
-                // }
               />
             ),
             headerRight: () => (

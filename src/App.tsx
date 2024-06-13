@@ -2,9 +2,9 @@ import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {PostHogProvider} from 'posthog-react-native';
 import React from 'react';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import AppWrapper from './AppWrapper';
-import DevMarquee from './components/DevMarquee';
 import MyInfoToast from './components/toasts/MyInfoToast';
 import AuthProvider from './contexts/auth/AuthProvider';
 import DrawerProvider from './contexts/drawer/DrawerProvider';
@@ -37,18 +37,19 @@ function App(): React.JSX.Element {
   return (
     <AuthProvider>
       <LightboxProvider>
-        <NavigationContainer theme={NavigationTheme}>
-          <PostHogProvider apiKey={process.env.POSTHOG_API_KEY} autocapture>
-            <DrawerProvider>
-              <AppWrapper>
-                <StackContainer />
-              </AppWrapper>
-            </DrawerProvider>
-          </PostHogProvider>
-        </NavigationContainer>
+        <SafeAreaProvider>
+          <NavigationContainer theme={NavigationTheme}>
+            <PostHogProvider apiKey={process.env.POSTHOG_API_KEY} autocapture>
+              <DrawerProvider>
+                <AppWrapper>
+                  <StackContainer />
+                </AppWrapper>
+              </DrawerProvider>
+            </PostHogProvider>
+          </NavigationContainer>
+        </SafeAreaProvider>
       </LightboxProvider>
       <Toast config={toastConfig} />
-      <DevMarquee />
     </AuthProvider>
   );
 }

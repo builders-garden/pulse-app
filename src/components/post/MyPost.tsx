@@ -177,9 +177,14 @@ const MyPost = ({
                 onHeaderTitlePress();
               }
             }}
-            style={{flexDirection: 'row'}}>
-            <Text style={styles.headerTitle}>{headerTitle}</Text>
-            <Text style={styles.headerTime}> • {postTime}</Text>
+            style={{flexDirection: 'row', flex: 1}}>
+            <Text style={styles.headerTitle} numberOfLines={1}>
+              {headerTitle}
+            </Text>
+            <Text style={styles.headerTime} numberOfLines={1}>
+              {' '}
+              • {postTime}
+            </Text>
           </Pressable>
           <Text
             numberOfLines={1}
@@ -267,13 +272,15 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontFamily: MyTheme.fontBold,
     color: MyTheme.black,
+    maxWidth: '60%',
   },
   headerTime: {
-    color: 'gray',
+    color: MyTheme.grey400,
     fontFamily: MyTheme.fontRegular,
+    maxWidth: '40%',
   },
   headerSubtitle: {
-    color: 'gray',
+    color: MyTheme.grey400,
     maxWidth: '100%',
     fontFamily: MyTheme.fontRegular,
   },

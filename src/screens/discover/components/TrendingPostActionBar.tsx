@@ -3,9 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import CommentImg from '../../../assets/images/icons/comment.svg';
 import QuoteImg from '../../../assets/images/icons/quote.svg';
 import UpvoteImg from '../../../assets/images/icons/upvote.svg';
-import VerticalDotsImg from '../../../assets/images/icons/vertical_dots.svg';
 import MyChipBase from '../../../components/MyChipBase';
-import MyIconButtonBase from '../../../components/MyIconButtonBase';
 import {MyTheme} from '../../../theme';
 type TrendingPostItemActionBarProps = {
   commentsCount: number;
@@ -97,7 +95,7 @@ const TrendingPostItemActionBar = ({
         />
       )}
 
-      <MyIconButtonBase
+      {/* <MyIconButtonBase
         onPress={() => {
           onSharePress && onSharePress();
         }}
@@ -106,7 +104,7 @@ const TrendingPostItemActionBar = ({
         icon={
           <VerticalDotsImg width={18} height={18} color={MyTheme.grey400} />
         }
-      />
+      /> */}
     </View>
   );
 };
