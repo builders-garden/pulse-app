@@ -187,12 +187,12 @@ function CreateThreadScreen({
         try {
           const finalUrl =
             ENDPOINT_CHANNELS + '?limit=10&idOrName=' + searchText;
-          console.log('searching profiles', finalUrl);
+          // console.log('searching profiles', finalUrl);
           const res = await axios.get<ChannelsResponse>(finalUrl, {
             headers: {Authorization: `Bearer ${authContext.state.token}`},
             cancelToken: cancelToken,
           });
-          console.log('got response', res.data.result);
+          // console.log('got response', res.data.result);
           // console.log('got response');
           setSearchedChannels(res.data.result.channels.slice(0, 50));
           if (!channelSearchIsDirty) {
@@ -256,7 +256,7 @@ function CreateThreadScreen({
   }, [searchText, handleSearchChannel]);
 
   const fetchRecentChannels = useCallback(async () => {
-    console.log('fetching recents');
+    // console.log('fetching recents');
     setRecentChannelsFetchStatus('loading');
     try {
       const finalUrl =
@@ -325,7 +325,7 @@ function CreateThreadScreen({
         selectionLimit: 1,
         includeBase64: true,
       });
-      console.log(res);
+      // console.log(res);
       if (!res.didCancel) {
         const isVideo = res.assets?.[0]?.type?.startsWith('video');
         const media = res.assets?.[0];
@@ -443,17 +443,17 @@ function CreateThreadScreen({
       setUploadMediaStatus('loading');
       // route.params.channelId
       try {
-        console.log('mediaBody', mediaBody);
+        // console.log('mediaBody', mediaBody);
         const data = new FormData();
         mediaBody.forEach(item => {
           data.append('embeds', item);
         });
-        console.log('uploading media...', data);
+        // console.log('uploading media...', data);
         const finalUrl = ENDPOINT_CAST + '/upload-embeds';
         const response = await axios.post<UploadEmbedResult>(finalUrl, data, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
-        console.log(response.data);
+        // console.log(response.data);
 
         setUploadMediaStatus('success');
         return {err: false, data: response.data.result};
@@ -474,9 +474,9 @@ function CreateThreadScreen({
     async (castBody: UploadCastBody) => {
       setUploadCastStatus('loading');
       // route.params.channelId
-      console.log('publishing thread...');
+      // console.log('publishing thread...');
       try {
-        console.log('body', castBody);
+        // console.log('body', castBody);
         const response = await axios.post<UploadCastResult>(
           ENDPOINT_CAST,
           castBody,
@@ -484,7 +484,7 @@ function CreateThreadScreen({
             headers: {Authorization: `Bearer ${authContext.state.token}`},
           },
         );
-        console.log(response.data);
+        // console.log(response.data);
         setUploadCastStatus('success');
         return {
           err: false,
@@ -507,7 +507,7 @@ function CreateThreadScreen({
     setPublishStatus('loading');
     let currentParent = '';
     for (let i = 0; i < threads.length; i++) {
-      console.log('publishing thread no.', i);
+      // console.log('publishing thread no.', i);
       const thread = threads[i];
       let media: {
         url: string;

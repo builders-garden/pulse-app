@@ -45,7 +45,7 @@ function ThreadDetailScreen({
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
       // console.log('got response');
-      console.log(res.data);
+      // console.log(res.data);
       const transformed = res.data.result;
       setThread(transformed);
       setThreadFetchStatus('success');

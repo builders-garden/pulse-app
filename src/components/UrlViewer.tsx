@@ -19,7 +19,7 @@ const UrlViewer = ({url}: UrlViewerProps) => {
     const fetchMediaType = async () => {
       try {
         const res: LinkPreview = await getLinkPreview(url);
-        console.log('Link preview:', res);
+        // console.log('Link previeaw:', url, res);
         setLinkPreview(res);
       } catch (error) {
         // console.log('Failed to fetch media type:', url, JSON.stringify(error));
@@ -41,7 +41,10 @@ const UrlViewer = ({url}: UrlViewerProps) => {
         />
       </Pressable>
     );
-  } else if (linkPreview?.mediaType === 'video') {
+  } else if (
+    linkPreview?.mediaType === 'video' ||
+    linkPreview?.contentType === 'application/x-mpegURL'
+  ) {
     return <Video paused controls source={{uri: url}} style={styles.viewer} />;
   } else if (linkPreview?.mediaType === 'youtube') {
     const videoId = url.split('v=')[1];

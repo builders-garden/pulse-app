@@ -30,7 +30,7 @@ function ChannelDetailScreen({
     setChannelFetchStatus('loading');
     // route.params.channelId
     try {
-      console.log('fetching channel...');
+      // console.log('fetching channel...');
       const finalUrl = ENDPOINT_CHANNELS + '/' + route.params.channelId;
       const res = await axios.get<ChannelResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},

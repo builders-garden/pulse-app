@@ -40,7 +40,7 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
       const res = await axios.get<FeedResponse>(ENDPOINT_FEED, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
-      console.log('got response', JSON.stringify(res.data));
+      // console.log('got response', JSON.stringify(res.data));
       // TODO: da rimuovere, fix temporaneo per i cast che arrivano duplicati
       // const filtered = res.data.result.filter((value, index, self) => {
       //   return index === self.findIndex(item => item.hash === value.hash);
@@ -62,7 +62,7 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
     if (newThreadsFetchStatus !== 'loading' && cursor) {
       try {
         setNewThreadsFetchStatus('loading');
-        console.log('fetching new threads');
+        // console.log('fetching new threads');
         const res = await axios.get<FeedResponse>(
           `${ENDPOINT_FEED}&cursor=${cursor}`,
           {
@@ -166,9 +166,9 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
           <FlatList
             ref={listRef}
             showsVerticalScrollIndicator={false}
-            onScrollToTop={e => {
-              console.log('onScrollToTop', e);
-            }}
+            // onScrollToTop={e => {
+            //   console.log('onScrollToTop', e);
+            // }}
             style={{paddingHorizontal: 15, paddingTop: 15}}
             data={feed}
             windowSize={14}

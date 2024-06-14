@@ -70,11 +70,11 @@ function ProfileScreen({
       setProfileFetchStatus('loading');
       try {
         const finalUrl = ENDPOINT_PROFILE + '/' + route.params.userFid;
-        console.log('fetching profile', finalUrl);
+        // console.log('fetching profile', finalUrl);
         const res = await axios.get<ProfileResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
-        console.log('got response', res.data.result);
+        // console.log('got response', res.data.result);
         // console.log('got response');
         setProfile(res.data.result);
         setProfileFetchStatus('success');
@@ -97,7 +97,7 @@ function ProfileScreen({
         const res = await axios.get<UserCastsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
-        console.log('got comments');
+        // console.log('got comments');
         setComments(res.data.result);
         setCommentsCursor(res.data.cursor);
         setCommentsFetchStatus('success');
@@ -117,8 +117,8 @@ function ProfileScreen({
         const res = await axios.get<UserCastsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
-        console.log('got threads');
-        console.log(res.data.result);
+        // console.log('got threads');
+        // console.log(res.data.result);
         setUserCasts(res.data.result);
         setUserCastsCursor(res.data.cursor);
         setUserCastsFetchStatus('success');
@@ -130,7 +130,7 @@ function ProfileScreen({
   }, [authContext.state.token, profile?.fid]);
 
   const fetchRecentChannels = useCallback(async () => {
-    console.log('fetching recents');
+    // console.log('fetching recents');
     setRecentChannelsFetchStatus('loading');
     try {
       const finalUrl =
@@ -138,7 +138,7 @@ function ProfileScreen({
       const res = await axios.get<MostRecentChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
-      console.log('recent channels', res.data.result);
+      // console.log('recent channels', res.data.result);
       setRecentChannels(res.data.result);
       setRecentChannelsFetchStatus('success');
     } catch (error) {
@@ -151,7 +151,7 @@ function ProfileScreen({
     if (newCommentsFetchStatus !== 'loading') {
       try {
         setNewCommentsFetchStatus('loading');
-        console.log('fetching new threads');
+        // console.log('fetching new threads');
 
         const finalUrl =
           ENDPOINT_PROFILE +
@@ -189,7 +189,7 @@ function ProfileScreen({
     if (newUserCastsFetchStatus !== 'loading') {
       try {
         setNewUserCastsFetchStatus('loading');
-        console.log('fetching new threads');
+        // console.log('fetching new threads');
         const finalUrl =
           ENDPOINT_PROFILE +
           '/' +

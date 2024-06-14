@@ -113,7 +113,7 @@ const MyComment = ({
           }
         }
       } else if ((!upvoted && isUpvoted === 0) || isUpvoted === -1) {
-        console.log('upvoting', finalUrl);
+        // console.log('upvoting', finalUrl);
         const res = await axios.post<ReactionResponse>(
           finalUrl,
           {
@@ -123,7 +123,7 @@ const MyComment = ({
             headers: {Authorization: `Bearer ${authContext.state.token}`},
           },
         );
-        console.log('got response', res.data);
+        // console.log('got response', res.data);
         if (res.data.result.success) {
           if (isUpvoted === -1) {
             setIsUpvoted(0);
@@ -140,14 +140,14 @@ const MyComment = ({
     try {
       const finalUrl = `${ENDPOINT_CAST}/${commentHash}/reactions`;
       if ((recasted && isRecasted === 0) || isRecasted === 1) {
-        console.log('deleting recast', finalUrl);
+        // console.log('deleting recast', finalUrl);
         const res = await axios.delete<ReactionResponse>(finalUrl, {
           data: {
             reactionType: 'recast',
           },
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
-        console.log('got response', res.data);
+        // console.log('got response', res.data);
         if (res.data.result.success) {
           if (isRecasted === 1) {
             setIsRecasted(0);
@@ -156,7 +156,7 @@ const MyComment = ({
           }
         }
       } else if ((!recasted && isRecasted === 0) || isRecasted === -1) {
-        console.log('recasting', finalUrl);
+        // console.log('recasting', finalUrl);
         const res = await axios.post<ReactionResponse>(
           finalUrl,
           {
@@ -166,7 +166,7 @@ const MyComment = ({
             headers: {Authorization: `Bearer ${authContext.state.token}`},
           },
         );
-        console.log('got response', res.data);
+        // console.log('got response', res.data);
         if (res.data.result.success) {
           if (isRecasted === -1) {
             setIsRecasted(0);

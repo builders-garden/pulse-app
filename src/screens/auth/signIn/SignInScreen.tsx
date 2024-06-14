@@ -15,7 +15,6 @@ import Carousel, {ICarouselInstance} from 'react-native-reanimated-carousel';
 import Toast from 'react-native-toast-message';
 import {SignerResponse} from '../../../api/auth/types';
 import {RequestStatus} from '../../../api/types';
-import MyFloatingButton from '../../../components/MyFloatingButton';
 import MyLoader from '../../../components/MyLoader';
 import MyModal from '../../../components/MyModal';
 import {AuthContext} from '../../../contexts/auth/Auth.context';
@@ -195,13 +194,13 @@ function SignInScreen() {
         {/* <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           {paginationItems}
         </View> */}
-        <MyFloatingButton icon onPress={OnSignInButtonClick} />
+        {/* <MyFloatingButton icon onPress={OnSignInButtonClick} /> */}
 
         <View style={styles.warpcastBtnCtn}>
           <NeynarSigninButton
             margin={0}
             successCallback={token => {
-              console.log(token);
+              // console.log(token);
               if (token.is_authenticated) {
                 OnNeynarSuccess(token.fid, token.signer_uuid);
               } else {

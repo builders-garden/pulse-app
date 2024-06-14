@@ -55,17 +55,17 @@ function CreateCommentScreen({
       setUploadMediaStatus('loading');
       // route.params.channelId
       try {
-        console.log('mediaBody', mediaBody);
+        // console.log('mediaBody', mediaBody);
         const data = new FormData();
         mediaBody.forEach(item => {
           data.append('embeds', item);
         });
-        console.log('uploading media...', data);
+        // console.log('uploading media...', data);
         const finalUrl = ENDPOINT_CAST + '/upload-embeds';
         const response = await axios.post<UploadEmbedResult>(finalUrl, data, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
-        console.log(response.data);
+        // console.log(response.data);
 
         setUploadMediaStatus('success');
         return {err: false, data: response.data.result};
@@ -86,9 +86,9 @@ function CreateCommentScreen({
     async (castBody: UploadCastBody) => {
       setUploadCastStatus('loading');
       // route.params.channelId
-      console.log('publishing comment...');
+      // console.log('publishing comment...');
       try {
-        console.log('body', castBody);
+        // console.log('body', castBody);
         const response = await axios.post<UploadCastResult>(
           ENDPOINT_CAST,
           castBody,
@@ -96,7 +96,7 @@ function CreateCommentScreen({
             headers: {Authorization: `Bearer ${authContext.state.token}`},
           },
         );
-        console.log(response.data);
+        // console.log(response.data);
         setUploadCastStatus('success');
         return {
           err: false,
@@ -117,7 +117,7 @@ function CreateCommentScreen({
 
   const publish = useCallback(async () => {
     setPublishStatus('loading');
-    console.log('publishing comment');
+    // console.log('publishing comment');
     let media: {
       url: string;
     }[] = [];
@@ -204,7 +204,7 @@ function CreateCommentScreen({
         selectionLimit: 1,
         includeBase64: true,
       });
-      console.log(res);
+      // console.log(res);
       if (!res.didCancel) {
         const isVideo = res.assets?.[0]?.type?.startsWith('video');
         const media = res.assets?.[0];

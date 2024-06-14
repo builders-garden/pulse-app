@@ -58,7 +58,7 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
   const fetchChannelsForYou = useCallback(async () => {
     setChannelsForYouFetchStatus('loading');
     try {
-      console.log('fetching trending channels...');
+      // console.log('fetching trending channels...');
       const finalUrl = ENDPOINT_TRENDING_CHANNELS;
       const res = await axios.get<TrendingChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
@@ -73,12 +73,12 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
   const fetchTrendingPosts = useCallback(async () => {
     setTrendingPostsFetchStatus('loading');
     try {
-      console.log('fetching trending posts...');
+      // console.log('fetching trending posts...');
       const finalUrl = ENDPOINT_TRENDING_CASTS;
       const res = await axios.get<TrendingCastsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
-      console.log('trending cast', JSON.stringify(res.data.result));
+      // console.log('trending cast', JSON.stringify(res.data.result));
       setTrendingPosts(res.data.result);
       setTrendingPostsFetchStatus('success');
     } catch (error) {
@@ -89,7 +89,7 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
   const fetchTopChannels = useCallback(async () => {
     setTopChannelsFetchStatus('loading');
     try {
-      console.log('fetching top channels...');
+      // console.log('fetching top channels...');
       const finalUrl = ENDPOINT_MOST_FOLLOWED_CHANNELS;
       const res = await axios.get<MostFollowedChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
@@ -107,12 +107,12 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
   const fetchNewChannels = useCallback(async () => {
     setNewChannelsFetchStatus('loading');
     try {
-      console.log('fetching most recent channels...');
+      // console.log('fetching most recent channels...');
       const finalUrl = ENDPOINT_MOST_RECENT_CHANNELS + '?limit=9';
       const res = await axios.get<NewChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
-      console.log('new channels', JSON.stringify(res.data));
+      // console.log('new channels', JSON.stringify(res.data));
       const transformed = TransformArrayTo3x3<NewChannel>(
         res?.data?.result ?? [],
       );

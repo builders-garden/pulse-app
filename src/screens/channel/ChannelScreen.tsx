@@ -57,7 +57,7 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
     setChannelFetchStatus('loading');
     // route.params.channelId
     try {
-      console.log('fetching channel...');
+      // console.log('fetching channel...');
       const finalUrl = ENDPOINT_CHANNELS + '/' + route.params.channelId;
       const res = await axios.get<ChannelResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
@@ -73,10 +73,10 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
   const fetchFeed = useCallback(async () => {
     setFeedFetchStatus('loading');
     try {
-      console.log('fetching feed...');
+      // console.log('fetching feed...');
       const finalUrl =
         ENDPOINT_CHANNELS + '/' + route.params.channelId + '/feed?limit=10';
-      console.log('finalUrl', finalUrl);
+      // console.log('finalUrl', finalUrl);
       const res = await axios.get<FeedResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
@@ -124,7 +124,7 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
   async function fetchNewItems() {
     try {
       setNewThreadsFetchStatus('loading');
-      console.log('fetching new threads');
+      // console.log('fetching new threads');
       const finalUrl =
         ENDPOINT_CHANNELS + '/' + route.params.channelId + '/feed?limit=10';
       const res = await axios.get<FeedResponse>(

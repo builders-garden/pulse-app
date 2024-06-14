@@ -67,14 +67,14 @@ const MyDrawer = ({
 
   // FETCH FUNCTIONS
   const fetchFavoritesChannels = useCallback(async () => {
-    console.log('fetching favorites');
+    // console.log('fetching favorites');
     setFavoriteChannelsFetchStatus('loading');
     try {
       const finalUrl = `${ENDPOINT_PROFILE}/${authContext.state.fid}/favourite-channels?limit=15`;
       const res = await axios.get<FavouriteChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
-      console.log('got response');
+      // console.log('got response');
       setFavoriteChannels(res.data.result.slice(0, 4));
       setFavoriteChannelsFetchStatus('success');
     } catch (error) {
@@ -83,7 +83,7 @@ const MyDrawer = ({
     }
   }, [authContext.state]);
   const fetchRecentChannels = useCallback(async () => {
-    console.log('fetching recents');
+    // console.log('fetching recents');
     setRecentChannelsFetchStatus('loading');
     try {
       const finalUrl =
@@ -91,7 +91,7 @@ const MyDrawer = ({
       const res = await axios.get<MostRecentChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
-      console.log('recent channels', res.data.result);
+      // console.log('recent channels', res.data.result);
       setRecentChannels(res.data.result);
       setRecentChannelsFetchStatus('success');
     } catch (error) {
@@ -100,14 +100,14 @@ const MyDrawer = ({
     }
   }, [authContext.state.token, authContext.state.fid]);
   const fetchAllChannels = useCallback(async () => {
-    console.log('fetching all');
+    // console.log('fetching all');
     setAllChannelsFetchStatus('loading');
     try {
       const finalUrl = `${ENDPOINT_PROFILE}/${authContext.state.fid}/followed-channels?limit=10`;
       const res = await axios.get<FollowedChannelsResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
-      console.log('got response');
+      // console.log('got response');
       setAllChannels(res.data.result);
       if (res.data.cursor) {
         setCursor(res.data.cursor);
@@ -126,7 +126,7 @@ const MyDrawer = ({
     ) {
       try {
         setNewAllChannelsFetchStatus('loading');
-        console.log('fetching new channels');
+        // console.log('fetching new channels');
         const finalUrl = `${ENDPOINT_PROFILE}/${authContext.state.fid}/followed-channels?limit=10&cursor=${cursor}`;
         const res = await axios.get<FollowedChannelsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},

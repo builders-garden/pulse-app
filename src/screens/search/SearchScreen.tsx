@@ -96,12 +96,12 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
         setProfilesSearchFetchStatus('loading');
         try {
           const finalUrl = ENDPOINT_PROFILE + '?q=' + searchText;
-          console.log('searching profiles', finalUrl);
+          // console.log('searching profiles', finalUrl);
           const res = await axios.get<ProfileSearchResponse>(finalUrl, {
             headers: {Authorization: `Bearer ${authContext.state.token}`},
             cancelToken: cancelToken,
           });
-          console.log('got response', res.data.result);
+          // console.log('got response', res.data.result);
           // console.log('got response');
           setLastSearches({...lastSearches, profiles: searchText});
           setSearchedProfiles(res.data.result);
@@ -126,12 +126,12 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
         try {
           const finalUrl =
             ENDPOINT_CHANNELS + '?limit=10&idOrName=' + searchText;
-          console.log('searching profiles', finalUrl);
+          // console.log('searching profiles', finalUrl);
           const res = await axios.get<ChannelsResponse>(finalUrl, {
             headers: {Authorization: `Bearer ${authContext.state.token}`},
             cancelToken: cancelToken,
           });
-          console.log('got response', res.data.result);
+          // console.log('got response', res.data.result);
           // console.log('got response');
           setLastSearches({...lastSearches, channels: searchText});
           setSearchedChannels(res.data.result.channels);
@@ -231,7 +231,7 @@ function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
     newProfilesSearchFetchStatus,
   ]);
   const fetchNewChannels = useCallback(async () => {
-    console.log('fetching new channels');
+    // console.log('fetching new channels');
     if (newChannelsSearchFetchStatus !== 'loading' && channelsCursor) {
       try {
         setNewChannelsSearchFetchStatus('loading');

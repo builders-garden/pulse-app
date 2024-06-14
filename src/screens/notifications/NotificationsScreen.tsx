@@ -42,14 +42,14 @@ function NotificationsScreen() {
   const fetchNotifications = useCallback(async () => {
     setNotificationsFetchStatus('loading');
     try {
-      console.log('fetching feed', authContext.state.token);
+      // console.log('fetching feed', authContext.state.token);
       const res = await axios.get<NotificationsResponse>(
         ENDPOINT_NOTIFICATIONS,
         {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         },
       );
-      console.log('got response', JSON.stringify(res.data));
+      // console.log('got response', JSON.stringify(res.data));
       setNotificationsFetchStatus('success');
       setNotifications(res.data.result);
       setCursor(res.data.cursor);
@@ -62,14 +62,14 @@ function NotificationsScreen() {
   const fetchNewItems = useCallback(async () => {
     try {
       setNewNotificationsFetchStatus('loading');
-      console.log('fetching new notifications', cursor);
+      // console.log('fetching new notifications', cursor);
       const res = await axios.get<NotificationsResponse>(
         `${ENDPOINT_NOTIFICATIONS}?cursor=${cursor}`,
         {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         },
       );
-      console.log('got new notifications', JSON.stringify(res.data));
+      // console.log('got new notifications', JSON.stringify(res.data));
       setNotifications([...notifications, ...res.data.result]);
       if (res.data.cursor) {
         setCursor(res.data.cursor);

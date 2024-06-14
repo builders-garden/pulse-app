@@ -48,7 +48,7 @@ function DrawerProvider({children}: PropsWithChildren) {
           }
         }}
         onPressItem={() => {
-          console.log('press item');
+          // console.log('press item');
           if (drawerContext.state.visible) {
             drawerContext.hide();
           }

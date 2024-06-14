@@ -20,7 +20,7 @@ const MyHeaderRight = ({customStyle}: MyHeaderRightProps) => {
         shape="square"
         customStyle={{marginLeft: 15}}
         onPress={() => {
-          console.log('Search button pressed', navigation);
+          // console.log('Search button pressed', navigation);
           navigation.navigate('Search');
         }}
         icon={<SearchImg color={MyTheme.grey500} />}
