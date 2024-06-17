@@ -33,7 +33,7 @@ const HighlightedText = ({
       style: {color: MyTheme.primaryColor},
       suppressHighlighting: true,
       onPress: url => {
-        console.log('url', url);
+        // console.log('url', url);
         if (url.startsWith('/')) {
           navigation.navigate('Channel', {channelId: url.slice(1)});
         }

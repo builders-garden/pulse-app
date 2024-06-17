@@ -1,22 +1,38 @@
-import React from 'react';
-import {StyleProp, StyleSheet, Text, View, ViewStyle} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import React, {useMemo} from 'react';
+import {
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  Text,
+  View,
+  ViewStyle,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {Notification} from '../../../api/notifications/types';
 import NewFollowImg from '../../../assets/images/icons/new_follow.svg';
 import ReplyImg from '../../../assets/images/icons/quote.svg';
 import UpvoteImg from '../../../assets/images/icons/upvote_fill.svg';
-import {formatDate} from '../../../libs/date';
+import {formatTime} from '../../../libs/date';
 import {formatNumber} from '../../../libs/numbers';
 import {MyTheme} from '../../../theme';
 
 interface NotificationItemProps {
   notification: Notification;
   customStyle?: StyleProp<ViewStyle>;
+  onPress?: () => void;
 }
 
-function NotificationItem({notification, customStyle}: NotificationItemProps) {
-  const formattedDate = formatDate(
-    new Date(notification.most_recent_timestamp),
+function NotificationItem({
+  notification,
+  customStyle,
+  onPress,
+}: NotificationItemProps) {
+  const navigation = useNavigation<any>();
+
+  const formattedDate = useMemo(
+    () => formatTime(new Date(notification.most_recent_timestamp)),
+    [notification.most_recent_timestamp],
   );
 
   let resHtml;
@@ -24,7 +40,14 @@ function NotificationItem({notification, customStyle}: NotificationItemProps) {
     if (notification.follows && notification.follows?.length === 1) {
       const newFollowUser = notification.follows[0].user;
       resHtml = (
-        <View style={[styles.root, customStyle]}>
+        <Pressable
+          style={[styles.root, customStyle]}
+          onPress={() => {
+            navigation.navigate('Profile', {
+              userFid: newFollowUser.fid.toString(),
+            });
+            onPress && onPress();
+          }}>
           <FastImage
             source={{uri: newFollowUser.pfp_url}}
             style={[styles.icon, styles.iconFollow]}
@@ -35,11 +58,15 @@ function NotificationItem({notification, customStyle}: NotificationItemProps) {
               <Text style={styles.dateText}> · {formattedDate}</Text>
             </Text>
           </View>
-        </View>
+        </Pressable>
       );
     } else if (notification.follows && notification.follows?.length > 1) {
       resHtml = (
-        <View style={[styles.root, customStyle]}>
+        <Pressable
+          style={[styles.root, customStyle]}
+          onPress={() => {
+            onPress && onPress();
+          }}>
           <View style={[styles.icon, styles.iconFollow]}>
             <NewFollowImg color={MyTheme.lightBlue} />
           </View>
@@ -49,13 +76,20 @@ function NotificationItem({notification, customStyle}: NotificationItemProps) {
               <Text style={styles.dateText}> · {formattedDate}</Text>
             </Text>
           </View>
-        </View>
+        </Pressable>
       );
     }
   } else if (notification.type === 'likes') {
     const formatLikes = formatNumber(notification.reactions?.length || 0);
     resHtml = (
-      <View style={[styles.root, customStyle]}>
+      <Pressable
+        style={[styles.root, customStyle]}
+        onPress={() => {
+          navigation.navigate('ThreadDetail', {
+            threadHash: notification.cast?.hash,
+          });
+          onPress && onPress();
+        }}>
         <View style={[styles.icon, styles.iconLike]}>
           <UpvoteImg color={MyTheme.primaryColor} />
         </View>
@@ -68,12 +102,19 @@ function NotificationItem({notification, customStyle}: NotificationItemProps) {
             {notification.cast?.text}
           </Text>
         </View>
-      </View>
+      </Pressable>
     );
   } else if (notification.type === 'recasts') {
     const formatRecasts = formatNumber(notification.reactions?.length || 0);
     resHtml = (
-      <View style={[styles.root, customStyle]}>
+      <Pressable
+        style={[styles.root, customStyle]}
+        onPress={() => {
+          navigation.navigate('ThreadDetail', {
+            threadHash: notification.cast?.hash,
+          });
+          onPress && onPress();
+        }}>
         <View style={[styles.icon, styles.iconRecast]}>
           <ReplyImg color={MyTheme.purple} />
         </View>
@@ -86,11 +127,18 @@ function NotificationItem({notification, customStyle}: NotificationItemProps) {
             {notification.cast?.text}
           </Text>
         </View>
-      </View>
+      </Pressable>
     );
   } else if (notification.type === 'reply') {
     resHtml = (
-      <View style={[styles.root, customStyle]}>
+      <Pressable
+        style={[styles.root, customStyle]}
+        onPress={() => {
+          navigation.navigate('ThreadDetail', {
+            threadHash: notification.cast?.parent_hash,
+          });
+          onPress && onPress();
+        }}>
         <FastImage
           source={{uri: notification.cast?.author.pfp_url}}
           style={[styles.icon, styles.iconFollow]}
@@ -104,12 +152,19 @@ function NotificationItem({notification, customStyle}: NotificationItemProps) {
             {notification.cast?.text}
           </Text>
         </View>
-      </View>
+      </Pressable>
     );
   } else {
     // mention
     resHtml = (
-      <View style={[styles.root, customStyle]}>
+      <Pressable
+        style={[styles.root, customStyle]}
+        onPress={() => {
+          navigation.navigate('ThreadDetail', {
+            threadHash: notification.cast?.hash,
+          });
+          onPress && onPress();
+        }}>
         <FastImage
           source={{uri: notification.cast?.author.pfp_url}}
           style={[styles.icon, styles.iconFollow]}
@@ -123,7 +178,7 @@ function NotificationItem({notification, customStyle}: NotificationItemProps) {
             {notification.cast?.text}
           </Text>
         </View>
-      </View>
+      </Pressable>
     );
   }
 

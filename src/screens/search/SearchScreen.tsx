@@ -15,6 +15,7 @@ import BackImg from '../../assets/images/icons/back.svg';
 import MyIconButtonBase from '../../components/MyIconButtonBase';
 import MyLoader from '../../components/MyLoader';
 import MyPlaceholderLoader from '../../components/MyPlaceholderLoader';
+import ProfileLine from '../../components/ProfileLine';
 import MyButton from '../../components/buttons/MyButton';
 import MySearchField from '../../components/inputs/MySearchField';
 import MyTabs from '../../components/tabs/MyTabs';
@@ -23,7 +24,6 @@ import {RootStackScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
 import {ENDPOINT_CHANNELS, ENDPOINT_PROFILE} from '../../variables';
 import ChannelLine from './components/ChannelLine';
-import ProfileLine from './components/ProfileLine';
 
 function SearchScreen({navigation}: RootStackScreenProps<'Search'>) {
   const authContext = useContext(AuthContext);

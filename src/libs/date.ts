@@ -22,3 +22,13 @@ export function formatDate(date: Date): string {
     }/${year}`;
   }
 }
+export function formatTime(date: Date): string {
+  let formattedTime = date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
+  formattedTime = formattedTime.toLowerCase().replace(/\s/g, '');
+
+  return formattedTime;
+}

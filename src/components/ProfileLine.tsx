@@ -1,10 +1,10 @@
 import React from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {Profile} from '../../../api/profile/types';
-import FollowCounter from '../../../components/FollowCounter';
-import FollowButton from '../../../components/buttons/FollowButton';
-import {MyTheme} from '../../../theme';
+import {Profile} from '../api/profile/types';
+import {MyTheme} from '../theme';
+import FollowCounter from './FollowCounter';
+import FollowButton from './buttons/FollowButton';
 
 interface ProfileLineProps {
   profile: Profile;

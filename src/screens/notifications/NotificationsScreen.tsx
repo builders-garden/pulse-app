@@ -1,6 +1,12 @@
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetFlatList,
+} from '@gorhom/bottom-sheet';
 import {useScrollToTop} from '@react-navigation/native';
 import axios from 'axios';
 import React, {
+  createRef,
   useCallback,
   useContext,
   useEffect,
@@ -11,19 +17,24 @@ import React, {
 import {SectionList, StyleSheet, Text, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import {
+  Follow,
   Notification,
   NotificationsResponse,
 } from '../../api/notifications/types';
 import {RequestStatus} from '../../api/types';
 import MyLoader from '../../components/MyLoader';
+import ProfileLine from '../../components/ProfileLine';
 import MyButton from '../../components/buttons/MyButton';
 import {AuthContext} from '../../contexts/auth/Auth.context';
-import {SeparateNotificationsByTime} from '../../libs/notifications';
+import {groupNotificationsByDay} from '../../libs/notifications';
+import {HomeTabScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
 import {ENDPOINT_NOTIFICATIONS} from '../../variables';
 import NotificationItem from './components/NotificationItem';
 
-function NotificationsScreen() {
+function NotificationsScreen({
+  navigation,
+}: HomeTabScreenProps<'Notifications'>) {
   const authContext = useContext(AuthContext);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notificationsFetchStatus, setNotificationsFetchStatus] =
@@ -31,11 +42,14 @@ function NotificationsScreen() {
   const [newNotificationsFetchStatus, setNewNotificationsFetchStatus] =
     useState<RequestStatus>('idle');
   const [cursor, setCursor] = useState<string>();
+  const [selectedFollowNotification, setSelectedFollowNotification] =
+    useState<Notification>();
   const formattedNotifications = useMemo(() => {
-    return SeparateNotificationsByTime(notifications);
+    return groupNotificationsByDay(notifications);
   }, [notifications]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const listRef = useRef(null);
+  const bottomSheetRef = createRef<BottomSheet>();
 
   useScrollToTop(listRef);
 
@@ -97,9 +111,49 @@ function NotificationsScreen() {
     fetchNotifications();
   }, [fetchNotifications, authContext]);
 
-  const renderItem = useCallback(({item}: {item: Notification}) => {
-    return <NotificationItem notification={item} />;
-  }, []);
+  const renderSectionListItem = useCallback(
+    ({item}: {item: Notification}) => {
+      return (
+        <NotificationItem
+          notification={item}
+          onPress={() => {
+            if (
+              item.type === 'follows' &&
+              item.follows &&
+              item.follows?.length > 1
+            ) {
+              setSelectedFollowNotification(item);
+              bottomSheetRef.current?.snapToIndex(0);
+            }
+          }}
+        />
+      );
+    },
+    [bottomSheetRef],
+  );
+  const renderBottomSheetItem = useCallback(
+    ({item}: {item: Follow}) => (
+      <View style={styles.bottomSheetItemWrapper}>
+        <ProfileLine
+          profile={item.user}
+          onPress={() => {
+            bottomSheetRef.current?.close();
+            navigation.navigate('Profile', {
+              userFid: item.user.fid.toString(),
+            });
+          }}
+        />
+      </View>
+    ),
+    [navigation, bottomSheetRef],
+  );
+
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop {...props} disappearsOnIndex={-1} />
+    ),
+    [],
+  );
 
   if (notificationsFetchStatus === 'loading' && !isRefreshing) {
     return (
@@ -154,8 +208,26 @@ function NotificationsScreen() {
           return <Text style={styles.sectionTitle}>{section.title}</Text>;
         }}
         stickySectionHeadersEnabled={false}
-        renderItem={renderItem}
+        renderItem={renderSectionListItem}
       />
+      <BottomSheet
+        snapPoints={['80%']}
+        index={-1}
+        backdropComponent={renderBackdrop}
+        enablePanDownToClose
+        ref={bottomSheetRef}>
+        <BottomSheetFlatList
+          style={styles.bottomSheetContent}
+          data={selectedFollowNotification?.follows}
+          ListHeaderComponent={
+            <View style={styles.bottomSheetHeaderCtn}>
+              <Text style={styles.bottomSheetHeaderText}>Recent followers</Text>
+            </View>
+          }
+          renderItem={renderBottomSheetItem}
+          ItemSeparatorComponent={() => <View style={{height: 15}} />}
+        />
+      </BottomSheet>
     </View>
   );
 }
@@ -179,6 +251,24 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
     paddingLeft: 10,
+  },
+  bottomSheetContent: {
+    backgroundColor: MyTheme.grey100,
+  },
+  bottomSheetHeaderCtn: {
+    paddingHorizontal: 20,
+    paddingTop: 15,
+    marginBottom: 15,
+    backgroundColor: MyTheme.white,
+  },
+  bottomSheetHeaderText: {
+    color: MyTheme.black,
+    marginBottom: 20,
+    fontSize: 16,
+    fontFamily: MyTheme.fontRegular,
+  },
+  bottomSheetItemWrapper: {
+    paddingHorizontal: 15,
   },
 });
 

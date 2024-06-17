@@ -1,3 +1,4 @@
+import {format, isToday, isYesterday} from 'date-fns';
 import {Notification, NotificationSection} from '../api/notifications/types';
 
 export function SeparateNotificationsByTime(array: Notification[]) {
@@ -37,4 +38,37 @@ export function SeparateNotificationsByTime(array: Notification[]) {
   }
 
   return sections;
+}
+
+export function groupNotificationsByDay(
+  notifications: Notification[],
+): NotificationSection[] {
+  const grouped = notifications.reduce(
+    (groups: {[key: string]: Notification[]}, notification) => {
+      const date = new Date(notification.most_recent_timestamp);
+      let title: string;
+
+      if (isToday(date)) {
+        title = 'Today';
+      } else if (isYesterday(date)) {
+        title = 'Yesterday';
+      } else {
+        title = format(date, 'dd MMMM yyyy');
+      }
+
+      if (!groups[title]) {
+        groups[title] = [];
+      }
+
+      groups[title].push(notification);
+
+      return groups;
+    },
+    {},
+  );
+
+  return Object.entries(grouped).map(([title, data]) => ({
+    title,
+    data,
+  }));
 }
