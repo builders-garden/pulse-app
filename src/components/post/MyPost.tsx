@@ -10,11 +10,15 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {ReactionResponse} from '../../api/cast/types';
+import {Channel} from '../../api/channel/types';
 import {Embed} from '../../api/feed/types';
+import {Profile} from '../../api/profile/types';
 import {AuthContext} from '../../contexts/auth/Auth.context';
+import {OptionsContext} from '../../contexts/options/Options.context';
 import {MyTheme} from '../../theme';
 import {ENDPOINT_CAST} from '../../variables';
 import HighlightedText from '../HighlightedText';
+import MyIconButton from '../MyIconButton';
 import UrlViewer from '../UrlViewer';
 import PostActionBar from './PostActionBar';
 
@@ -31,6 +35,8 @@ type MyPostProps = {
   commentsCount: number;
   quotesCount: number;
   upvotesCount: number;
+  author: Profile;
+  channel?: Channel;
   customStyle?: StyleProp<ViewStyle>;
   onContentBodyPress?: () => void;
   onHeaderTitlePress?: () => void;
@@ -53,6 +59,8 @@ const MyPost = ({
   quotesCount,
   upvotesCount,
   customStyle,
+  author,
+  channel,
   onContentBodyPress,
   onHeaderTitlePress,
   onHeaderSubtitlePress,
@@ -60,6 +68,7 @@ const MyPost = ({
   onCommentPress,
 }: MyPostProps) => {
   const authContext = useContext(AuthContext);
+  const optionsContext = useContext(OptionsContext);
   const [isUpvoted, setIsUpvoted] = useState(0);
   const [isRecasted, setIsRecasted] = useState(0);
 
@@ -200,19 +209,33 @@ const MyPost = ({
             {headerSubtitle}
           </Text>
         </View>
-        {/* <MyIconButton
+        <MyIconButton
           iconSize={25}
-          onPress={() => {}}
+          onPress={() => {
+            const analytics: {
+              recasts: number;
+              upvotes: number;
+              replies: number;
+              author: Profile;
+              channel?: Channel;
+            } = {
+              recasts: quotesCount,
+              upvotes: upvotesCount,
+              replies: commentsCount,
+              author,
+            };
+            if (channel) {
+              analytics.channel = channel;
+            }
+            optionsContext.show({
+              hash: postHash,
+              analytics,
+            });
+          }}
           style="secondary"
           filling="clear"
           icon={require('../../assets/images/icons/vertical_dots.png')}
-        /> */}
-        {/* <Entypo
-            name="dots-three-horizontal"
-            size={16}
-            color="gray"
-            style={{marginLeft: 'auto'}}
-          /> */}
+        />
       </View>
       <View style={styles.contentCtn}>
         <HighlightedText

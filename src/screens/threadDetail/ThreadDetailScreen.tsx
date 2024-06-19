@@ -18,6 +18,7 @@ import UserInfo from '../../components/UserInfo';
 import MyComment from '../../components/comment/MyComment';
 import MyThread from '../../components/thread/MyThread';
 import {AuthContext} from '../../contexts/auth/Auth.context';
+import {OptionsContext} from '../../contexts/options/Options.context';
 import {TransformCast} from '../../libs/post';
 import {FeedStackScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
@@ -28,6 +29,7 @@ function ThreadDetailScreen({
   navigation,
 }: FeedStackScreenProps<'ThreadDetail'>) {
   const authContext = useContext(AuthContext);
+  const optionsContext = useContext(OptionsContext);
   const [threadFetchStatus, setThreadFetchStatus] =
     useState<RequestStatus>('idle');
   const [thread, setThread] = useState<ConversationSectionList>();
@@ -243,6 +245,18 @@ function ThreadDetailScreen({
                     userFid: thread.casts[0].author.fid.toString(),
                   });
                 }
+              }}
+              onOptionsPress={() => {
+                optionsContext.show({
+                  hash: thread.casts[0].hash,
+                  analytics: {
+                    recasts: transformedCast.quotesCount,
+                    upvotes: transformedCast.upvotesCount,
+                    replies: transformedCast.commentsCount,
+                    author: thread.casts[0].author,
+                    channel: thread?.casts[0]?.channel ?? undefined,
+                  },
+                });
               }}
             />
             {threadsHtml}

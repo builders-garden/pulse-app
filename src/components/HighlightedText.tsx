@@ -29,7 +29,7 @@ const HighlightedText = ({
       },
     },
     {
-      pattern: /(@[a-zA-Z0-9_]+|\/[a-zA-Z0-9_]+)/,
+      pattern: /(@[a-zA-Z0-9_.]+|\/[a-zA-Z0-9_.]+)/,
       style: {color: MyTheme.primaryColor},
       suppressHighlighting: true,
       onPress: url => {

@@ -10,11 +10,12 @@ import {
   Text,
   ViewStyle,
 } from 'react-native';
+import {MyTheme} from '../../theme';
 
 interface MyButtonProps {
   onPress: () => void;
   title: string;
-  style?: 'primary' | 'secondary' | 'tertiary';
+  style?: 'primary' | 'secondary' | 'tertiary' | 'quaternary';
   disabled?: boolean;
   loading?: boolean;
   iconLeft?: ImageSourcePropType;
@@ -42,6 +43,9 @@ const MyButton = ({
   } else if (style === 'tertiary') {
     btnStyle = styles.buttonTertiary;
     textStyle = styles.buttonTextTertiary;
+  } else if (style === 'quaternary') {
+    btnStyle = styles.buttonQuaternary;
+    textStyle = styles.buttonTextQuaternary;
   }
 
   return (
@@ -87,15 +91,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonPrimary: {
-    backgroundColor: 'black',
+    backgroundColor: MyTheme.black,
   },
   buttonSecondary: {
-    backgroundColor: 'white',
+    backgroundColor: MyTheme.white,
   },
   buttonTertiary: {
-    backgroundColor: 'white',
+    backgroundColor: MyTheme.white,
     borderWidth: 2,
-    borderColor: 'black',
+    borderColor: MyTheme.black,
+  },
+  buttonQuaternary: {
+    backgroundColor: MyTheme.grey100,
+    borderWidth: 2,
+    borderColor: MyTheme.grey100,
   },
   pressedBtn: {
     opacity: 0.7,
@@ -105,16 +114,20 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    fontFamily: 'BeVietnamPro-Bold',
+    fontFamily: MyTheme.fontBold,
   },
   buttonTextPrimary: {
-    color: 'white',
+    color: MyTheme.white,
   },
   buttonTextSecondary: {
-    color: 'black',
+    color: MyTheme.black,
   },
   buttonTextTertiary: {
-    color: 'black',
+    color: MyTheme.black,
+  },
+  buttonTextQuaternary: {
+    color: MyTheme.grey500,
+    fontFamily: MyTheme.fontRegular,
   },
 });
 

@@ -106,6 +106,8 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
           upvotesCount={transformedItem.upvotesCount}
           commentsCount={transformedItem.commentsCount}
           quotesCount={transformedItem.quotesCount}
+          author={item.author}
+          channel={item.channel ?? undefined}
           onContentBodyPress={() => {
             navigation.navigate('ThreadDetail', {
               threadHash: item.hash,

@@ -61,7 +61,7 @@ const WebPreview = ({url, linkPreview, customStyle}: WebPreviewProps) => {
       <View style={styles.root}>
         <Pressable style={[styles.container, customStyle]} onPress={OpenURL}>
           <View style={styles.placeholderBox}>
-            <LinkImg width={30} height={30} />
+            <LinkImg width={30} height={30} color={MyTheme.black} />
           </View>
           <Text style={styles.titleOnly} ellipsizeMode="tail" numberOfLines={1}>
             {title}
@@ -82,7 +82,7 @@ const WebPreview = ({url, linkPreview, customStyle}: WebPreviewProps) => {
           />
         ) : (
           <View style={styles.placeholderBox}>
-            <LinkImg width={30} height={30} />
+            <LinkImg width={30} height={30} color={MyTheme.black} />
           </View>
         )}
         <View style={styles.textsCtn}>

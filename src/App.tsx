@@ -9,6 +9,7 @@ import MyInfoToast from './components/toasts/MyInfoToast';
 import AuthProvider from './contexts/auth/AuthProvider';
 import DrawerProvider from './contexts/drawer/DrawerProvider';
 import LightboxProvider from './contexts/lightbox/LightboxProvider';
+import OptionsProvider from './contexts/options/OptionsProvider';
 import StackContainer from './routing/StackContainer';
 import {MyTheme} from './theme';
 
@@ -34,16 +35,48 @@ function App(): React.JSX.Element {
     info: (props: any) => <MyInfoToast {...props} />,
   };
 
+  const linking = {
+    prefixes: ['stringz://'],
+    config: {
+      screens: {
+        Home: {
+          screens: {
+            FeedRoot: {
+              initialRouteName: 'Feed',
+              screens: {
+                Channel: {
+                  path: 'channel/:channelId/:showDrawer',
+                  parse: {
+                    showDrawer: (showDrawer: string) => showDrawer === 'true',
+                  },
+                },
+                ThreadDetail: {
+                  path: 'thread-detail/:threadHash',
+                },
+                Profile: {
+                  path: 'profile/:userFid',
+                },
+                Feed: 'feed/',
+              },
+            },
+          },
+        },
+      },
+    },
+  };
+
   return (
     <AuthProvider>
       <LightboxProvider>
         <SafeAreaProvider>
-          <NavigationContainer theme={NavigationTheme}>
+          <NavigationContainer theme={NavigationTheme} linking={linking}>
             <PostHogProvider apiKey={process.env.POSTHOG_API_KEY} autocapture>
               <DrawerProvider>
-                <AppWrapper>
-                  <StackContainer />
-                </AppWrapper>
+                <OptionsProvider>
+                  <AppWrapper>
+                    <StackContainer />
+                  </AppWrapper>
+                </OptionsProvider>
               </DrawerProvider>
             </PostHogProvider>
           </NavigationContainer>

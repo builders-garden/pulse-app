@@ -166,6 +166,8 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
           quotesCount={transformedItem.quotesCount}
           recasted={item?.viewer_context?.recasted}
           upvoted={item?.viewer_context?.liked}
+          author={item.author}
+          channel={item.channel ?? undefined}
           onContentBodyPress={() => {
             navigation.navigate('ThreadDetail', {
               threadHash: item.hash,

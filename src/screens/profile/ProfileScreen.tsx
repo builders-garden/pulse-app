@@ -268,6 +268,8 @@ function ProfileScreen({
             upvotesCount={transformedItem.upvotesCount}
             commentsCount={transformedItem.commentsCount}
             quotesCount={transformedItem.quotesCount}
+            author={item.author}
+            channel={item.channel ?? undefined}
             customStyle={{
               marginHorizontal: 15,
               marginBottom: 15,

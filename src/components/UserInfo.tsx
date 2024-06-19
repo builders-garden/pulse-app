@@ -20,6 +20,7 @@ interface UserInfoProps {
   onTitlePress?: () => void;
   onSubtitlePress?: () => void;
   onImagePress?: () => void;
+  onOptionsPress?: () => void;
 }
 
 const UserInfo = ({
@@ -31,6 +32,7 @@ const UserInfo = ({
   onTitlePress,
   onSubtitlePress,
   onImagePress,
+  onOptionsPress,
 }: UserInfoProps) => {
   return (
     <View style={[styles.header, customStyle && customStyle]}>
@@ -68,7 +70,11 @@ const UserInfo = ({
       </View>
       <MyIconButton
         iconSize={25}
-        onPress={() => {}}
+        onPress={() => {
+          if (onOptionsPress) {
+            onOptionsPress();
+          }
+        }}
         style="secondary"
         filling="clear"
         icon={require('../assets/images/icons/vertical_dots.png')}

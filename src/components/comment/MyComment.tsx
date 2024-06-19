@@ -14,6 +14,7 @@ import {ReactionResponse} from '../../api/cast/types';
 import {Embed} from '../../api/feed/types';
 import BorderLineImg from '../../assets/images/thread/quote_border_line.svg';
 import {AuthContext} from '../../contexts/auth/Auth.context';
+import {OptionsContext} from '../../contexts/options/Options.context';
 import {MyTheme} from '../../theme';
 import {ENDPOINT_CAST} from '../../variables';
 import HighlightedText from '../HighlightedText';
@@ -72,6 +73,7 @@ const MyComment = ({
   onReplyPress,
 }: MyCommentProps) => {
   const authContext = useContext(AuthContext);
+  const optionsContext = useContext(OptionsContext);
   const [isUpvoted, setIsUpvoted] = useState(0);
   const [isRecasted, setIsRecasted] = useState(0);
 
@@ -235,10 +237,14 @@ const MyComment = ({
           </View>
           <MyIconButton
             iconSize={22}
-            onPress={() => {}}
             filling="clear"
             style="secondary"
             icon={require('../../assets/images/icons/vertical_dots.png')}
+            onPress={() => {
+              optionsContext.show({
+                hash: commentHash,
+              });
+            }}
           />
           {/* <Entypo
             name="dots-three-horizontal"
