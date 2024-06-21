@@ -19,6 +19,7 @@ import {
 } from '../../api/cast/types';
 import {RequestStatus} from '../../api/types';
 import DiagonalArrowImg from '../../assets/images/icons/diagonal_arrow.svg';
+import MentionsBox from '../../components/MentionsBox';
 import MyButtonNew from '../../components/buttons/MyButtonNew';
 import ThreadItem from '../../components/threadItem/ThreadItem';
 import {AuthContext} from '../../contexts/auth/Auth.context';
@@ -44,6 +45,8 @@ function CreateCommentScreen({
     images: [],
     links: [],
   });
+  const [mentionsPrompt, setMentionsPrompt] = useState('');
+  const [selectionIndex, setSelectionIndex] = useState(0);
   const inputRef = createRef<TextInput>();
 
   const commentIsValid = useMemo(() => {
@@ -243,6 +246,23 @@ function CreateCommentScreen({
     setComment(newThread);
   }
 
+  function onThreadAddMention(mention: string) {
+    console.log('onThreadAddMention:', mention);
+    let newComment = {...comment};
+    let newBody = newComment.body;
+    let slicedTextLeft = newBody.slice(0, selectionIndex);
+    const slicedTextRight = newBody.slice(selectionIndex);
+    const split = slicedTextLeft.split(' ');
+    split[split.length - 1] = mention;
+    slicedTextLeft = split.join(' ') + ' ';
+    newBody = slicedTextLeft + slicedTextRight;
+    newComment = {
+      ...newComment,
+      body: newBody,
+    };
+    setComment(newComment);
+  }
+
   function onKeyPress() {
     if (comment.body.length === inputLimit) {
       Toast.show({
@@ -254,24 +274,49 @@ function CreateCommentScreen({
     }
   }
 
+  function onSelectionChange(selection: {start: number; end: number}) {
+    if (selection.start === selection.end) {
+      const slicedText = comment.body.slice(0, selection.start);
+      const split = slicedText.split(' ');
+      const lastWord = split[split.length - 1];
+      console.log('lastWord:', lastWord);
+
+      if (lastWord.startsWith('@') || lastWord.startsWith('/')) {
+        if (mentionsPrompt !== lastWord) {
+          setMentionsPrompt(lastWord);
+        }
+      } else {
+        setMentionsPrompt('');
+      }
+      setSelectionIndex(selection.start);
+    }
+  }
+
   return (
-    <View style={styles.threadCtn}>
-      <CastBox cast={route.params.cast} customStyle={{marginBottom: 15}} />
-      <ThreadItem
-        active={true}
-        textInputRef={inputRef}
-        thread={comment}
-        maxLength={inputLimit}
-        onKeyPress={() => onKeyPress()}
-        onChangeText={newText => onThreadChangeText(newText)}
-        onAddMediaPress={() => {
-          onAddMediaPress();
-        }}
-        onCancelMediaPress={mediaIndex => {
-          onCancelMediaPress(mediaIndex);
-        }}
-      />
-      {/* <BottomBar onAddMediaPress={onAddMediaPress} onSendPress={() => {}} /> */}
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'space-between',
+      }}>
+      <View style={styles.threadCtn}>
+        <CastBox cast={route.params.cast} customStyle={{marginBottom: 15}} />
+        <ThreadItem
+          active={true}
+          textInputRef={inputRef}
+          thread={comment}
+          maxLength={inputLimit}
+          onKeyPress={() => onKeyPress()}
+          onChangeText={newText => onThreadChangeText(newText)}
+          onAddMediaPress={() => {
+            onAddMediaPress();
+          }}
+          onCancelMediaPress={mediaIndex => {
+            onCancelMediaPress(mediaIndex);
+          }}
+          onSelectionChange={onSelectionChange}
+        />
+      </View>
+      <MentionsBox prompt={mentionsPrompt} onItemPress={onThreadAddMention} />
     </View>
   );
 }

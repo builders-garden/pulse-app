@@ -60,3 +60,9 @@ export type Thread = {
   video?: Asset;
   links: string[];
 };
+
+export type Mention = {
+  id: string;
+  prefix: string;
+  imageUrl: string;
+};

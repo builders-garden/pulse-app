@@ -41,6 +41,7 @@ import DiagonalArrowImg from '../../assets/images/icons/diagonal_arrow.svg';
 import ListImg from '../../assets/images/icons/list.svg';
 import PlusImg from '../../assets/images/icons/plus.svg';
 import RecentImg from '../../assets/images/icons/recent.svg';
+import MentionsBox from '../../components/MentionsBox';
 import MyChipBase from '../../components/MyChipBase';
 import MyButton from '../../components/buttons/MyButton';
 import MyButtonNew from '../../components/buttons/MyButtonNew';
@@ -67,6 +68,8 @@ function CreateThreadScreen({
   const [selectedChannel, setSelectedChannel] = useState<Channel | undefined>(
     route.params.channel ? route.params.channel : undefined,
   );
+  const [mentionsPrompt, setMentionsPrompt] = useState('');
+  const [selectionIndex, setSelectionIndex] = useState(0);
   const [publishStatus, setPublishStatus] = useState<RequestStatus>('idle');
   const [, setUploadMediaStatus] = useState<RequestStatus>('idle');
   const [, setUploadCastStatus] = useState<RequestStatus>('idle');
@@ -75,8 +78,7 @@ function CreateThreadScreen({
   const [searchedChannels, setSearchedChannels] = useState<Channel[]>([]);
   const [recentChannels, setRecentChannels] = useState<Channel[]>([]);
   const [, setRecentChannelsFetchStatus] = useState<RequestStatus>('idle');
-  const [allChannelsFetchStatus, setAllChannelsFetchStatus] =
-    useState<RequestStatus>('idle');
+  const [, setAllChannelsFetchStatus] = useState<RequestStatus>('idle');
   const [searchChannelsFetchStatus, setSearchChannelsFetchStatus] =
     useState<RequestStatus>('idle');
   const [channelSearchIsDirty, setChannelSearchIsDirty] = useState(false);
@@ -305,11 +307,11 @@ function CreateThreadScreen({
   }, []);
 
   // useEffect(() => {
-  //   console.log('change ref', inputRef.current);
+  //   console.log('change ref');
   //   if (inputRef.current !== null) {
   //     inputRef.current?.focus();
   //   }
-  // }, [inputRef]);
+  // }, [inputRef?.current]);
 
   async function onAddMediaPress(threadIndex: number) {
     if (
@@ -404,6 +406,23 @@ function CreateThreadScreen({
     }
   }
 
+  function onThreadAddMention(mention: string) {
+    console.log('onThreadAddMention:', mention);
+    let newThreads = [...threads];
+    let newBody = newThreads[currentThreadIndex].body;
+    let slicedTextLeft = newBody.slice(0, selectionIndex);
+    const slicedTextRight = newBody.slice(selectionIndex);
+    const split = slicedTextLeft.split(' ');
+    split[split.length - 1] = mention;
+    slicedTextLeft = split.join(' ') + ' ';
+    newBody = slicedTextLeft + slicedTextRight;
+    newThreads[currentThreadIndex] = {
+      ...newThreads[currentThreadIndex],
+      body: newBody,
+    };
+    setThreads(newThreads);
+  }
+
   function onKeyPress(
     e: NativeSyntheticEvent<TextInputKeyPressEventData>,
     index: number,
@@ -435,6 +454,27 @@ function CreateThreadScreen({
           topOffset: 50,
         });
       }
+    }
+  }
+
+  function onSelectionChange(selection: {start: number; end: number}) {
+    if (selection.start === selection.end) {
+      const slicedText = threads[currentThreadIndex].body.slice(
+        0,
+        selection.start,
+      );
+      const split = slicedText.split(' ');
+      const lastWord = split[split.length - 1];
+      console.log('lastWord:', lastWord);
+
+      if (lastWord.startsWith('@') || lastWord.startsWith('/')) {
+        if (mentionsPrompt !== lastWord) {
+          setMentionsPrompt(lastWord);
+        }
+      } else {
+        setMentionsPrompt('');
+      }
+      setSelectionIndex(selection.start);
     }
   }
 
@@ -618,13 +658,17 @@ function CreateThreadScreen({
             maxLength={inputLimit}
             onFocus={() => setCurrentThreadIndex(index)}
             onKeyPress={e => onKeyPress(e, index)}
-            onChangeText={newText => onThreadChangeText(newText, index)}
+            onChangeText={newText => {
+              console.log('newText', newText);
+              onThreadChangeText(newText, index);
+            }}
             onAddMediaPress={() => {
               onAddMediaPress(index);
             }}
             onCancelMediaPress={mediaIndex => {
               onCancelMediaPress(index, mediaIndex);
             }}
+            onSelectionChange={onSelectionChange}
           />
         )}
         ItemSeparatorComponent={() => <View style={{height: 20}} />}
@@ -720,6 +764,7 @@ function CreateThreadScreen({
           )}
         </BottomSheetScrollView>
       </BottomSheet>
+      <MentionsBox prompt={mentionsPrompt} onItemPress={onThreadAddMention} />
     </View>
   );
 }

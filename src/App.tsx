@@ -2,6 +2,7 @@ import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import {PostHogProvider} from 'posthog-react-native';
 import React from 'react';
+import {KeyboardProvider} from 'react-native-keyboard-controller';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import AppWrapper from './AppWrapper';
@@ -73,9 +74,11 @@ function App(): React.JSX.Element {
             <PostHogProvider apiKey={process.env.POSTHOG_API_KEY} autocapture>
               <DrawerProvider>
                 <OptionsProvider>
-                  <AppWrapper>
-                    <StackContainer />
-                  </AppWrapper>
+                  <KeyboardProvider>
+                    <AppWrapper>
+                      <StackContainer />
+                    </AppWrapper>
+                  </KeyboardProvider>
                 </OptionsProvider>
               </DrawerProvider>
             </PostHogProvider>

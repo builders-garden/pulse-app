@@ -23,6 +23,7 @@ type ThreadItemProps = {
   customStyle?: StyleProp<ViewStyle>;
   onChangeText: (text: string) => void;
   onKeyPress?: (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => void;
+  onSelectionChange?: (selection: {start: number; end: number}) => void;
   onFocus?: () => void;
   onAddMediaPress: () => void;
   onCancelMediaPress: (index: number) => void;
@@ -36,6 +37,7 @@ function ThreadItem({
   customStyle,
   onChangeText,
   onKeyPress,
+  onSelectionChange,
   onFocus,
   onAddMediaPress,
   onCancelMediaPress,
@@ -73,6 +75,7 @@ function ThreadItem({
           onFocus={() => {
             onFocus && onFocus();
           }}
+          autoFocus
           placeholderTextColor={MyTheme.grey200}
           multiline
           placeholder="Write something interesting"
@@ -83,6 +86,9 @@ function ThreadItem({
           maxLength={maxLength}
           onKeyPress={e => {
             onKeyPress && onKeyPress(e);
+          }}
+          onSelectionChange={e => {
+            onSelectionChange && onSelectionChange(e.nativeEvent.selection);
           }}
         />
         {thread.images && thread.images.length > 0 && (
