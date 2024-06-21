@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {Keyboard} from 'react-native';
+import {Keyboard, Platform} from 'react-native';
 
 export const useKeyboard = () => {
   const [keyboardOpen, setKeyboardOpen] = useState(false);
@@ -12,16 +12,15 @@ export const useKeyboard = () => {
       },
     );
 
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardWillHide',
-      () => {
-        setKeyboardOpen(false);
-      },
-    );
+    const hideEventName =
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    const keyboardHideListener = Keyboard.addListener(hideEventName, () => {
+      setKeyboardOpen(false);
+    });
 
     return () => {
       keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
+      keyboardHideListener.remove();
     };
   }, []);
 

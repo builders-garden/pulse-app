@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: 'transparent',
   },
   pressedChip: {
     opacity: 0.7,

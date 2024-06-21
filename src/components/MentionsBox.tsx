@@ -45,10 +45,8 @@ const MentionsBox = ({
       if (authContext.state?.fid) {
         setSearchMentionsFetchStatus('loading');
         try {
-          console.log('searching 3');
           let resMentions;
           if (isUserMention) {
-            console.log('searching profiles', prompt);
             const finalUrl = ENDPOINT_PROFILE + '?q=' + prompt.slice(1);
             // console.log('searching profiles', finalUrl);
             const res = await axios.get<ProfileSearchResponse>(finalUrl, {
@@ -68,7 +66,6 @@ const MentionsBox = ({
               .slice(0, 10)
               .map(channel2Mention);
           }
-          console.log('searching 4', resMentions);
           setSearchedItems(resMentions);
           // console.log('got response', res.data.result);
           // console.log('got response');
@@ -89,7 +86,6 @@ const MentionsBox = ({
 
   const handleSearch = useCallback(() => {
     if (prompt.length > 1) {
-      console.log('searching');
       if (searchTimeout) {
         clearTimeout(searchTimeout);
       }
@@ -99,7 +95,6 @@ const MentionsBox = ({
 
       const source = axios.CancelToken.source();
       const timeout = setTimeout(() => {
-        console.log('searching 2');
         handleSearchMentions(source.token);
       }, 500);
       setSearchTimeout(timeout);
@@ -175,7 +170,6 @@ const MentionsBox = ({
           customStyle={styles.channelChip}
           textCustomStyle={{color: MyTheme.grey500}}
           onPress={() => {
-            console.log('item pressed', item.id);
             onItemPress(`${item.prefix}${item.id}`);
           }}
         />
