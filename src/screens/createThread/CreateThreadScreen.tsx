@@ -1,7 +1,6 @@
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetBackdropProps,
-  BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
 import axios, {CancelToken, CancelTokenSource} from 'axios';
 import React, {
@@ -23,6 +22,7 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {MediaType, launchImageLibrary} from 'react-native-image-picker';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
 import uuid from 'react-native-uuid';
 import {
@@ -41,6 +41,7 @@ import DiagonalArrowImg from '../../assets/images/icons/diagonal_arrow.svg';
 import ListImg from '../../assets/images/icons/list.svg';
 import PlusImg from '../../assets/images/icons/plus.svg';
 import RecentImg from '../../assets/images/icons/recent.svg';
+import BottomSheetKeyboardAwareScrollView from '../../components/BottomSheetKeyboardAwareScrollView';
 import MentionsBox from '../../components/MentionsBox';
 import MyChipBase from '../../components/MyChipBase';
 import MyButton from '../../components/buttons/MyButton';
@@ -58,7 +59,7 @@ import {
 } from '../../variables';
 import ChannelButton from './components/ChannelButton';
 const maxImagesCount = 2;
-const inputLimit = 320;
+const inputLimit = 1024;
 
 function CreateThreadScreen({
   navigation,
@@ -412,9 +413,12 @@ function CreateThreadScreen({
     let newBody = newThreads[currentThreadIndex].body;
     let slicedTextLeft = newBody.slice(0, selectionIndex);
     const slicedTextRight = newBody.slice(selectionIndex);
-    const split = slicedTextLeft.split(' ');
-    split[split.length - 1] = mention;
-    slicedTextLeft = split.join(' ') + ' ';
+    const lines = slicedTextLeft.split('\n');
+    const lastLine = lines[lines.length - 1];
+    const splitLastLine = lastLine.split(' ');
+    splitLastLine[splitLastLine.length - 1] = mention;
+    lines[lines.length - 1] = splitLastLine.join(' ');
+    slicedTextLeft = lines.join('\n') + ' ';
     newBody = slicedTextLeft + slicedTextRight;
     newThreads[currentThreadIndex] = {
       ...newThreads[currentThreadIndex],
@@ -463,11 +467,13 @@ function CreateThreadScreen({
         0,
         selection.start,
       );
-      const split = slicedText.split(' ');
+      const split = slicedText.split(/\s*\r?\n\s*/);
       const lastWord = split[split.length - 1];
-      console.log('lastWord:', lastWord);
 
-      if (lastWord.startsWith('@') || lastWord.startsWith('/')) {
+      if (
+        (lastWord.startsWith('@') || lastWord.startsWith('/')) &&
+        !lastWord.includes(' ')
+      ) {
         if (mentionsPrompt !== lastWord) {
           setMentionsPrompt(lastWord);
         }
@@ -636,6 +642,7 @@ function CreateThreadScreen({
   return (
     <View style={{flex: 1}}>
       <FlatList
+        renderScrollComponent={props => <KeyboardAwareScrollView {...props} />}
         style={styles.threadsCtn}
         showsVerticalScrollIndicator={false}
         data={threads}
@@ -696,7 +703,7 @@ function CreateThreadScreen({
         backdropComponent={renderBackdrop}
         enablePanDownToClose
         ref={bottomSheetRef}>
-        <BottomSheetScrollView style={styles.bottomSheetContent}>
+        <BottomSheetKeyboardAwareScrollView style={styles.bottomSheetContent}>
           <View style={styles.bottomSheetHeaderCtn}>
             <Text style={styles.bottomSheetHeaderText}>Choose a channel</Text>
             <MySearchField
@@ -762,7 +769,7 @@ function CreateThreadScreen({
               </View>
             </>
           )}
-        </BottomSheetScrollView>
+        </BottomSheetKeyboardAwareScrollView>
       </BottomSheet>
       <MentionsBox prompt={mentionsPrompt} onItemPress={onThreadAddMention} />
     </View>

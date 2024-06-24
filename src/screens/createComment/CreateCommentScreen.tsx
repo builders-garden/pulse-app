@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 import {StyleSheet, TextInput, View} from 'react-native';
 import {MediaType, launchImageLibrary} from 'react-native-image-picker';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-controller';
 import Toast from 'react-native-toast-message';
 import uuid from 'react-native-uuid';
 import {
@@ -29,7 +30,7 @@ import {Thread} from '../../types';
 import {ENDPOINT_CAST} from '../../variables';
 import CastBox from './components/CastBox';
 const maxImagesCount = 2;
-const inputLimit = 320;
+const inputLimit = 1024;
 
 function CreateCommentScreen({
   navigation,
@@ -252,9 +253,12 @@ function CreateCommentScreen({
     let newBody = newComment.body;
     let slicedTextLeft = newBody.slice(0, selectionIndex);
     const slicedTextRight = newBody.slice(selectionIndex);
-    const split = slicedTextLeft.split(' ');
-    split[split.length - 1] = mention;
-    slicedTextLeft = split.join(' ') + ' ';
+    const lines = slicedTextLeft.split('\n');
+    const lastLine = lines[lines.length - 1];
+    const splitLastLine = lastLine.split(' ');
+    splitLastLine[splitLastLine.length - 1] = mention;
+    lines[lines.length - 1] = splitLastLine.join(' ');
+    slicedTextLeft = lines.join('\n') + ' ';
     newBody = slicedTextLeft + slicedTextRight;
     newComment = {
       ...newComment,
@@ -277,11 +281,13 @@ function CreateCommentScreen({
   function onSelectionChange(selection: {start: number; end: number}) {
     if (selection.start === selection.end) {
       const slicedText = comment.body.slice(0, selection.start);
-      const split = slicedText.split(' ');
+      const split = slicedText.split(/\s*\r?\n\s*/);
       const lastWord = split[split.length - 1];
-      console.log('lastWord:', lastWord);
 
-      if (lastWord.startsWith('@') || lastWord.startsWith('/')) {
+      if (
+        (lastWord.startsWith('@') || lastWord.startsWith('/')) &&
+        !lastWord.includes(' ')
+      ) {
         if (mentionsPrompt !== lastWord) {
           setMentionsPrompt(lastWord);
         }
@@ -298,7 +304,7 @@ function CreateCommentScreen({
         flex: 1,
         justifyContent: 'space-between',
       }}>
-      <View style={styles.threadCtn}>
+      <KeyboardAwareScrollView style={styles.threadCtn}>
         <CastBox cast={route.params.cast} customStyle={{marginBottom: 15}} />
         <ThreadItem
           active={true}
@@ -315,7 +321,7 @@ function CreateCommentScreen({
           }}
           onSelectionChange={onSelectionChange}
         />
-      </View>
+      </KeyboardAwareScrollView>
       <MentionsBox prompt={mentionsPrompt} onItemPress={onThreadAddMention} />
     </View>
   );
@@ -324,6 +330,7 @@ function CreateCommentScreen({
 const styles = StyleSheet.create({
   threadCtn: {
     paddingTop: 20,
+    marginBottom: 40,
   },
   contentContainer: {
     flex: 1,
