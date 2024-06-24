@@ -13,6 +13,7 @@ import React, {
 } from 'react';
 import {
   FlatList,
+  Keyboard,
   NativeSyntheticEvent,
   StyleSheet,
   Text,
@@ -95,7 +96,13 @@ function CreateThreadScreen({
 
   const renderBackdrop = useCallback(
     (props: BottomSheetBackdropProps) => (
-      <BottomSheetBackdrop {...props} disappearsOnIndex={-1} />
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        onPress={() => {
+          Keyboard.dismiss();
+        }}
+      />
     ),
     [],
   );

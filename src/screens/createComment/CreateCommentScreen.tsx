@@ -24,6 +24,7 @@ import MentionsBox from '../../components/MentionsBox';
 import MyButtonNew from '../../components/buttons/MyButtonNew';
 import ThreadItem from '../../components/threadItem/ThreadItem';
 import {AuthContext} from '../../contexts/auth/Auth.context';
+import {useKeyboard} from '../../hooks/useKeyboard';
 import {RootStackScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
 import {Thread} from '../../types';
@@ -37,6 +38,7 @@ function CreateCommentScreen({
   route,
 }: RootStackScreenProps<'CreateComment'>) {
   const authContext = useContext(AuthContext);
+  const keyboard = useKeyboard();
   const [publishStatus, setPublishStatus] = useState<RequestStatus>('idle');
   const [, setUploadMediaStatus] = useState<RequestStatus>('idle');
   const [, setUploadCastStatus] = useState<RequestStatus>('idle');
@@ -321,6 +323,7 @@ function CreateCommentScreen({
           }}
           onSelectionChange={onSelectionChange}
         />
+        <View style={{height: keyboard ? 40 : 60}} />
       </KeyboardAwareScrollView>
       <MentionsBox prompt={mentionsPrompt} onItemPress={onThreadAddMention} />
     </View>
@@ -330,7 +333,6 @@ function CreateCommentScreen({
 const styles = StyleSheet.create({
   threadCtn: {
     paddingTop: 20,
-    marginBottom: 40,
   },
   contentContainer: {
     flex: 1,

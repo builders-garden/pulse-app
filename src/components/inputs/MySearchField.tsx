@@ -17,6 +17,7 @@ interface MySearchFieldProps {
   width?: DimensionValue;
   customStyle?: StyleProp<ViewStyle>;
   dismissKeyboardOnCancel?: boolean;
+  dismissKeyboardOnBlur?: boolean;
   loading?: boolean;
   // debounceTime?: number;
   onCancelPress?: () => void;
