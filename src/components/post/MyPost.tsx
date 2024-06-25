@@ -229,6 +229,7 @@ const MyPost = ({
             }
             optionsContext.show({
               hash: postHash,
+              showMint: true,
               analytics,
             });
           }}

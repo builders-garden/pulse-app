@@ -9,6 +9,7 @@ export interface OptionsContextModel {
 
 export interface OptionsState {
   hash: string;
+  showMint?: boolean;
   analytics?: {
     author: Profile;
     channel?: Channel;

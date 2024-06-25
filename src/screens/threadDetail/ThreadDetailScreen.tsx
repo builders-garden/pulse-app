@@ -249,6 +249,7 @@ function ThreadDetailScreen({
               onOptionsPress={() => {
                 optionsContext.show({
                   hash: thread.casts[0].hash,
+                  showMint: true,
                   analytics: {
                     recasts: transformedCast.quotesCount,
                     upvotes: transformedCast.upvotesCount,
@@ -272,7 +273,11 @@ function ThreadDetailScreen({
               recasted={section.header.viewer_context.recasted}
               headerImg={transformedCast.headerImg}
               postTime={transformedCast.postTime}
-              quote={thread.casts[section.castIndex].text}
+              quote={
+                thread.casts.length > 1
+                  ? thread.casts[section.castIndex].text
+                  : undefined
+              }
               headerTitle={transformedCast.headerTitle}
               headerSubtitle={transformedCast.headerSubtitle}
               images={transformedCast.images}

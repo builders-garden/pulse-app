@@ -5,12 +5,13 @@ import BottomSheet, {
 } from '@gorhom/bottom-sheet';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useNavigation} from '@react-navigation/native';
-import React, {createRef, useCallback, useEffect} from 'react';
+import React, {createRef, useCallback, useEffect, useMemo} from 'react';
 import {Share, StyleSheet, Text, View} from 'react-native';
 import Toast from 'react-native-toast-message';
 import {Channel} from '../../api/channel/types';
 import {Profile} from '../../api/profile/types';
 import LinkImg from '../../assets/images/icons/link.svg';
+import MintImg from '../../assets/images/icons/mint.svg';
 import ScoreImg from '../../assets/images/icons/score.svg';
 import ShareImg from '../../assets/images/icons/share.svg';
 import {MyTheme} from '../../theme';
@@ -27,12 +28,14 @@ interface OptionsBottomSheetProps {
     recasts: number;
     replies: number;
   };
+  showMint?: boolean;
   onInteract?: () => void;
 }
 
 function OptionsBottomSheet({
   hash,
   analytics,
+  showMint,
   onInteract,
 }: OptionsBottomSheetProps) {
   const bottomSheetRef = createRef<BottomSheet>();
@@ -55,6 +58,11 @@ function OptionsBottomSheet({
     }
   }, [hash, bottomSheetRef]);
 
+  const snapPoints = useMemo(
+    () => [(analytics ? 350 : 120) + (showMint ? 50 : 0)],
+    [analytics, showMint],
+  );
+
   return (
     <BottomSheet
       backgroundStyle={
@@ -65,7 +73,7 @@ function OptionsBottomSheet({
             }
       }
       handleStyle={styles.handle}
-      snapPoints={[analytics ? 350 : 120]}
+      snapPoints={snapPoints}
       index={-1}
       backdropComponent={renderBackdrop}
       ref={bottomSheetRef}
@@ -116,6 +124,44 @@ function OptionsBottomSheet({
               />
             }
           />
+          {showMint && (
+            <MyButtonNew
+              customStyle={styles.mintButton}
+              title="Mint thread"
+              onPress={() => {}}
+              style="quaternary"
+              textCustomStyle={{color: MyTheme.grey500}}
+              iconLeft={
+                <MintImg
+                  height={18}
+                  width={18}
+                  color={MyTheme.grey500}
+                  style={{marginRight: 3}}
+                />
+              }
+              iconRight={
+                <View
+                  style={{
+                    backgroundColor: MyTheme.primaryColor,
+                    paddingHorizontal: 4,
+                    paddingVertical: 1,
+                    borderRadius: 2,
+                    marginLeft: 'auto',
+                    alignSelf: 'flex-start',
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: MyTheme.fontBold,
+                      color: MyTheme.white,
+                      fontSize: 12,
+                    }}>
+                    SOON
+                  </Text>
+                </View>
+                // <Text style={{color: MyTheme.grey500}}>Coming soon</Text>
+              }
+            />
+          )}
         </View>
         {analytics && (
           <View style={styles.analyticsCtn}>
@@ -180,6 +226,7 @@ const styles = StyleSheet.create({
   buttonsCtn: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
     padding: 10,
     gap: 10,
     backgroundColor: MyTheme.white,
@@ -210,6 +257,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   button: {flex: 1, borderRadius: 3, height: 44, justifyContent: 'flex-start'},
+  mintButton: {
+    width: '100%',
+    paddingRight: 6,
+    borderRadius: 3,
+    height: 44,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
 });
 
 export default OptionsBottomSheet;

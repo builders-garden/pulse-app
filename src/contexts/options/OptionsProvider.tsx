@@ -12,11 +12,13 @@ function optionsReducer(
       return {
         hash: action.payload.hash,
         analytics: action.payload.analytics,
+        showMint: action.payload.showMint,
       };
     case 'HIDE':
       return {
         hash: '',
         analytics: undefined,
+        showMint: undefined,
       };
   }
 }
@@ -25,6 +27,7 @@ function OptionsProvider({children}: PropsWithChildren) {
   const [optionsState, dispatch] = useReducer(optionsReducer, {
     hash: '',
     analytics: undefined,
+    showMint: undefined,
   });
 
   const optionsContext = useMemo(
@@ -33,7 +36,11 @@ function OptionsProvider({children}: PropsWithChildren) {
       show: (data: ShowActionPayload) => {
         dispatch({
           type: 'SHOW',
-          payload: {hash: data.hash, analytics: data.analytics},
+          payload: {
+            hash: data.hash,
+            analytics: data.analytics,
+            showMint: data.showMint,
+          },
         });
       },
       hide: () => {
@@ -49,6 +56,7 @@ function OptionsProvider({children}: PropsWithChildren) {
       <OptionsBottomSheet
         hash={optionsContext.state.hash}
         analytics={optionsContext.state.analytics}
+        showMint={optionsContext.state.showMint}
         onInteract={() => {
           console.log('onInteract');
           optionsContext.hide();
