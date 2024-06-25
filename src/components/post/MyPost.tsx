@@ -16,6 +16,7 @@ import {Profile} from '../../api/profile/types';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {OptionsContext} from '../../contexts/options/Options.context';
 import {MyTheme} from '../../theme';
+import {LinkPreview} from '../../types';
 import {ENDPOINT_CAST} from '../../variables';
 import HighlightedText from '../HighlightedText';
 import MyIconButton from '../MyIconButton';
@@ -71,6 +72,9 @@ const MyPost = ({
   const optionsContext = useContext(OptionsContext);
   const [isUpvoted, setIsUpvoted] = useState(0);
   const [isRecasted, setIsRecasted] = useState(0);
+  const [linkPreviews, setLinkPreviews] = useState<
+    (LinkPreview & {originalUrl: string})[]
+  >([]);
 
   const toggleUpvote = useCallback(async () => {
     try {
@@ -158,7 +162,7 @@ const MyPost = ({
       console.error(error);
     }
   }, [authContext.state.token, postHash, isRecasted, recasted]);
-
+  console.log('images', images);
   const mediaHtml = useMemo(() => {
     if (images) {
       return images.map((image, index) => (

@@ -1,5 +1,5 @@
 import {getLinkPreview} from 'link-preview-js';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {Pressable, StyleSheet} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
@@ -19,25 +19,31 @@ const UrlViewer = ({url}: UrlViewerProps) => {
     const fetchMediaType = async () => {
       try {
         const res: LinkPreview = await getLinkPreview(url);
-        // console.log('Link previeaw:', url, res);
+        console.log('Link previeaw:', url, res);
         setLinkPreview(res);
       } catch (error) {
-        // console.log('Failed to fetch media type:', url, JSON.stringify(error));
+        console.log('Failed to fetch media type:', url, JSON.stringify(error));
       }
     };
 
     fetchMediaType();
   }, [url]);
 
-  if (linkPreview?.mediaType === 'image') {
+  const isImage = useMemo(
+    () =>
+      linkPreview?.mediaType === 'image' || url.match(/\.(jpeg|jpg|gif|png)$/),
+    [linkPreview, url],
+  );
+
+  if (isImage) {
     return (
       <Pressable
         style={styles.viewerCtn}
         onPress={() => lightboxContext.show({urls: [url]})}>
         <FastImage
           source={{uri: url}}
-          style={styles.viewer}
           resizeMode="contain"
+          style={styles.imageViewer}
         />
       </Pressable>
     );
@@ -62,11 +68,17 @@ const UrlViewer = ({url}: UrlViewerProps) => {
 
 const styles = StyleSheet.create({
   viewerCtn: {
-    flex: 1,
+    width: '100%',
   },
   viewer: {
     width: '100%',
     minHeight: 200,
+  },
+  imageViewer: {
+    width: '100%',
+    minHeight: 200,
+    // aspectRatio: 1,
+    // alignSelf: 'center',
   },
   youtubePlayer: {
     width: '100%',
