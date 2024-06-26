@@ -6,6 +6,7 @@ import {
 } from '@codeherence/react-native-header';
 import {useScrollToTop} from '@react-navigation/native';
 import axios from 'axios';
+import {getLinkPreview} from 'link-preview-js';
 import React, {
   useCallback,
   useContext,
@@ -80,7 +81,25 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
       const res = await axios.get<FeedResponse>(finalUrl, {
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
-      setFeed(res.data.result);
+
+      const resList = [...res.data.result];
+      for (let i = 0; i < resList.length; i++) {
+        // console.log('cast', resList[i]);
+        for (let j = 0; j < resList[i].embeds.length; j++) {
+          if (resList[i].embeds[j].url) {
+            const linkPreview = await getLinkPreview(resList[i].embeds[j].url);
+            if (
+              linkPreview?.mediaType !== 'image' &&
+              resList[i].embeds[j].url.match(/\.(jpeg|jpg|gif|png)$/)
+            ) {
+              linkPreview.mediaType = 'image';
+            }
+            resList[i].embeds[j].linkPreview = linkPreview;
+          }
+        }
+      }
+
+      setFeed(resList);
       setCursor(res.data.cursor);
       setFeedFetchStatus('success');
     } catch (error) {
@@ -133,8 +152,26 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         },
       );
+
+      const resList = [...res.data.result];
+      for (let i = 0; i < resList.length; i++) {
+        // console.log('cast', resList[i]);
+        for (let j = 0; j < resList[i].embeds.length; j++) {
+          if (resList[i].embeds[j].url) {
+            const linkPreview = await getLinkPreview(resList[i].embeds[j].url);
+            if (
+              linkPreview?.mediaType !== 'image' &&
+              resList[i].embeds[j].url.match(/\.(jpeg|jpg|gif|png)$/)
+            ) {
+              linkPreview.mediaType = 'image';
+            }
+            resList[i].embeds[j].linkPreview = linkPreview;
+          }
+        }
+      }
+
       // console.log('got response');
-      setFeed([...feed, ...res.data.result]);
+      setFeed([...feed, ...resList]);
       setCursor(res.data.cursor);
       setNewThreadsFetchStatus('success');
     } catch (error) {

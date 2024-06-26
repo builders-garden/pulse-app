@@ -14,9 +14,9 @@ import {Channel} from '../../api/channel/types';
 import {Embed} from '../../api/feed/types';
 import {Profile} from '../../api/profile/types';
 import {AuthContext} from '../../contexts/auth/Auth.context';
+import {LightboxContext} from '../../contexts/lightbox/Lightbox.context';
 import {OptionsContext} from '../../contexts/options/Options.context';
 import {MyTheme} from '../../theme';
-import {LinkPreview} from '../../types';
 import {ENDPOINT_CAST} from '../../variables';
 import HighlightedText from '../HighlightedText';
 import MyIconButton from '../MyIconButton';
@@ -70,11 +70,9 @@ const MyPost = ({
 }: MyPostProps) => {
   const authContext = useContext(AuthContext);
   const optionsContext = useContext(OptionsContext);
+  const lightboxContext = useContext(LightboxContext);
   const [isUpvoted, setIsUpvoted] = useState(0);
   const [isRecasted, setIsRecasted] = useState(0);
-  const [linkPreviews, setLinkPreviews] = useState<
-    (LinkPreview & {originalUrl: string})[]
-  >([]);
 
   const toggleUpvote = useCallback(async () => {
     try {
@@ -162,11 +160,21 @@ const MyPost = ({
       console.error(error);
     }
   }, [authContext.state.token, postHash, isRecasted, recasted]);
-  console.log('images', images);
+
   const mediaHtml = useMemo(() => {
     if (images) {
       return images.map((image, index) => (
-        <UrlViewer key={index} url={image.url} />
+        <UrlViewer
+          key={index}
+          url={image.url}
+          linkPreview={image.linkPreview}
+          onImagePress={() => {
+            lightboxContext.show({
+              urls: images.map(el => el.url),
+              imageIndex: index,
+            });
+          }}
+        />
       ));
     }
 

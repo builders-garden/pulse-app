@@ -12,11 +12,13 @@ function lightboxReducer(
       return {
         visible: true,
         urls: action.payload.urls,
+        imageIndex: action.payload.imageIndex || 0,
       };
     case 'HIDE':
       return {
         visible: false,
         urls: [],
+        imageIndex: 0,
       };
   }
 }
@@ -27,13 +29,17 @@ function LightboxProvider({children}: PropsWithChildren) {
   const [lightboxState, dispatch] = useReducer(lightboxReducer, {
     visible: false,
     urls: [],
+    imageIndex: 0,
   });
 
   const lightboxContext = useMemo(
     () => ({
       state: lightboxState,
       show: (data: ShowActionPayload) => {
-        dispatch({type: 'SHOW', payload: {urls: data.urls}});
+        dispatch({
+          type: 'SHOW',
+          payload: {urls: data.urls, imageIndex: data.imageIndex},
+        });
       },
       hide: () => dispatch({type: 'HIDE'}),
     }),
@@ -47,7 +53,7 @@ function LightboxProvider({children}: PropsWithChildren) {
       {children}
       <ImageView
         images={urlsFormatted}
-        imageIndex={0}
+        imageIndex={lightboxContext.state.imageIndex}
         visible={lightboxContext.state.visible}
         onRequestClose={() => lightboxContext.hide()}
       />

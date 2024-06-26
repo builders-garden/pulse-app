@@ -1,3 +1,4 @@
+import {LinkPreview} from '../../types';
 import {Channel} from '../channel/types';
 import {Profile} from '../profile/types';
 
@@ -38,6 +39,7 @@ export type FeedItem = {
 
 export type Embed = {
   url: string;
+  linkPreview?: LinkPreview;
 };
 
 export type Frame = {

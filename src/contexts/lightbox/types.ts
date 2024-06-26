@@ -7,6 +7,7 @@ export interface LightboxContextModel {
 export interface LightboxState {
   visible: boolean;
   urls: string[];
+  imageIndex: number;
 }
 
 export interface ShowAction {
@@ -18,6 +19,7 @@ export interface HideAction {
 }
 export interface ShowActionPayload {
   urls: string[];
+  imageIndex?: number;
 }
 
 export type LightboxAction = ShowAction | HideAction;

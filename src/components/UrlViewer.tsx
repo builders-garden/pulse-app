@@ -1,45 +1,24 @@
-import {getLinkPreview} from 'link-preview-js';
-import React, {useContext, useEffect, useMemo, useState} from 'react';
+import React from 'react';
 import {Pressable, StyleSheet} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Video from 'react-native-video';
 import YoutubePlayer from 'react-native-youtube-iframe';
-import {LightboxContext} from '../contexts/lightbox/Lightbox.context';
 import {LinkPreview} from '../types';
 import WebPreview from './WebPreview';
 interface UrlViewerProps {
   url: string;
+  linkPreview?: LinkPreview;
+  onImagePress?: () => void;
 }
 
-const UrlViewer = ({url}: UrlViewerProps) => {
-  const [linkPreview, setLinkPreview] = useState<LinkPreview>();
-  const lightboxContext = useContext(LightboxContext);
-
-  useEffect(() => {
-    const fetchMediaType = async () => {
-      try {
-        const res: LinkPreview = await getLinkPreview(url);
-        console.log('Link previeaw:', url, res);
-        setLinkPreview(res);
-      } catch (error) {
-        console.log('Failed to fetch media type:', url, JSON.stringify(error));
-      }
-    };
-
-    fetchMediaType();
-  }, [url]);
-
-  const isImage = useMemo(
-    () =>
-      linkPreview?.mediaType === 'image' || url.match(/\.(jpeg|jpg|gif|png)$/),
-    [linkPreview, url],
-  );
-
-  if (isImage) {
+const UrlViewer = ({url, linkPreview, onImagePress}: UrlViewerProps) => {
+  if (linkPreview?.mediaType === 'image') {
     return (
       <Pressable
         style={styles.viewerCtn}
-        onPress={() => lightboxContext.show({urls: [url]})}>
+        onPress={() => {
+          onImagePress && onImagePress();
+        }}>
         <FastImage
           source={{uri: url}}
           resizeMode="contain"
@@ -68,7 +47,7 @@ const UrlViewer = ({url}: UrlViewerProps) => {
 
 const styles = StyleSheet.create({
   viewerCtn: {
-    width: '100%',
+    flex: 1,
   },
   viewer: {
     width: '100%',

@@ -1,3 +1,4 @@
+import {LinkPreview} from '../../types';
 import {Channel} from '../channel/types';
 
 export type UserCastsResponse = {
@@ -19,6 +20,7 @@ export type UserCast = {
   timestamp: string;
   embeds: {
     url: string;
+    linkPreview?: LinkPreview;
   }[];
   mentioned_profiles: Author[];
   reactions: {

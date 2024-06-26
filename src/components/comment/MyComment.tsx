@@ -14,6 +14,7 @@ import {ReactionResponse} from '../../api/cast/types';
 import {Embed} from '../../api/feed/types';
 import BorderLineImg from '../../assets/images/thread/quote_border_line.svg';
 import {AuthContext} from '../../contexts/auth/Auth.context';
+import {LightboxContext} from '../../contexts/lightbox/Lightbox.context';
 import {OptionsContext} from '../../contexts/options/Options.context';
 import {MyTheme} from '../../theme';
 import {ENDPOINT_CAST} from '../../variables';
@@ -74,6 +75,7 @@ const MyComment = ({
 }: MyCommentProps) => {
   const authContext = useContext(AuthContext);
   const optionsContext = useContext(OptionsContext);
+  const lightboxContext = useContext(LightboxContext);
   const [isUpvoted, setIsUpvoted] = useState(0);
   const [isRecasted, setIsRecasted] = useState(0);
 
@@ -88,7 +90,17 @@ const MyComment = ({
   const mediaHtml = useMemo(() => {
     if (images) {
       return images.map((image, index) => (
-        <UrlViewer key={index} url={image.url} />
+        <UrlViewer
+          key={index}
+          url={image.url}
+          linkPreview={image.linkPreview}
+          onImagePress={() => {
+            lightboxContext.show({
+              urls: images.map(el => el.url),
+              imageIndex: index,
+            });
+          }}
+        />
       ));
     }
 

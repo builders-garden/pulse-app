@@ -1,5 +1,6 @@
 import {useScrollToTop} from '@react-navigation/native';
 import axios from 'axios';
+import {getLinkPreview} from 'link-preview-js';
 import React, {
   useCallback,
   useContext,
@@ -45,7 +46,25 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
       // const filtered = res.data.result.filter((value, index, self) => {
       //   return index === self.findIndex(item => item.hash === value.hash);
       // });
-      setFeed(res.data.result);
+
+      const resList = [...res.data.result];
+      for (let i = 0; i < resList.length; i++) {
+        // console.log('cast', resList[i]);
+        for (let j = 0; j < resList[i].embeds.length; j++) {
+          if (resList[i].embeds[j].url) {
+            const linkPreview = await getLinkPreview(resList[i].embeds[j].url);
+            if (
+              linkPreview?.mediaType !== 'image' &&
+              resList[i].embeds[j].url.match(/\.(jpeg|jpg|gif|png)$/)
+            ) {
+              linkPreview.mediaType = 'image';
+            }
+            resList[i].embeds[j].linkPreview = linkPreview;
+          }
+        }
+      }
+
+      setFeed(resList);
       setCursor(res.data.cursor);
       setFeedFetchStatus('success');
     } catch (error) {
@@ -74,7 +93,27 @@ function FeedScreen({navigation}: FeedStackScreenProps<'Feed'>) {
         const filtered = res.data.result.filter((value, index, self) => {
           return index === self.findIndex(item => item.hash === value.hash);
         });
-        setFeed([...feed, ...filtered]);
+
+        const resList = [...filtered];
+        for (let i = 0; i < resList.length; i++) {
+          // console.log('cast', resList[i]);
+          for (let j = 0; j < resList[i].embeds.length; j++) {
+            if (resList[i].embeds[j].url) {
+              const linkPreview = await getLinkPreview(
+                resList[i].embeds[j].url,
+              );
+              if (
+                linkPreview?.mediaType !== 'image' &&
+                resList[i].embeds[j].url.match(/\.(jpeg|jpg|gif|png)$/)
+              ) {
+                linkPreview.mediaType = 'image';
+              }
+              resList[i].embeds[j].linkPreview = linkPreview;
+            }
+          }
+        }
+
+        setFeed([...feed, ...resList]);
         setCursor(res.data.cursor);
         setNewThreadsFetchStatus('success');
       } catch (error) {

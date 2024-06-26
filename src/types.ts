@@ -46,6 +46,10 @@ export type LinkPreview =
       favicons: string[];
     };
 
+export type LinkPreviewFull = LinkPreview & {
+  originalUrl: string;
+};
+
 export type OnboardingSlide = {
   title: ReactNode;
   body: string;

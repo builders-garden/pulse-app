@@ -1,5 +1,6 @@
 import {useScrollToTop} from '@react-navigation/native';
 import axios from 'axios';
+import {getLinkPreview} from 'link-preview-js';
 import React, {
   useCallback,
   useContext,
@@ -97,8 +98,28 @@ function ProfileScreen({
         const res = await axios.get<UserCastsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
+
+        const resList = [...res.data.result];
+        for (let i = 0; i < resList.length; i++) {
+          // console.log('cast', resList[i]);
+          for (let j = 0; j < resList[i].embeds.length; j++) {
+            if (resList[i].embeds[j].url) {
+              const linkPreview = await getLinkPreview(
+                resList[i].embeds[j].url,
+              );
+              if (
+                linkPreview?.mediaType !== 'image' &&
+                resList[i].embeds[j].url.match(/\.(jpeg|jpg|gif|png)$/)
+              ) {
+                linkPreview.mediaType = 'image';
+              }
+              resList[i].embeds[j].linkPreview = linkPreview;
+            }
+          }
+        }
+
         // console.log('got comments');
-        setComments(res.data.result);
+        setComments(resList);
         setCommentsCursor(res.data.cursor);
         setCommentsFetchStatus('success');
       } catch (error) {
@@ -117,9 +138,29 @@ function ProfileScreen({
         const res = await axios.get<UserCastsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
+
+        const resList = [...res.data.result];
+        for (let i = 0; i < resList.length; i++) {
+          // console.log('cast', resList[i]);
+          for (let j = 0; j < resList[i].embeds.length; j++) {
+            if (resList[i].embeds[j].url) {
+              const linkPreview = await getLinkPreview(
+                resList[i].embeds[j].url,
+              );
+              if (
+                linkPreview?.mediaType !== 'image' &&
+                resList[i].embeds[j].url.match(/\.(jpeg|jpg|gif|png)$/)
+              ) {
+                linkPreview.mediaType = 'image';
+              }
+              resList[i].embeds[j].linkPreview = linkPreview;
+            }
+          }
+        }
+
         // console.log('got threads');
-        // console.log(res.data.result);
-        setUserCasts(res.data.result);
+        // console.log(resList);
+        setUserCasts(resList);
         setUserCastsCursor(res.data.cursor);
         setUserCastsFetchStatus('success');
       } catch (error) {
@@ -162,7 +203,27 @@ function ProfileScreen({
         const res = await axios.get<UserCastsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
-        setComments([...comments, ...res.data.result]);
+
+        const resList = [...res.data.result];
+        for (let i = 0; i < resList.length; i++) {
+          // console.log('cast', resList[i]);
+          for (let j = 0; j < resList[i].embeds.length; j++) {
+            if (resList[i].embeds[j].url) {
+              const linkPreview = await getLinkPreview(
+                resList[i].embeds[j].url,
+              );
+              if (
+                linkPreview?.mediaType !== 'image' &&
+                resList[i].embeds[j].url.match(/\.(jpeg|jpg|gif|png)$/)
+              ) {
+                linkPreview.mediaType = 'image';
+              }
+              resList[i].embeds[j].linkPreview = linkPreview;
+            }
+          }
+        }
+
+        setComments([...comments, ...resList]);
         if (res.data.cursor) {
           setCommentsCursor(res.data.cursor);
         } else {
@@ -199,7 +260,27 @@ function ProfileScreen({
         const res = await axios.get<UserCastsResponse>(finalUrl, {
           headers: {Authorization: `Bearer ${authContext.state.token}`},
         });
-        setUserCasts([...userCasts, ...res.data.result]);
+
+        const resList = [...res.data.result];
+        for (let i = 0; i < resList.length; i++) {
+          // console.log('cast', resList[i]);
+          for (let j = 0; j < resList[i].embeds.length; j++) {
+            if (resList[i].embeds[j].url) {
+              const linkPreview = await getLinkPreview(
+                resList[i].embeds[j].url,
+              );
+              if (
+                linkPreview?.mediaType !== 'image' &&
+                resList[i].embeds[j].url.match(/\.(jpeg|jpg|gif|png)$/)
+              ) {
+                linkPreview.mediaType = 'image';
+              }
+              resList[i].embeds[j].linkPreview = linkPreview;
+            }
+          }
+        }
+
+        setUserCasts([...userCasts, ...resList]);
         if (res.data.cursor) {
           setUserCastsCursor(res.data.cursor);
         } else {
@@ -472,6 +553,9 @@ function ProfileScreen({
       data={selectedTab === 0 ? userCasts : selectedTab === 1 ? comments : []}
       windowSize={10}
       showsVerticalScrollIndicator={false}
+      removeClippedSubviews={true}
+      initialNumToRender={10}
+      maxToRenderPerBatch={5}
       onEndReachedThreshold={1}
       onEndReached={() => {
         if (selectedTab === 0 && userCastsCursor) {
