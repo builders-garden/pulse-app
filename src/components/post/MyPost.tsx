@@ -181,6 +181,16 @@ const MyPost = ({
     return [];
   }, [images]);
 
+  const areMixedMedia = useMemo(() => {
+    if (images && images.length > 1) {
+      return (
+        images[0].linkPreview?.mediaType !== images[1].linkPreview?.mediaType
+      );
+    }
+
+    return false;
+  }, [images]);
+
   return (
     <View style={[styles.root, customStyle && customStyle]}>
       <View style={styles.header}>
@@ -261,7 +271,17 @@ const MyPost = ({
           text={content}
         />
 
-        {images && <View style={styles.mediaCtn}>{mediaHtml}</View>}
+        {images && (
+          <View
+            style={[
+              styles.mediaCtn,
+              {
+                flexDirection: areMixedMedia ? 'column' : 'row',
+              },
+            ]}>
+            {mediaHtml}
+          </View>
+        )}
         {/* {image && <UrlViewer url={image} />} */}
       </View>
       <PostActionBar
@@ -340,7 +360,6 @@ const styles = StyleSheet.create({
     borderColor: 'black',
   },
   mediaCtn: {
-    flexDirection: 'row',
     width: '100%',
     flexWrap: 'wrap',
     rowGap: 10,

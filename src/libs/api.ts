@@ -1,3 +1,6 @@
+import {getLinkPreview} from 'link-preview-js';
+import {LinkPreview} from '../types';
+
 export async function getMediaType(url: string) {
   try {
     // Perform a HEAD request to get headers
@@ -13,10 +16,35 @@ export async function getMediaType(url: string) {
       return 'video';
     } else {
       // Add more checks as needed
-      return contentType;
+      return 'other';
     }
   } catch (error) {
-    console.error('Error fetching media type from here:', error);
+    console.log('Error fetching media type from here:', error);
     return 'error';
+  }
+}
+
+export async function fetchLinkPreview(
+  url: string,
+): Promise<LinkPreview | undefined> {
+  try {
+    const linkPreview = await getLinkPreview(url);
+    console.log('linkPreview:', linkPreview);
+    if (
+      linkPreview?.mediaType !== 'image' &&
+      url.match(/\.(jpeg|jpg|gif|png)$/)
+    ) {
+      linkPreview.mediaType = 'image';
+    } else if (
+      linkPreview?.mediaType !== 'video' &&
+      url.match(/\.(mp4|webm|ogg|m3u8)$/)
+    ) {
+      linkPreview.mediaType = 'video';
+    }
+
+    return linkPreview;
+  } catch (err) {
+    console.log('Error fetching link preview');
+    return undefined;
   }
 }

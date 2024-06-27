@@ -1,6 +1,5 @@
 import {useScrollToTop} from '@react-navigation/native';
 import axios from 'axios';
-import {getLinkPreview} from 'link-preview-js';
 import React, {
   useCallback,
   useContext,
@@ -24,6 +23,7 @@ import MyComment from '../../components/comment/MyComment';
 import MyPost from '../../components/post/MyPost';
 import MyTabs from '../../components/tabs/MyTabs';
 import {AuthContext} from '../../contexts/auth/Auth.context';
+import {fetchLinkPreview} from '../../libs/api';
 import {TransformUserCast} from '../../libs/post';
 import {FeedStackScreenProps, HomeTabScreenProps} from '../../routing/types';
 import {ENDPOINT_PROFILE} from '../../variables';
@@ -104,15 +104,9 @@ function ProfileScreen({
           // console.log('cast', resList[i]);
           for (let j = 0; j < resList[i].embeds.length; j++) {
             if (resList[i].embeds[j].url) {
-              const linkPreview = await getLinkPreview(
+              const linkPreview = await fetchLinkPreview(
                 resList[i].embeds[j].url,
               );
-              if (
-                linkPreview?.mediaType !== 'image' &&
-                resList[i].embeds[j].url.match(/\.(jpeg|jpg|gif|png)$/)
-              ) {
-                linkPreview.mediaType = 'image';
-              }
               resList[i].embeds[j].linkPreview = linkPreview;
             }
           }
@@ -144,15 +138,9 @@ function ProfileScreen({
           // console.log('cast', resList[i]);
           for (let j = 0; j < resList[i].embeds.length; j++) {
             if (resList[i].embeds[j].url) {
-              const linkPreview = await getLinkPreview(
+              const linkPreview = await fetchLinkPreview(
                 resList[i].embeds[j].url,
               );
-              if (
-                linkPreview?.mediaType !== 'image' &&
-                resList[i].embeds[j].url.match(/\.(jpeg|jpg|gif|png)$/)
-              ) {
-                linkPreview.mediaType = 'image';
-              }
               resList[i].embeds[j].linkPreview = linkPreview;
             }
           }
@@ -209,15 +197,9 @@ function ProfileScreen({
           // console.log('cast', resList[i]);
           for (let j = 0; j < resList[i].embeds.length; j++) {
             if (resList[i].embeds[j].url) {
-              const linkPreview = await getLinkPreview(
+              const linkPreview = await fetchLinkPreview(
                 resList[i].embeds[j].url,
               );
-              if (
-                linkPreview?.mediaType !== 'image' &&
-                resList[i].embeds[j].url.match(/\.(jpeg|jpg|gif|png)$/)
-              ) {
-                linkPreview.mediaType = 'image';
-              }
               resList[i].embeds[j].linkPreview = linkPreview;
             }
           }
@@ -266,15 +248,9 @@ function ProfileScreen({
           // console.log('cast', resList[i]);
           for (let j = 0; j < resList[i].embeds.length; j++) {
             if (resList[i].embeds[j].url) {
-              const linkPreview = await getLinkPreview(
+              const linkPreview = await fetchLinkPreview(
                 resList[i].embeds[j].url,
               );
-              if (
-                linkPreview?.mediaType !== 'image' &&
-                resList[i].embeds[j].url.match(/\.(jpeg|jpg|gif|png)$/)
-              ) {
-                linkPreview.mediaType = 'image';
-              }
               resList[i].embeds[j].linkPreview = linkPreview;
             }
           }

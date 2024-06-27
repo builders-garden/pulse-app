@@ -6,7 +6,6 @@ import {
 } from '@codeherence/react-native-header';
 import {useScrollToTop} from '@react-navigation/native';
 import axios from 'axios';
-import {getLinkPreview} from 'link-preview-js';
 import React, {
   useCallback,
   useContext,
@@ -32,6 +31,7 @@ import MyHeaderRight from '../../components/header/MyHeaderRight';
 import MyPost from '../../components/post/MyPost';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {DrawerContext} from '../../contexts/drawer/Drawer.context';
+import {fetchLinkPreview} from '../../libs/api';
 import {TransformFeedItem} from '../../libs/post';
 import {FeedStackScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
@@ -87,13 +87,10 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
         // console.log('cast', resList[i]);
         for (let j = 0; j < resList[i].embeds.length; j++) {
           if (resList[i].embeds[j].url) {
-            const linkPreview = await getLinkPreview(resList[i].embeds[j].url);
-            if (
-              linkPreview?.mediaType !== 'image' &&
-              resList[i].embeds[j].url.match(/\.(jpeg|jpg|gif|png)$/)
-            ) {
-              linkPreview.mediaType = 'image';
-            }
+            const linkPreview = await fetchLinkPreview(
+              resList[i].embeds[j].url,
+            );
+
             resList[i].embeds[j].linkPreview = linkPreview;
           }
         }
@@ -158,13 +155,10 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
         // console.log('cast', resList[i]);
         for (let j = 0; j < resList[i].embeds.length; j++) {
           if (resList[i].embeds[j].url) {
-            const linkPreview = await getLinkPreview(resList[i].embeds[j].url);
-            if (
-              linkPreview?.mediaType !== 'image' &&
-              resList[i].embeds[j].url.match(/\.(jpeg|jpg|gif|png)$/)
-            ) {
-              linkPreview.mediaType = 'image';
-            }
+            const linkPreview = await fetchLinkPreview(
+              resList[i].embeds[j].url,
+            );
+
             resList[i].embeds[j].linkPreview = linkPreview;
           }
         }

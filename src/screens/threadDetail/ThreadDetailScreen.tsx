@@ -1,5 +1,4 @@
 import axios from 'axios';
-import {getLinkPreview} from 'link-preview-js';
 import React, {
   useCallback,
   useContext,
@@ -20,6 +19,7 @@ import MyComment from '../../components/comment/MyComment';
 import MyThread from '../../components/thread/MyThread';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {OptionsContext} from '../../contexts/options/Options.context';
+import {fetchLinkPreview} from '../../libs/api';
 import {TransformCast} from '../../libs/post';
 import {FeedStackScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
@@ -55,15 +55,9 @@ function ThreadDetailScreen({
         // console.log('cast', resCastsList[i]);
         for (let j = 0; j < resCastsList[i].embeds.length; j++) {
           if (resCastsList[i].embeds[j].url) {
-            const linkPreview = await getLinkPreview(
+            const linkPreview = await fetchLinkPreview(
               resCastsList[i].embeds[j].url,
             );
-            if (
-              linkPreview?.mediaType !== 'image' &&
-              resCastsList[i].embeds[j].url.match(/\.(jpeg|jpg|gif|png)$/)
-            ) {
-              linkPreview.mediaType = 'image';
-            }
             resCastsList[i].embeds[j].linkPreview = linkPreview;
           }
         }
@@ -73,34 +67,18 @@ function ThreadDetailScreen({
         // console.log('cast', resSectionsList[i]);
         for (let j = 0; j < resSectionsList[i].header.embeds.length; j++) {
           if (resSectionsList[i].header.embeds[j].url) {
-            const linkPreview = await getLinkPreview(
+            const linkPreview = await fetchLinkPreview(
               resSectionsList[i].header.embeds[j].url,
             );
-            if (
-              linkPreview?.mediaType !== 'image' &&
-              resSectionsList[i].header.embeds[j].url.match(
-                /\.(jpeg|jpg|gif|png)$/,
-              )
-            ) {
-              linkPreview.mediaType = 'image';
-            }
             resSectionsList[i].header.embeds[j].linkPreview = linkPreview;
           }
         }
         for (let j = 0; j < resSectionsList[i].data.length; j++) {
           for (let k = 0; k < resSectionsList[i].data[j].embeds.length; k++) {
             if (resSectionsList[i].data[j].embeds[k].url) {
-              const linkPreview = await getLinkPreview(
+              const linkPreview = await fetchLinkPreview(
                 resSectionsList[i].data[j].embeds[k].url,
               );
-              if (
-                linkPreview?.mediaType !== 'image' &&
-                resSectionsList[i].data[j].embeds[k].url.match(
-                  /\.(jpeg|jpg|gif|png)$/,
-                )
-              ) {
-                linkPreview.mediaType = 'image';
-              }
               resSectionsList[i].data[j].embeds[k].linkPreview = linkPreview;
             }
           }

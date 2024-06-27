@@ -26,10 +26,7 @@ const UrlViewer = ({url, linkPreview, onImagePress}: UrlViewerProps) => {
         />
       </Pressable>
     );
-  } else if (
-    linkPreview?.mediaType === 'video' ||
-    linkPreview?.contentType === 'application/x-mpegURL'
-  ) {
+  } else if (linkPreview?.mediaType === 'video') {
     return <Video paused controls source={{uri: url}} style={styles.viewer} />;
   } else if (linkPreview?.mediaType === 'youtube') {
     const videoId = url.split('v=')[1];
@@ -56,7 +53,6 @@ const styles = StyleSheet.create({
   imageViewer: {
     width: '100%',
     minHeight: 200,
-    // aspectRatio: 1,
     // alignSelf: 'center',
   },
   youtubePlayer: {
