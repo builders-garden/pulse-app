@@ -9,7 +9,6 @@ export async function getMediaType(url: string) {
     // console.log('response.headers:', JSON.stringify(response));
     const contentType = response.headers.get('Content-Type');
     // Determine the type of media
-    console.log('Content-Type:', contentType);
     if (contentType?.startsWith('image/')) {
       return 'image';
     } else if (contentType?.startsWith('video/')) {
@@ -38,7 +37,6 @@ export async function fetchLinkPreview(
       };
     }
     const linkPreview = await getLinkPreview(url);
-    console.log('linkPreview:', linkPreview);
     if (
       linkPreview?.mediaType !== 'image' &&
       url.match(/\.(jpeg|jpg|gif|png)$/)

@@ -88,16 +88,16 @@ function ProfileScreen({
         let finalProfile: Profile;
         if (route.params.userFid) {
           const finalUrl = ENDPOINT_PROFILE + '/' + route.params.userFid;
-          console.log('fetching profile', finalUrl);
+          // console.log('fetching profile', finalUrl);
           const res = await axios.get<ProfileResponse>(finalUrl, {
             headers: {Authorization: `Bearer ${authContext.state.token}`},
           });
-          console.log('got response', JSON.stringify(res.data.result));
+          // console.log('got response', JSON.stringify(res.data.result));
           finalProfile = res.data.result;
         } else {
           const finalUrl =
             ENDPOINT_PROFILE + '/username/' + route.params.username;
-          console.log('fetching profile', finalUrl);
+          // console.log('fetching profile', finalUrl);
           const res = await axios.get<ProfileByUsernameResponse>(finalUrl, {
             headers: {Authorization: `Bearer ${authContext.state.token}`},
           });

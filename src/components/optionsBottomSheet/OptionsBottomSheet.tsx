@@ -50,7 +50,6 @@ function OptionsBottomSheet({
   useEffect(() => {
     if (bottomSheetRef.current !== null) {
       if (hash !== '') {
-        console.log('hash', hash);
         bottomSheetRef.current?.snapToIndex(0);
       } else {
         bottomSheetRef.current?.close();

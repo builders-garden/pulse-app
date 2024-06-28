@@ -59,7 +59,7 @@ import {
 } from '../../variables';
 import ChannelButton from './components/ChannelButton';
 const maxImagesCount = 2;
-const inputLimit = 20;
+const inputLimit = 1024;
 
 function CreateThreadScreen({
   navigation,
@@ -414,7 +414,6 @@ function CreateThreadScreen({
   }
 
   function onThreadAddMention(mention: string) {
-    console.log('onThreadAddMention:', mention);
     let newThreads = [...threads];
     let newBody = newThreads[currentThreadIndex].body;
     let slicedTextLeft = newBody.slice(0, selectionIndex);
@@ -438,10 +437,10 @@ function CreateThreadScreen({
     index: number,
   ) {
     // console.log('---------');
-    console.log('onKeyPress:', e.nativeEvent.key);
-    console.log('currentThreadIndex:', currentThreadIndex);
-    console.log('threads[index].body.length:', threads[index].body.length);
-    console.log('index:', index);
+    // console.log('onKeyPress:', e.nativeEvent.key);
+    // console.log('currentThreadIndex:', currentThreadIndex);
+    // console.log('threads[index].body.length:', threads[index].body.length);
+    // console.log('index:', index);
     if (index === currentThreadIndex) {
       if (threads[index].body.length === 0) {
         // console.log('onKeyPress triggered');
@@ -526,7 +525,7 @@ function CreateThreadScreen({
     async (castBody: UploadCastBody) => {
       setUploadCastStatus('loading');
       // route.params.channelId
-      console.log('publishing thread...', JSON.stringify(castBody));
+      // console.log('publishing thread...', JSON.stringify(castBody));
       try {
         // console.log('body', castBody);
         const response = await axios.post<UploadCastResult>(
