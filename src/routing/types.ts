@@ -20,9 +20,9 @@ export type RootStackScreenProps<T extends keyof RootStackParamList> =
   NativeStackScreenProps<RootStackParamList, T>;
 
 export type TabParamList = {
-  PersonalProfile: {userFid: string};
-  Discover: undefined;
-  Notifications: undefined;
+  PersonalProfileRoot: NavigatorScreenParams<PersonalProfileStackParamList>;
+  DiscoverRoot: NavigatorScreenParams<DiscoverStackParamList>;
+  NotificationsRoot: NavigatorScreenParams<NotificationsStackParamList>;
   FeedRoot: NavigatorScreenParams<FeedStackParamList>;
 };
 
@@ -33,7 +33,7 @@ export type HomeTabScreenProps<T extends keyof TabParamList> =
   >;
 
 export type FeedStackParamList = {
-  Profile: {userFid: string};
+  Profile: {userFid?: string; username?: string};
   Feed: undefined;
   ThreadDetail: {threadHash: string};
   Channel: {channelId: string; showDrawer?: boolean};
@@ -45,15 +45,44 @@ export type FeedStackScreenProps<T extends keyof FeedStackParamList> =
     NativeStackScreenProps<FeedStackParamList, T>,
     HomeTabScreenProps<'FeedRoot'>
   >;
-// export type DiscoverStackParamList = {
-//   Discover: undefined;
-//   ThreadDetail: {threadHash: string};
-//   Channel: {channelId: string; showDrawer?: boolean};
-//   ChannelDetail: {channelId: string};
-// };
+export type DiscoverStackParamList = {
+  Discover: undefined;
+  Profile: {userFid?: string; username?: string};
+  ThreadDetail: {threadHash: string};
+  Channel: {channelId: string; showDrawer?: boolean};
+  ChannelDetail: {channelId: string};
+};
 
-// export type DiscoverStackScreenProps<T extends keyof DiscoverStackParamList> =
-//   CompositeScreenProps<
-//     NativeStackScreenProps<DiscoverStackParamList, T>,
-//     HomeTabScreenProps<'Discover'>
-//   >;
+export type DiscoverStackScreenProps<T extends keyof DiscoverStackParamList> =
+  CompositeScreenProps<
+    NativeStackScreenProps<DiscoverStackParamList, T>,
+    HomeTabScreenProps<'DiscoverRoot'>
+  >;
+export type NotificationsStackParamList = {
+  Notifications: undefined;
+  Profile: {userFid?: string; username?: string};
+  ThreadDetail: {threadHash: string};
+  Channel: {channelId: string; showDrawer?: boolean};
+  ChannelDetail: {channelId: string};
+};
+
+export type NotificationsStackScreenProps<
+  T extends keyof NotificationsStackParamList,
+> = CompositeScreenProps<
+  NativeStackScreenProps<NotificationsStackParamList, T>,
+  HomeTabScreenProps<'NotificationsRoot'>
+>;
+export type PersonalProfileStackParamList = {
+  PersonalProfile: {userFid?: string; username?: string};
+  Profile: {userFid?: string; username?: string};
+  ThreadDetail: {threadHash: string};
+  Channel: {channelId: string; showDrawer?: boolean};
+  ChannelDetail: {channelId: string};
+};
+
+export type PersonalProfileStackScreenProps<
+  T extends keyof PersonalProfileStackParamList,
+> = CompositeScreenProps<
+  NativeStackScreenProps<PersonalProfileStackParamList, T>,
+  HomeTabScreenProps<'PersonalProfileRoot'>
+>;

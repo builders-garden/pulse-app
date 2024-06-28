@@ -21,14 +21,23 @@ import {AuthContext} from '../../contexts/auth/Auth.context';
 import {OptionsContext} from '../../contexts/options/Options.context';
 import {fetchLinkPreview} from '../../libs/api';
 import {TransformCast} from '../../libs/post';
-import {FeedStackScreenProps} from '../../routing/types';
+import {
+  DiscoverStackScreenProps,
+  FeedStackScreenProps,
+  NotificationsStackScreenProps,
+  PersonalProfileStackScreenProps,
+} from '../../routing/types';
 import {MyTheme} from '../../theme';
 import {ENDPOINT_CAST} from '../../variables';
 
 function ThreadDetailScreen({
   route,
   navigation,
-}: FeedStackScreenProps<'ThreadDetail'>) {
+}:
+  | DiscoverStackScreenProps<'ThreadDetail'>
+  | NotificationsStackScreenProps<'ThreadDetail'>
+  | PersonalProfileStackScreenProps<'ThreadDetail'>
+  | FeedStackScreenProps<'ThreadDetail'>) {
   const authContext = useContext(AuthContext);
   const optionsContext = useContext(OptionsContext);
   const [threadFetchStatus, setThreadFetchStatus] =
@@ -330,7 +339,7 @@ function ThreadDetailScreen({
                 borderTopRightRadius: 4,
               }}
               onContentBodyPress={() => {
-                navigation.navigate('ThreadDetail', {
+                navigation.push('ThreadDetail', {
                   threadHash: section.header.hash,
                 });
               }}

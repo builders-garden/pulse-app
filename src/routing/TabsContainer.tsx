@@ -7,14 +7,12 @@ import LinearGradient from 'react-native-linear-gradient';
 import BellImg from '../assets/images/icons/bell.svg';
 import FeedImg from '../assets/images/icons/feed.svg';
 import RadarImg from '../assets/images/icons/radar.svg';
-import MyHeaderLeft from '../components/header/MyHeaderLeft';
-import MyHeaderRight from '../components/header/MyHeaderRight';
 import {AuthContext} from '../contexts/auth/Auth.context';
-import DiscoverScreen from '../screens/discover/DiscoverScreen';
-import NotificationsScreen from '../screens/notifications/NotificationsScreen';
-import ProfileScreen from '../screens/profile/ProfileScreen';
 import {MyTheme} from '../theme';
+import DiscoverStackContainer from './DiscoverStackContainer';
 import FeedStackContainer from './FeedStackContainer';
+import NotificationsStackContainer from './NotificationsStackContainer';
+import PersonalProfileStackContainer from './PersonalProfileStackContainer';
 import {TabParamList} from './types';
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -39,11 +37,11 @@ function TabsContainer() {
 
             if (route.name === 'FeedRoot') {
               icon = <FeedImg color={color} />;
-            } else if (route.name === 'Discover') {
+            } else if (route.name === 'DiscoverRoot') {
               icon = <RadarImg color={color} />;
-            } else if (route.name === 'Notifications') {
+            } else if (route.name === 'NotificationsRoot') {
               icon = <BellImg color={color} />;
-            } else if (route.name === 'PersonalProfile') {
+            } else if (route.name === 'PersonalProfileRoot') {
               icon = (
                 <FastImage
                   source={{uri: authContext.state.profile?.pfp_url}}
@@ -97,60 +95,25 @@ function TabsContainer() {
           }}
         />
         <Tab.Screen
-          name="Discover"
+          name="DiscoverRoot"
           options={{
-            title: '',
-            headerLeft: () => (
-              <MyHeaderLeft
-                title="Discover"
-                customStyle={{
-                  paddingLeft: 14,
-                }}
-                icon={<RadarImg color={MyTheme.primaryColor} />}
-              />
-            ),
+            headerShown: false,
           }}
-          component={DiscoverScreen}
+          component={DiscoverStackContainer}
         />
         <Tab.Screen
-          name="Notifications"
+          name="NotificationsRoot"
           options={{
-            title: '',
-            headerLeft: () => (
-              <MyHeaderLeft
-                title="Notifications"
-                customStyle={{
-                  paddingLeft: 14,
-                }}
-                icon={<BellImg color={MyTheme.primaryColor} />}
-              />
-            ),
-            headerShadowVisible: false,
+            headerShown: false,
           }}
-          component={NotificationsScreen}
+          component={NotificationsStackContainer}
         />
         <Tab.Screen
-          name="PersonalProfile"
+          name="PersonalProfileRoot"
           options={{
-            title: '',
-            headerShadowVisible: false,
-            headerLeft: () => (
-              <MyHeaderLeft
-                customStyle={{
-                  paddingLeft: 14,
-                }}
-              />
-            ),
-            headerRight: () => (
-              <MyHeaderRight
-                customStyle={{
-                  marginRight: 16,
-                }}
-              />
-            ),
+            headerShown: false,
           }}
-          initialParams={{userFid: authContext.state.fid}}
-          component={ProfileScreen}
+          component={PersonalProfileStackContainer}
         />
       </Tab.Navigator>
     </>

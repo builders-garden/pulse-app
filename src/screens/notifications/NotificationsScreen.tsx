@@ -27,14 +27,14 @@ import ProfileLine from '../../components/ProfileLine';
 import MyButton from '../../components/buttons/MyButton';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {groupNotificationsByDay} from '../../libs/notifications';
-import {HomeTabScreenProps} from '../../routing/types';
+import {NotificationsStackScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
 import {ENDPOINT_NOTIFICATIONS} from '../../variables';
 import NotificationItem from './components/NotificationItem';
 
 function NotificationsScreen({
   navigation,
-}: HomeTabScreenProps<'Notifications'>) {
+}: NotificationsStackScreenProps<'Notifications'>) {
   const authContext = useContext(AuthContext);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [notificationsFetchStatus, setNotificationsFetchStatus] =

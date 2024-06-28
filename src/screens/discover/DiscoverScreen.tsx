@@ -25,7 +25,7 @@ import MyButton from '../../components/buttons/MyButton';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {TransformArrayTo3x3} from '../../libs/arrays';
 import {TrendingCastResult2EssentialCast} from '../../libs/post';
-import {HomeTabScreenProps} from '../../routing/types';
+import {DiscoverStackScreenProps} from '../../routing/types';
 import {MyTheme} from '../../theme';
 import {
   ENDPOINT_MOST_FOLLOWED_CHANNELS,
@@ -36,7 +36,7 @@ import {
 import ChannelCard from './components/ChannelCard';
 import TrendingPostItem from './components/TrendingPostItem';
 
-function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
+function DiscoverScreen({navigation}: DiscoverStackScreenProps<'Discover'>) {
   const authContext = useContext(AuthContext);
   const [channelsForYouFetchStatus, setChannelsForYouFetchStatus] =
     useState<RequestStatus>('idle');
@@ -152,9 +152,9 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
           marginRight: index == channelsForYou.length - 1 ? 20 : 0,
         }}
         onPress={() => {
-          navigation.navigate('FeedRoot', {
-            screen: 'Channel',
-            params: {channelId: item.channel.id, showDrawer: true},
+          navigation.navigate('Channel', {
+            channelId: item.channel.id,
+            showDrawer: true,
           });
         }}
       />
@@ -171,16 +171,10 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
             marginRight: index == trendingPosts.length - 1 ? 20 : 0,
           }}
           onContentBodyPress={() => {
-            navigation.navigate('FeedRoot', {
-              screen: 'ThreadDetail',
-              params: {threadHash: item.cast.hash},
-            });
+            navigation.navigate('ThreadDetail', {threadHash: item.cast.hash});
           }}
           onHeaderPress={() => {
-            navigation.navigate('FeedRoot', {
-              screen: 'Profile',
-              params: {userFid: item.cast.fid},
-            });
+            navigation.navigate('Profile', {userFid: item.cast.fid});
           }}
           onCommentPress={() => {
             const transformed = TrendingCastResult2EssentialCast(item);
@@ -213,9 +207,9 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
                 height: 130,
               }}
               onPress={() => {
-                navigation.navigate('FeedRoot', {
-                  screen: 'Channel',
-                  params: {channelId: channel.channelId, showDrawer: true},
+                navigation.navigate('Channel', {
+                  channelId: channel.channelId,
+                  showDrawer: true,
                 });
               }}
             />
@@ -246,9 +240,9 @@ function DiscoverScreen({navigation}: HomeTabScreenProps<'Discover'>) {
                 height: 130,
               }}
               onPress={() => {
-                navigation.navigate('FeedRoot', {
-                  screen: 'Channel',
-                  params: {channelId: channel.channelId, showDrawer: true},
+                navigation.navigate('Channel', {
+                  channelId: channel.channelId,
+                  showDrawer: true,
                 });
               }}
             />

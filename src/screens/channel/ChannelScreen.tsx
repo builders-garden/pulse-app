@@ -33,13 +33,25 @@ import {AuthContext} from '../../contexts/auth/Auth.context';
 import {DrawerContext} from '../../contexts/drawer/Drawer.context';
 import {fetchLinkPreview} from '../../libs/api';
 import {TransformFeedItem} from '../../libs/post';
-import {FeedStackScreenProps} from '../../routing/types';
+import {
+  DiscoverStackScreenProps,
+  FeedStackScreenProps,
+  NotificationsStackScreenProps,
+  PersonalProfileStackScreenProps,
+} from '../../routing/types';
 import {MyTheme} from '../../theme';
 import {ENDPOINT_CHANNELS} from '../../variables';
 import ChannelHeader from './components/ChannelHeader';
 import ChannelHeaderLarge from './components/ChannelHeaderLarge';
 
-function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
+function ChannelScreen({
+  route,
+  navigation,
+}:
+  | DiscoverStackScreenProps<'Channel'>
+  | NotificationsStackScreenProps<'Channel'>
+  | PersonalProfileStackScreenProps<'Channel'>
+  | FeedStackScreenProps<'Channel'>) {
   const authContext = useContext(AuthContext);
   const drawerContext = useContext(DrawerContext);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -206,7 +218,7 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
           }}
           onHeaderTitlePress={() => {
             if (transformedItem.channel !== '') {
-              navigation.navigate('Channel', {
+              navigation.push('Channel', {
                 channelId: transformedItem.channel,
               });
             } else {
@@ -222,7 +234,7 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
           }}
           onHeaderImagePress={() => {
             if (transformedItem.channel !== '') {
-              navigation.navigate('Channel', {
+              navigation.push('Channel', {
                 channelId: transformedItem.channel,
               });
             } else {
@@ -315,7 +327,7 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
         )}
       </>
     ),
-    [navigation, channel, fetchChannel, feedFetchStatus],
+    [navigation, channel, fetchChannel, feedFetchStatus, isRefreshing],
   );
 
   return (
@@ -350,12 +362,19 @@ function ChannelScreen({route, navigation}: FeedStackScreenProps<'Channel'>) {
             <View
               style={{
                 width: '100%',
-                padding: 20,
+                paddingTop: 20,
+                paddingBottom: 20,
                 alignItems: 'center',
               }}>
               <MyLoader />
             </View>
-          ) : null
+          ) : (
+            <View
+              style={{
+                height: 15,
+              }}
+            />
+          )
         }
         ItemSeparatorComponent={() => <View style={{height: 15}} />}
         renderItem={renderItem}

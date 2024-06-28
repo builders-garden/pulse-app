@@ -39,7 +39,7 @@ export type FeedItem = {
 
 export type Embed = {
   url: string;
-  linkPreview?: LinkPreview;
+  linkPreview?: LinkPreview | {mediaType: 'image' | 'video'};
 };
 
 export type Frame = {

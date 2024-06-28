@@ -14,7 +14,11 @@ import {
   MostRecentChannel,
   MostRecentChannelsResponse,
 } from '../../api/channel/types';
-import {Profile, ProfileResponse} from '../../api/profile/types';
+import {
+  Profile,
+  ProfileByUsernameResponse,
+  ProfileResponse,
+} from '../../api/profile/types';
 import {RequestStatus} from '../../api/types';
 import {UserCast, UserCastsResponse} from '../../api/user/types';
 import MyLoader from '../../components/MyLoader';
@@ -25,7 +29,12 @@ import MyTabs from '../../components/tabs/MyTabs';
 import {AuthContext} from '../../contexts/auth/Auth.context';
 import {fetchLinkPreview} from '../../libs/api';
 import {TransformUserCast} from '../../libs/post';
-import {FeedStackScreenProps, HomeTabScreenProps} from '../../routing/types';
+import {
+  DiscoverStackScreenProps,
+  FeedStackScreenProps,
+  NotificationsStackScreenProps,
+  PersonalProfileStackScreenProps,
+} from '../../routing/types';
 import {ENDPOINT_PROFILE} from '../../variables';
 import About from './components/About';
 import UpperSection from './components/UpperSection';
@@ -35,7 +44,12 @@ const HEADER_HEIGHT = 250;
 function ProfileScreen({
   route,
   navigation,
-}: HomeTabScreenProps<'PersonalProfile'> | FeedStackScreenProps<'Profile'>) {
+}:
+  | DiscoverStackScreenProps<'Profile'>
+  | NotificationsStackScreenProps<'Profile'>
+  | PersonalProfileStackScreenProps<'Profile'>
+  | PersonalProfileStackScreenProps<'PersonalProfile'>
+  | FeedStackScreenProps<'Profile'>) {
   const authContext = useContext(AuthContext);
   const [profileFetchStatus, setProfileFetchStatus] =
     useState<RequestStatus>('idle');
@@ -60,31 +74,53 @@ function ProfileScreen({
   useScrollToTop(listRef);
 
   const isLoggedUserProfile = useMemo(() => {
-    if (!authContext.state?.fid) {
+    if (!authContext.state?.fid || !profile?.fid) {
       return false;
     }
-    return authContext.state?.fid === route.params.userFid.toString();
-  }, [authContext.state?.fid, route.params.userFid]);
+
+    return authContext.state?.fid === profile?.fid.toString();
+  }, [authContext.state?.fid, profile?.fid]);
 
   const fetchProfile = useCallback(async () => {
     if (authContext.state?.fid) {
       setProfileFetchStatus('loading');
       try {
-        const finalUrl = ENDPOINT_PROFILE + '/' + route.params.userFid;
-        // console.log('fetching profile', finalUrl);
-        const res = await axios.get<ProfileResponse>(finalUrl, {
-          headers: {Authorization: `Bearer ${authContext.state.token}`},
-        });
-        // console.log('got response', res.data.result);
+        let finalProfile: Profile;
+        if (route.params.userFid) {
+          const finalUrl = ENDPOINT_PROFILE + '/' + route.params.userFid;
+          console.log('fetching profile', finalUrl);
+          const res = await axios.get<ProfileResponse>(finalUrl, {
+            headers: {Authorization: `Bearer ${authContext.state.token}`},
+          });
+          console.log('got response', JSON.stringify(res.data.result));
+          finalProfile = res.data.result;
+        } else {
+          const finalUrl =
+            ENDPOINT_PROFILE + '/username/' + route.params.username;
+          console.log('fetching profile', finalUrl);
+          const res = await axios.get<ProfileByUsernameResponse>(finalUrl, {
+            headers: {Authorization: `Bearer ${authContext.state.token}`},
+          });
+          const {pfp, ...other} = res.data.result;
+          finalProfile = {
+            ...other,
+            pfp_url: pfp.url,
+          };
+        }
         // console.log('got response');
-        setProfile(res.data.result);
+        setProfile(finalProfile);
         setProfileFetchStatus('success');
       } catch (error) {
         console.error(error);
         setProfileFetchStatus('error');
       }
     }
-  }, [authContext.state.token, authContext.state?.fid, route.params.userFid]);
+  }, [
+    authContext.state.token,
+    authContext.state?.fid,
+    route.params.userFid,
+    route.params.username,
+  ]);
 
   const fetchComments = useCallback(async () => {
     if (profile?.fid) {
@@ -288,16 +324,6 @@ function ProfileScreen({
     setIsRefreshing(false);
   }, [fetchProfile, fetchUserCasts, fetchComments]);
 
-  const jumpToFeedRoot = useCallback(
-    (screen: 'Profile' | 'ThreadDetail' | 'Channel', params: any) => {
-      navigation.jumpTo('FeedRoot', {
-        screen,
-        params,
-      });
-    },
-    [navigation],
-  );
-
   const renderItem = useCallback(
     ({item, index}: {item: UserCast; index: number}) => {
       if (
@@ -333,39 +359,39 @@ function ProfileScreen({
               marginTop: index === 0 ? 15 : 0,
             }}
             onContentBodyPress={() => {
-              jumpToFeedRoot('ThreadDetail', {
+              navigation.navigate('ThreadDetail', {
                 threadHash: item.hash,
               });
             }}
             onHeaderTitlePress={() => {
               if (transformedItem.channel !== '') {
-                jumpToFeedRoot('Channel', {
+                navigation.navigate('Channel', {
                   channelId: transformedItem.channel,
                 });
               } else {
-                jumpToFeedRoot('Profile', {
+                navigation.push('Profile', {
                   userFid: profile.fid.toString(),
                 });
               }
             }}
             onHeaderSubtitlePress={() => {
-              jumpToFeedRoot('Profile', {
+              navigation.push('Profile', {
                 userFid: profile.fid.toString(),
               });
             }}
             onHeaderImagePress={() => {
               if (transformedItem.channel !== '') {
-                jumpToFeedRoot('Channel', {
+                navigation.navigate('Channel', {
                   channelId: transformedItem.channel,
                 });
               } else {
-                jumpToFeedRoot('Profile', {
+                navigation.push('Profile', {
                   userFid: profile.fid.toString(),
                 });
               }
             }}
             onCommentPress={() => {
-              navigation.push('CreateComment', {
+              navigation.navigate('CreateComment', {
                 cast: {
                   author: profile,
                   text: transformedItem.content,
@@ -402,33 +428,33 @@ function ProfileScreen({
             ]}
             hideActionBar
             onContentBodyPress={() => {
-              jumpToFeedRoot('ThreadDetail', {
+              navigation.navigate('ThreadDetail', {
                 threadHash: item.hash,
               });
             }}
             onHeaderTitlePress={() => {
               if (transformedItem.channel !== '') {
-                jumpToFeedRoot('Channel', {
+                navigation.navigate('Channel', {
                   channelId: transformedItem.channel,
                 });
               } else {
-                jumpToFeedRoot('Profile', {
+                navigation.push('Profile', {
                   userFid: profile.fid.toString(),
                 });
               }
             }}
             onHeaderSubtitlePress={() => {
-              jumpToFeedRoot('Profile', {
+              navigation.push('Profile', {
                 userFid: profile.fid.toString(),
               });
             }}
             onHeaderImagePress={() => {
               if (transformedItem.channel !== '') {
-                jumpToFeedRoot('Channel', {
+                navigation.navigate('Channel', {
                   channelId: transformedItem.channel,
                 });
               } else {
-                jumpToFeedRoot('Profile', {
+                navigation.push('Profile', {
                   userFid: profile.fid.toString(),
                 });
               }
@@ -446,7 +472,6 @@ function ProfileScreen({
       recentChannelsFetchStatus,
       profile,
       navigation,
-      jumpToFeedRoot,
     ],
   );
 
@@ -586,7 +611,7 @@ function ProfileScreen({
                 recentChannels={recentChannels}
                 profile={profile}
                 onChannelPress={channelId => {
-                  jumpToFeedRoot('Channel', {
+                  navigation.navigate('Channel', {
                     channelId,
                   });
                 }}
@@ -596,18 +621,17 @@ function ProfileScreen({
       }
       ListFooterComponent={
         <>
-          {isRefreshing &&
+          {!isRefreshing &&
             ((selectedTab === 0 &&
               newUserCastsFetchStatus === 'loading' &&
               userCastsFetchStatus === 'success') ||
               (selectedTab === 1 &&
                 newCommentsFetchStatus === 'loading' &&
-                commentsFetchStatus === 'success' && (
-                  <View
-                    style={{width: '100%', padding: 20, alignItems: 'center'}}>
-                    <MyLoader />
-                  </View>
-                )))}
+                commentsFetchStatus === 'success')) && (
+              <View style={{width: '100%', padding: 20, alignItems: 'center'}}>
+                <MyLoader />
+              </View>
+            )}
         </>
       }
       renderItem={renderItem}

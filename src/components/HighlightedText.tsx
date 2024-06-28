@@ -32,10 +32,13 @@ const HighlightedText = ({
       pattern: /(^|[\s\n])(@[a-zA-Z0-9_.-]+|\/[a-zA-Z0-9_.-]+)/,
       style: {color: MyTheme.primaryColor},
       suppressHighlighting: true,
-      onPress: url => {
-        // console.log('url', url);
-        if (url.startsWith('/')) {
-          navigation.navigate('Channel', {channelId: url.slice(1)});
+      onPress: (url: string) => {
+        const firstSplit = url.split('/');
+        if (firstSplit.length > 1) {
+          navigation.push('Channel', {channelId: firstSplit[1]});
+        } else {
+          const secondSplit = url.split('@')[1];
+          navigation.push('Profile', {username: secondSplit});
         }
       },
     },

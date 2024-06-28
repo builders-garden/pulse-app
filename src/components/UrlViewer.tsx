@@ -7,7 +7,7 @@ import {LinkPreview} from '../types';
 import WebPreview from './WebPreview';
 interface UrlViewerProps {
   url: string;
-  linkPreview?: LinkPreview;
+  linkPreview?: LinkPreview | {mediaType: 'image' | 'video'};
   onImagePress?: () => void;
 }
 
@@ -38,7 +38,7 @@ const UrlViewer = ({url, linkPreview, onImagePress}: UrlViewerProps) => {
       />
     );
   } else {
-    return <WebPreview url={url} linkPreview={linkPreview} />;
+    return <WebPreview url={url} linkPreview={linkPreview as LinkPreview} />;
   }
 };
 

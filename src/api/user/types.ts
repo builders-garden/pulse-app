@@ -20,7 +20,7 @@ export type UserCast = {
   timestamp: string;
   embeds: {
     url: string;
-    linkPreview?: LinkPreview;
+    linkPreview?: LinkPreview | {mediaType: 'image' | 'video'};
   }[];
   mentioned_profiles: Author[];
   reactions: {

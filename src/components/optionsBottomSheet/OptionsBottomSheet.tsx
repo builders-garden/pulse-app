@@ -175,7 +175,7 @@ function OptionsBottomSheet({
                 title={analytics?.author.display_name ?? ''}
                 subtitle={`@${analytics?.author.username}`}
                 onPress={() => {
-                  navigation.navigate('Profile', {
+                  navigation.push('Profile', {
                     userFid: analytics?.author.fid.toString(),
                   });
                   onInteract && onInteract();
@@ -187,7 +187,7 @@ function OptionsBottomSheet({
                   title={analytics?.channel.name ?? ''}
                   subtitle={`/${analytics?.channel.id}`}
                   onPress={() => {
-                    navigation.navigate('Channel', {
+                    navigation.push('Channel', {
                       channelId: analytics?.channel?.id ?? '',
                     });
                     onInteract && onInteract();

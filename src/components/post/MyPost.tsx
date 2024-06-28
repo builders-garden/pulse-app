@@ -161,26 +161,6 @@ const MyPost = ({
     }
   }, [authContext.state.token, postHash, isRecasted, recasted]);
 
-  const mediaHtml = useMemo(() => {
-    if (images) {
-      return images.map((image, index) => (
-        <UrlViewer
-          key={index}
-          url={image.url}
-          linkPreview={image.linkPreview}
-          onImagePress={() => {
-            lightboxContext.show({
-              urls: images.map(el => el.url),
-              imageIndex: index,
-            });
-          }}
-        />
-      ));
-    }
-
-    return [];
-  }, [images]);
-
   const areMixedMedia = useMemo(() => {
     if (images && images.length > 1) {
       return (
@@ -190,6 +170,33 @@ const MyPost = ({
 
     return false;
   }, [images]);
+
+  const mediaHtml = useMemo(() => {
+    if (images) {
+      return images.map((image, index) => (
+        <UrlViewer
+          key={index}
+          url={image.url}
+          linkPreview={image.linkPreview}
+          onImagePress={() => {
+            if (areMixedMedia) {
+              lightboxContext.show({
+                urls: [image.url],
+                imageIndex: 0,
+              });
+            } else {
+              lightboxContext.show({
+                urls: images.map(el => el.url),
+                imageIndex: index,
+              });
+            }
+          }}
+        />
+      ));
+    }
+
+    return [];
+  }, [images, areMixedMedia]);
 
   return (
     <View style={[styles.root, customStyle && customStyle]}>

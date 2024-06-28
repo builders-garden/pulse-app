@@ -26,8 +26,17 @@ export async function getMediaType(url: string) {
 
 export async function fetchLinkPreview(
   url: string,
-): Promise<LinkPreview | undefined> {
+): Promise<LinkPreview | {mediaType: 'image' | 'video'} | undefined> {
   try {
+    if (url.match(/\.(jpeg|jpg|gif|png)$/)) {
+      return {
+        mediaType: 'image',
+      };
+    } else if (url.match(/\.(mp4|webm|ogg|m3u8)$/)) {
+      return {
+        mediaType: 'video',
+      };
+    }
     const linkPreview = await getLinkPreview(url);
     console.log('linkPreview:', linkPreview);
     if (
