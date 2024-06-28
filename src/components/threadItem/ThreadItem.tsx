@@ -1,4 +1,4 @@
-import React, {RefObject} from 'react';
+import React, {createRef, useEffect} from 'react';
 import {
   NativeSyntheticEvent,
   StyleProp,
@@ -17,7 +17,7 @@ import MediaBox from './MediaBox';
 
 type ThreadItemProps = {
   thread: Thread;
-  textInputRef?: RefObject<TextInput>;
+  // textInputRef?: RefObject<TextInput>;
   active: boolean;
   maxLength: number;
   customStyle?: StyleProp<ViewStyle>;
@@ -32,7 +32,7 @@ type ThreadItemProps = {
 function ThreadItem({
   thread,
   active,
-  textInputRef = undefined,
+  // textInputRef = undefined,
   maxLength,
   customStyle,
   onChangeText,
@@ -42,6 +42,8 @@ function ThreadItem({
   onAddMediaPress,
   onCancelMediaPress,
 }: ThreadItemProps) {
+  const inputRef = createRef<TextInput>();
+
   const imagesHtml = thread.images
     ?.filter(el => el !== undefined && el !== null)
     .map((image, i) => (
@@ -53,6 +55,12 @@ function ThreadItem({
         }}
       />
     ));
+
+  useEffect(() => {
+    if (inputRef.current && active) {
+      inputRef.current?.focus();
+    }
+  }, [inputRef.current, active]);
 
   return (
     <View style={[styles.root, customStyle && customStyle]}>
@@ -71,7 +79,7 @@ function ThreadItem({
       </View>
       <View style={styles.contentCtn}>
         <TextInput
-          ref={textInputRef}
+          ref={inputRef}
           onFocus={() => {
             onFocus && onFocus();
           }}

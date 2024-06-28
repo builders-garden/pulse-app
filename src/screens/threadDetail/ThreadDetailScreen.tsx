@@ -57,7 +57,7 @@ function ThreadDetailScreen({
         headers: {Authorization: `Bearer ${authContext.state.token}`},
       });
       // console.log('got response');
-      // console.log(res.data);
+      console.log(res.data);
 
       const resCastsList = [...res.data.result.casts];
       for (let i = 0; i < resCastsList.length; i++) {

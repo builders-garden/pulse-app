@@ -17,7 +17,6 @@ import {
   NativeSyntheticEvent,
   StyleSheet,
   Text,
-  TextInput,
   TextInputKeyPressEventData,
   View,
 } from 'react-native';
@@ -60,7 +59,7 @@ import {
 } from '../../variables';
 import ChannelButton from './components/ChannelButton';
 const maxImagesCount = 2;
-const inputLimit = 1024;
+const inputLimit = 20;
 
 function CreateThreadScreen({
   navigation,
@@ -91,7 +90,7 @@ function CreateThreadScreen({
     {id: uuid.v4().toString(), body: '', images: [], links: []},
   ]);
   const [currentThreadIndex, setCurrentThreadIndex] = useState(0);
-  const inputRef = createRef<TextInput>();
+  // const inputRef = createRef<TextInput>();
   const bottomSheetRef = createRef<BottomSheet>();
 
   const renderBackdrop = useCallback(
@@ -439,31 +438,31 @@ function CreateThreadScreen({
     index: number,
   ) {
     // console.log('---------');
-    // console.log('onKeyPress:', e.nativeEvent.key);
-    if (index === currentThreadIndex && threads[index].body.length === 0) {
-      // console.log('onKeyPress triggered');
-      if (e.nativeEvent.key === 'Backspace' && threads.length > 1) {
-        const newThreads = threads.slice();
-        newThreads.splice(index, 1);
-        setThreads(newThreads);
-        if (index > 0) {
-          setCurrentThreadIndex(index - 1);
+    console.log('onKeyPress:', e.nativeEvent.key);
+    console.log('currentThreadIndex:', currentThreadIndex);
+    console.log('threads[index].body.length:', threads[index].body.length);
+    console.log('index:', index);
+    if (index === currentThreadIndex) {
+      if (threads[index].body.length === 0) {
+        // console.log('onKeyPress triggered');
+        if (e.nativeEvent.key === 'Backspace' && threads.length > 1) {
+          const newThreads = threads.slice();
+          newThreads.splice(index, 1);
+          setThreads(newThreads);
+          if (index > 0) {
+            setCurrentThreadIndex(index - 1);
+          }
         }
-      }
-    } else if (threads[index].body.length === inputLimit) {
-      if (e.nativeEvent.key === 'Enter') {
-        let newThreads = [...threads];
-        newThreads = insertThread(newThreads, index + 1);
-        // console.log(newThreads);
-        setThreads(newThreads);
-        setCurrentThreadIndex(index + 1);
-      } else {
-        Toast.show({
-          type: 'info',
-          text1: 'Input limit reached!',
-          text2: 'Please create another thread to continue.',
-          topOffset: 50,
-        });
+      } else if (threads[index].body.length === inputLimit) {
+        if (e.nativeEvent.key !== 'Backspace') {
+          let newThreads = [...threads];
+          newThreads = insertThread(newThreads, index + 1);
+          if (e.nativeEvent.key.length === 1 && e.nativeEvent.key !== ' ') {
+            newThreads[index + 1].body = e.nativeEvent.key;
+          }
+          setThreads(newThreads);
+          setCurrentThreadIndex(index + 1);
+        }
       }
     }
   }
@@ -527,7 +526,7 @@ function CreateThreadScreen({
     async (castBody: UploadCastBody) => {
       setUploadCastStatus('loading');
       // route.params.channelId
-      // console.log('publishing thread...');
+      console.log('publishing thread...', JSON.stringify(castBody));
       try {
         // console.log('body', castBody);
         const response = await axios.post<UploadCastResult>(
@@ -648,6 +647,7 @@ function CreateThreadScreen({
 
   return (
     <View style={{flex: 1}}>
+      {/* <Text>{JSON.stringify(threads)}</Text> */}
       <FlatList
         renderScrollComponent={props => <KeyboardAwareScrollView {...props} />}
         style={styles.threadsCtn}
@@ -667,13 +667,12 @@ function CreateThreadScreen({
           <ThreadItem
             key={item.id}
             active={index === currentThreadIndex}
-            textInputRef={index === currentThreadIndex ? inputRef : undefined}
+            // textInputRef={index === currentThreadIndex ? inputRef : undefined}
             thread={item}
             maxLength={inputLimit}
             onFocus={() => setCurrentThreadIndex(index)}
             onKeyPress={e => onKeyPress(e, index)}
             onChangeText={newText => {
-              console.log('newText', newText);
               onThreadChangeText(newText, index);
             }}
             onAddMediaPress={() => {

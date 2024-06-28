@@ -56,22 +56,27 @@ function ChannelDetailScreen({
     fetchChannel();
   }, [fetchChannel, authContext]);
 
-  const hostsHtml = useMemo(
-    () =>
-      channel?.hosts.map(host => {
-        return (
-          <ProfileLine
-            key={host.fid}
-            profile={host}
-            customStyle={{marginTop: 15}}
-            onProfilePress={() => {
-              navigation.navigate('Profile', {userFid: host.fid.toString()});
-            }}
-          />
-        );
-      }),
-    [channel, navigation],
-  );
+  const hostsHtml = useMemo(() => {
+    if (
+      channel?.hosts === undefined ||
+      channel?.hosts === null ||
+      channel?.hosts.length === 0
+    ) {
+      return [];
+    }
+    return channel?.hosts?.map(host => {
+      return (
+        <ProfileLine
+          key={host.fid}
+          profile={host}
+          customStyle={{marginTop: 15}}
+          onProfilePress={() => {
+            navigation.navigate('Profile', {userFid: host.fid.toString()});
+          }}
+        />
+      );
+    });
+  }, [channel, navigation]);
 
   if (channelFetchStatus === 'loading') {
     return (
