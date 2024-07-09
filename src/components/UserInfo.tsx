@@ -51,9 +51,13 @@ const UserInfo = ({
               onTitlePress();
             }
           }}
-          style={{flexDirection: 'row'}}>
-          <Text style={styles.headerTitle}>{title}</Text>
-          <Text style={styles.headerTime}> • {titleRight}</Text>
+          style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Text style={styles.headerTitle} numberOfLines={1}>
+            {title}
+          </Text>
+          <Text style={styles.headerTime} numberOfLines={1}>
+            • {titleRight}
+          </Text>
         </Pressable>
         <Text
           numberOfLines={1}
@@ -102,10 +106,12 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontFamily: 'BeVietnamPro-Bold',
     color: MyTheme.black,
+    maxWidth: '60%',
   },
   headerTime: {
     color: 'gray',
     fontFamily: 'BeVietnamPro-Regular',
+    maxWidth: '40%',
   },
   headerSubtitle: {
     color: 'gray',

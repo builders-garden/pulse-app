@@ -71,7 +71,12 @@ function App(): React.JSX.Element {
       <LightboxProvider>
         <SafeAreaProvider>
           <NavigationContainer theme={NavigationTheme} linking={linking}>
-            <PostHogProvider apiKey={process.env.POSTHOG_API_KEY} autocapture>
+            <PostHogProvider
+              apiKey={process.env.POSTHOG_API_KEY}
+              options={{
+                host: process.env.POSTHOG_HOST,
+              }}
+              autocapture>
               <DrawerProvider>
                 <OptionsProvider>
                   <KeyboardProvider>
